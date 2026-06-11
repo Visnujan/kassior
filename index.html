@@ -1,0 +1,3895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f0eb" id="theme-color-meta" />
+  <!-- Content Security Policy — restricts what can run on this page -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    script-src 'self' 'unsafe-inline';
+    img-src 'self' data:;
+    connect-src 'none';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+  ">
+  <title>Kassior</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── LIGHT THEME (default) ── */
+    :root {
+      --bg:          #f5f0eb;
+      --surface:     #ffffff;
+      --surface2:    #ede8e2;
+      --border:      #e0d8d0;
+      --border-sub:  #ece6de;
+
+      --accent:      #c06840;
+      --accent-dim:  #f5e8de;
+      --accent-text: #a05030;
+      --accent-glow: rgba(192,104,64,0.12);
+
+      --danger:      #c04040;
+      --danger-dim:  #fde8e8;
+      --success:     #3a8a58;
+      --success-dim: #e6f4ec;
+      --warn:        #b07020;
+      --warn-dim:    #fdf3e0;
+
+      --text:        #1a1410;
+      --text-dim:    #7a6858;
+      --muted:       #b0a090;
+
+      --font:         'Outfit', system-ui, -apple-system, sans-serif;
+      --font-display: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --radius:      14px;
+      --radius-sm:   10px;
+      --radius-xs:   7px;
+    }
+
+    /* ── DARK THEME ── */
+    [data-theme="dark"] {
+      --bg:          #111110;
+      --surface:     #1c1b19;
+      --surface2:    #252420;
+      --border:      #2e2c28;
+      --border-sub:  #232220;
+
+      --accent:      #d07848;
+      --accent-dim:  #2a1e12;
+      --accent-text: #e89868;
+      --accent-glow: rgba(208,120,72,0.18);
+
+      --danger:      #c05040;
+      --danger-dim:  #2a1410;
+      --success:     #4a9a68;
+      --success-dim: #102014;
+      --warn:        #b08030;
+      --warn-dim:    #241808;
+
+      --text:        #f0ece6;
+      --text-dim:    #9a8e82;
+      --muted:       #7a6e64;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* custom scrollbar — thin, warm, on-brand */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    /* Firefox */
+    * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--font); font-size: 15px;
+      min-height: 100vh; max-width: 480px; margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: var(--bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex; z-index: 100;
+    }
+    nav button {
+      flex: 1; padding: 12px 0 14px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.3px;
+      font-family: var(--font);
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      transition: color 0.2s; position: relative;
+    }
+    nav button.active { color: var(--accent); }
+    nav button svg { width: 20px; height: 20px; }
+    .nav-badge {
+      position: absolute; top: 10px; right: calc(50% - 16px);
+      background: var(--danger); color: #fff;
+      font-size: 9px; font-weight: 700;
+      width: 15px; height: 15px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; padding: 28px 18px 96px; }
+    .page.active { display: block; }
+
+    /* ── HEADER ── */
+    .page-header { margin-bottom: 28px; }
+    .page-header-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .gear-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: 4px; margin-top: 2px;
+      transition: color 0.15s; flex-shrink: 0;
+    }
+    .gear-btn:hover { color: var(--accent-text); }
+    .page-header h1 {
+      font-size: 26px; font-weight: 800;
+      letter-spacing: -0.8px; color: var(--accent-text);
+      font-family: var(--font-display);
+    }
+    .page-header p { color: var(--text-dim); font-size: 13px; margin-top: 4px; font-weight: 400; }
+
+    /* ── MONTH NAV ── */
+    .month-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .month-nav button {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text-dim); width: 30px; height: 30px; border-radius: 50%;
+      cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .month-nav button:hover { color: var(--text); border-color: var(--accent); }
+    .month-nav span { font-weight: 600; font-size: 14px; flex: 1; text-align: center; color: var(--text-dim); }
+    .month-label-tap {
+      cursor: pointer; border-radius: var(--radius-xs);
+      padding: 4px 10px; transition: background 0.15s, color 0.15s;
+    }
+    .month-label-tap:hover { background: var(--accent-dim); color: var(--accent-text); }
+
+    /* month picker modal */
+    .month-picker-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .picker-year-label {
+      font-size: 17px; font-weight: 800; letter-spacing: -0.4px; color: var(--accent-text);
+    }
+    .picker-year-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); width: 32px; height: 32px; border-radius: 50%;
+      cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .picker-year-btn:hover { border-color: var(--accent); color: var(--accent-text); }
+    .month-picker-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .month-cell {
+      padding: 13px 8px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border-sub); background: var(--bg);
+      cursor: pointer; text-align: center;
+      font-size: 13px; font-weight: 600; color: var(--text-dim);
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .month-cell:hover { border-color: var(--accent); color: var(--text); background: var(--accent-dim); }
+    .month-cell.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent-text); }
+    .month-cell.current-month { border-color: var(--border); color: var(--text); }
+    .month-cell.has-data::after {
+      content: ''; display: block; width: 4px; height: 4px;
+      border-radius: 50%; background: var(--accent);
+      margin: 4px auto 0;
+    }
+
+    /* ── HERO TOTAL (overview) ── */
+    .hero-total {
+      margin-bottom: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      position: relative; overflow: hidden;
+      padding: 28px 24px 32px;
+      min-height: 168px;
+    }
+
+    /* ── LEFT CIRCLE — dark, recessed, bottom-left ── */
+    /* feels like depth behind the card */
+    .hero-total::before {
+      content: ''; position: absolute;
+      bottom: -72px; left: -72px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: var(--bg);
+      pointer-events: none; z-index: 1;
+    }
+
+    /* ── RIGHT CIRCLE — warm, raised, top-right ── */
+    /* feels like a warm light source, gives the card life */
+    .hero-total .hero-circle-right {
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 170px; height: 170px;
+      border-radius: 50%;
+      /* warmer and lighter than the card surface */
+      background: radial-gradient(circle at 40% 40%,
+        color-mix(in srgb, var(--accent) 22%, var(--surface2)) 0%,
+        color-mix(in srgb, var(--accent) 10%, var(--surface)) 60%,
+        var(--surface) 100%
+      );
+      pointer-events: none; z-index: 1;
+    }
+
+    /* text and dot always above circles */
+    .hero-total .hero-label,
+    .hero-total .hero-amount,
+    .hero-total .hero-month { position: relative; z-index: 2; }
+
+    .hero-total .hero-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--muted); margin-bottom: 12px;
+    }
+    .hero-total .hero-amount {
+      font-size: 52px; font-weight: 800; letter-spacing: -2.5px;
+      color: var(--accent-text); line-height: 1;
+      font-family: var(--font-display);
+    }
+    .hero-total .hero-amount .hero-currency {
+      font-size: 20px; font-weight: 600; color: var(--accent);
+      vertical-align: super; margin-right: 3px; letter-spacing: -0.5px;
+    }
+    .hero-total .hero-month {
+      font-size: 12px; color: var(--text-dim); margin-top: 10px;
+    }
+    .hero-inc-exp {
+      display: flex; gap: 16px; margin-top: 14px;
+      position: relative; z-index: 2;
+    }
+    .hero-inc-exp .inc-pill, .hero-inc-exp .exp-pill {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600;
+    }
+    .hero-inc-exp .inc-pill { color: var(--success); }
+    .hero-inc-exp .exp-pill { color: var(--danger); }
+    .hero-inc-exp .pill-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .inc-pill .pill-dot { background: var(--success); }
+    .exp-pill .pill-dot { background: var(--danger); }
+
+    /* ── SECTION ── */
+    .section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-dim); margin-bottom: 14px;
+    }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+    }
+    .section-header .section-title { margin-bottom: 0; }
+
+    /* ── CAT BARS ── */
+    .cat-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+    .cat-row { display: flex; flex-direction: column; gap: 7px; }
+    .cat-row-top { display: flex; justify-content: space-between; align-items: baseline; }
+    .cat-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; color: var(--text); }
+    .cat-name .cat-pct { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .cat-amount { font-size: 14px; font-weight: 600; color: var(--text); font-family: var(--font-display); }
+    .cat-bar-bg {
+      height: 3px; background: var(--border); border-radius: 99px; overflow: hidden;
+    }
+    .cat-bar-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-text));
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ── ACCOUNT PILLS ── */
+    .account-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .account-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 99px; padding: 7px 14px; font-size: 13px; font-weight: 500;
+    }
+    .account-pill .pill-amt { color: var(--accent-text); margin-left: 7px; font-weight: 600; }
+
+    /* ── TX LIST ── */
+    .tx-list { display: flex; flex-direction: column; gap: 6px; }
+
+    /* swipe wrapper */
+    .tx-swipe-wrap {
+      position: relative; border-radius: var(--radius-sm); overflow: hidden;
+    }
+    .tx-delete-bg {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: 80px; background: var(--danger);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; border-radius: var(--radius-sm);
+      pointer-events: none;
+    }
+    .tx-item {
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border-sub);
+      border-radius: var(--radius-sm); padding: 13px 14px;
+      display: flex; align-items: center; gap: 12px;
+      transform: translateX(0); transition: transform 0.2s ease;
+      cursor: default; user-select: none;
+    }
+    .tx-item.from-recurring { border-left: 2px solid var(--accent); }
+    .tx-item.swiped { transform: translateX(-80px); }
+
+    .tx-emoji-wrap {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .tx-info { flex: 1; min-width: 0; }
+    .tx-info .tx-cat { font-size: 14px; font-weight: 600; color: var(--text); }
+    .tx-info .tx-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-right { text-align: right; flex-shrink: 0; }
+    .tx-amount { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); }
+    .tx-date   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    /* ── ADD FORM ── */
+    .add-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px 20px; margin-bottom: 24px;
+    }
+    .form-row { margin-bottom: 18px; }
+    .form-row:last-child { margin-bottom: 0; }
+    .form-row label {
+      display: block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .form-row input, .form-row select, .form-row textarea {
+      width: 100%; background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs); color: var(--text);
+      font-family: var(--font); font-size: 15px; padding: 11px 13px;
+      outline: none; transition: border-color 0.15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    .form-row input:focus, .form-row select:focus { border-color: var(--accent); }
+    .form-row textarea { resize: none; height: 58px; }
+    .amount-input-wrap { position: relative; }
+    .amount-input-wrap .currency {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 15px; pointer-events: none; font-weight: 500;
+    }
+    .amount-input-wrap input {
+      padding-left: 60px; font-size: 28px; font-weight: 800;
+      letter-spacing: -0.5px; height: 62px;
+    }
+
+    /* ── CATEGORY PICKER ── */
+    .cat-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+    .cat-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); padding: 11px 4px;
+      cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; gap: 5px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .cat-btn .cat-icon  { font-size: 20px; }
+    .cat-btn .cat-label { font-size: 10px; color: var(--text-dim); text-align: center; line-height: 1.2; font-weight: 500; }
+    .cat-btn.selected   { border-color: var(--accent); background: var(--accent-dim); }
+    .cat-btn.selected .cat-label { color: var(--accent-text); }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      width: 100%; background: var(--accent); color: var(--text);
+      border: none; border-radius: var(--radius-xs); padding: 15px;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.15s; letter-spacing: -0.1px;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-secondary {
+      background: var(--surface); color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs); padding: 9px 16px;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--text); }
+
+    /* ── RECURRING SUMMARY ── */
+    .rec-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+    .rec-card {
+      background: var(--surface); border: 1px solid var(--border-sub);
+      border-radius: var(--radius); padding: 14px 12px; text-align: center;
+    }
+    .rec-card label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted); display: block; margin-bottom: 6px;
+    }
+    .rec-card .val { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; font-family: var(--font-display); }
+    .rec-card .val.accent  { color: var(--accent-text); }
+    .rec-card .val.success { color: var(--success); }
+    .rec-card .val.danger  { color: var(--danger); }
+
+    /* ── RECURRING LIST ── */
+    .rec-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+    .rec-item {
+      background: var(--surface); border: 1px solid var(--border-sub);
+      border-radius: var(--radius-sm); padding: 14px;
+      display: flex; align-items: center; gap: 12px; transition: border-color 0.2s, background 0.2s;
+    }
+    .rec-item.paid     { border-color: var(--success); opacity: 0.55; }
+    .rec-item.overdue  { border-color: var(--danger);  background: var(--danger-dim); }
+    .rec-item.due-soon { border-color: var(--warn);    background: var(--warn-dim); }
+
+    .rec-check {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid var(--border); background: none;
+      cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; transition: all 0.15s; color: transparent;
+    }
+    .rec-item.paid     .rec-check { border-color: var(--success); background: var(--success); color: #fff; }
+    .rec-item.overdue  .rec-check { border-color: var(--danger); }
+    .rec-item.due-soon .rec-check { border-color: var(--warn); }
+
+    .rec-info { flex: 1; min-width: 0; }
+    .rec-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .rec-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .rec-status {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; padding: 2px 7px; border-radius: 99px;
+      margin-top: 5px; display: inline-block;
+    }
+    .rec-item.paid     .rec-status { background: var(--success-dim); color: var(--success); }
+    .rec-item.overdue  .rec-status { background: var(--danger-dim);  color: var(--danger); }
+    .rec-item.due-soon .rec-status { background: var(--warn-dim);    color: var(--warn); }
+    .rec-item:not(.paid):not(.overdue):not(.due-soon) .rec-status { display: none; }
+
+    .rec-right { text-align: right; flex-shrink: 0; }
+    .rec-amount { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); }
+    .rec-per    { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .rec-menu-btn {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 18px; padding: 4px 2px; line-height: 1;
+      transition: color 0.15s; letter-spacing: 1px;
+    }
+    .rec-menu-btn:hover { color: var(--text); }
+
+    /* ── FILTER ROW ── */
+    .filter-row {
+      display: flex; gap: 7px; margin-bottom: 16px; overflow-x: auto;
+      padding-bottom: 4px; scrollbar-width: none;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-pill {
+      background: var(--surface); border: 1px solid var(--border-sub);
+      border-radius: 99px; padding: 6px 14px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      white-space: nowrap; color: var(--text-dim);
+      transition: border-color 0.15s, color 0.15s; flex-shrink: 0;
+    }
+    .filter-pill.active { border-color: var(--accent); color: var(--accent-text); background: var(--accent-dim); }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,6,4,0.72);  /* warmer, less harsh black */
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface);            /* adapts to theme */
+      border: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      padding: 8px 20px 40px; width: 100%; max-width: 480px;
+      transform: translateY(24px); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-handle {
+      width: 36px; height: 4px; border-radius: 99px;
+      background: var(--border); margin: 10px auto 20px; display: block;
+    }
+    .modal h2 { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 4px; color: var(--accent-text); font-family: var(--font-display); }
+    .modal .modal-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 22px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+    .modal-actions .btn-primary { flex: 1; padding: 13px; }
+
+    .scope-list, .action-sheet { display: flex; flex-direction: column; gap: 8px; }
+    .scope-item, .action-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); padding: 14px 16px;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      display: flex; align-items: flex-start; gap: 12px;
+      font-family: var(--font); color: var(--text); text-align: left; font-size: 14px;
+    }
+    .scope-item:hover, .action-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .scope-item .scope-icon, .action-btn .action-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .scope-item .scope-text strong, .action-btn strong { display: block; font-size: 14px; font-weight: 600; color: var(--text); }
+    .scope-item .scope-text span, .action-btn span { font-size: 12px; color: var(--text-dim); margin-top: 3px; display: block; }
+    .action-btn.danger-btn { color: var(--danger); }
+    .action-btn.danger-btn strong { color: var(--danger); }
+    .action-btn.danger-btn:hover { border-color: var(--danger); background: var(--danger-dim); }
+
+    /* ── CONFIRM MODAL ── */
+    .confirm-bill-preview {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); padding: 14px 16px; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 13px;
+    }
+    .confirm-bill-preview .preview-emoji { font-size: 24px; }
+    .confirm-bill-preview .preview-name  { font-size: 15px; font-weight: 700; color: var(--text); }
+    .confirm-bill-preview .preview-amt   { font-size: 13px; color: var(--accent-text); margin-top: 2px; font-weight: 600; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%) translateY(16px);
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 22px; border-radius: 99px;
+      font-size: 13px; font-weight: 600;
+      opacity: 0; transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none; white-space: nowrap; z-index: 400;
+      box-shadow: 0 4px 20px rgba(10,6,4,0.5);
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── EMPTY ── */
+    .empty {
+      text-align: center; padding: 48px 24px; color: var(--text-dim);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .empty .empty-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 16px;
+    }
+    .empty h3 {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      font-family: var(--font-display); margin-bottom: 6px;
+    }
+    .empty p { font-size: 13px; line-height: 1.6; color: var(--text-dim); max-width: 220px; }
+
+    select option { background: var(--surface); }
+
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeIn 0.2s ease forwards; }
+
+    /* FAB pulse on first load */
+    @keyframes fabPulse {
+      0%   { box-shadow: 0 4px 20px rgba(192,104,64,0.4); }
+      50%  { box-shadow: 0 4px 32px rgba(192,104,64,0.7); }
+      100% { box-shadow: 0 4px 20px rgba(192,104,64,0.4); }
+    }
+
+    /* ── SETTINGS ── */
+    .settings-section { margin-bottom: 28px; }
+    .settings-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .settings-row {
+      display: flex; flex-direction: row; align-items: center; gap: 12px;
+      padding: 13px 16px; border-bottom: 1px solid var(--border-sub);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-emoji { font-size: 18px; flex-shrink: 0; width: 28px; text-align: center; }
+    .settings-row-info { flex: 1; min-width: 0; }
+    .settings-row-label { font-size: 14px; font-weight: 600; color: var(--text); }
+    .settings-row-sub   { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .settings-row-actions { flex-shrink: 0; display: flex; gap: 6px; align-items: center; }
+    .settings-icon-btn {
+      background: none; border: 1px solid var(--border); border-radius: var(--radius-xs);
+      color: var(--text-dim); cursor: pointer; font-size: 12px;
+      padding: 4px 8px; line-height: 1; transition: color 0.15s, border-color 0.15s;
+      font-family: var(--font);
+    }
+    .settings-icon-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+    /* theme toggle */
+    .theme-toggle {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 99px; padding: 6px 12px;
+      cursor: pointer; font-size: 16px;
+      transition: background 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .settings-inline-input {
+      flex: 1; background: transparent; border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text); font-family: var(--font);
+      font-size: 14px; font-weight: 600;
+      padding: 2px 0; outline: none; min-width: 0;
+    }
+    .settings-inline-input:focus { border-bottom-color: var(--accent); }
+
+    /* swipeable settings rows */
+    .settings-swipe-wrap {
+      position: relative; border-radius: var(--radius-sm); overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .settings-swipe-wrap:last-child { margin-bottom: 0; }
+    .settings-delete-bg {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: 80px; background: var(--danger);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; border-radius: var(--radius-sm);
+      pointer-events: none;
+    }
+    .settings-row {
+      display: flex; flex-direction: row; align-items: center; gap: 12px;
+      padding: 13px 16px;
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border-sub);
+      border-radius: var(--radius-sm);
+      transform: translateX(0); transition: transform 0.2s ease;
+      user-select: none;
+    }
+    .settings-row.swiped { transform: translateX(-80px); }
+    .settings-row.no-swipe { cursor: default; }
+
+    /* emoji picker grid */
+    .emoji-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 6px; margin-bottom: 16px;
+    }
+    .emoji-opt {
+      aspect-ratio: 1; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer;
+      transition: border-color 0.12s, background 0.12s;
+    }
+    .emoji-opt:hover   { border-color: var(--accent); background: var(--accent-dim); }
+    .emoji-opt.selected { border-color: var(--accent); background: var(--accent-dim); }
+    .emoji-custom-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+    }
+    .emoji-custom-row input {
+      width: 64px; text-align: center; font-size: 22px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); color: var(--text);
+      padding: 8px; outline: none; font-family: var(--font);
+    }
+    .emoji-custom-row input:focus { border-color: var(--accent); }
+    .emoji-custom-row span { font-size: 12px; color: var(--text-dim); }
+    .settings-select {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); color: var(--accent-text);
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      padding: 7px 10px; outline: none; cursor: pointer;
+      -webkit-appearance: none; appearance: none;
+      flex-shrink: 0; max-width: 180px;
+    }
+    .settings-select:focus { border-color: var(--accent); }
+
+    /* ── FLOATING ACTION BUTTON ── */
+    #fab-wrap {
+      position: fixed; bottom: 76px; right: 20px;
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 10px; z-index: 99;
+    }
+    #fab {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.15s;
+      animation: fabPulse 2.5s ease-in-out 1s 3;
+    }
+    #fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px var(--accent-glow); animation: none; }
+    #fab:active { transform: scale(0.95); }
+    #fab-icon { transition: transform 0.25s ease; }
+    #fab-wrap.open #fab-icon { transform: rotate(45deg); }
+    #fab-wrap.open #fab { animation: none; }
+
+    /* option buttons */
+    #fab-options {
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 8px; opacity: 0; pointer-events: none;
+      transform: translateY(10px) scale(0.95);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    #fab-wrap.open #fab-options { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+    .fab-option {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border-radius: 99px; border: none;
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      transition: transform 0.15s;
+    }
+    .fab-option:hover { transform: scale(1.04); }
+    .income-opt  { background: var(--success); color: #fff; }
+    .expense-opt { background: var(--accent);  color: #fff; }
+
+    /* backdrop */
+    #fab-backdrop {
+      position: fixed; inset: 0; z-index: -1;
+      background: transparent; pointer-events: none;
+    }
+    #fab-wrap.open #fab-backdrop { pointer-events: all; }
+
+    /* DATA EXPORT / IMPORT */
+    .data-actions {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+    }
+    .data-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 14px;
+      cursor: pointer; display: flex; align-items: center; gap: 12px;
+      transition: border-color 0.15s, background 0.15s;
+      font-family: var(--font); color: var(--text); text-align: left;
+    }
+    .data-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .data-btn svg { flex-shrink: 0; color: var(--accent-text); }
+    .data-btn-label { font-size: 14px; font-weight: 700; color: var(--text); }
+    .data-btn-sub   { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .import-btn svg { color: var(--success); }
+    .import-btn:hover { border-color: var(--success); background: var(--success-dim); }
+    .data-stats {
+      background: var(--surface); border: 1px solid var(--border-sub);
+      border-radius: var(--radius-xs); padding: 12px 16px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .data-stats:empty { display: none; }
+    .stat-item { text-align: center; }
+    .stat-val   { font-size: 18px; font-weight: 800; color: var(--accent-text); letter-spacing: -0.5px; }
+    .stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase;
+                  letter-spacing: 0.6px; color: var(--muted); margin-top: 2px; }
+
+    /* custom currency picker */
+    .currency-picker-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); color: var(--accent-text);
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      padding: 8px 12px; cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; gap: 6px;
+      transition: border-color 0.15s;
+    }
+    .currency-picker-btn:hover { border-color: var(--accent); }
+    .currency-list {
+      display: flex; flex-direction: column; gap: 4px;
+      max-height: 52vh; overflow-y: auto; scrollbar-width: none;
+    }
+    .currency-list::-webkit-scrollbar { display: none; }
+    .currency-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px; border-radius: var(--radius-xs);
+      cursor: pointer; transition: background 0.12s;
+      font-size: 14px; font-weight: 500; color: var(--text);
+      border: 1px solid transparent;
+    }
+    .currency-option:hover { background: var(--surface2); border-color: var(--border); }
+    .currency-option.selected {
+      background: var(--accent-dim); border-color: var(--accent);
+      color: var(--accent-text); font-weight: 700;
+    }
+    .currency-option .cur-code { font-weight: 700; min-width: 38px; }
+    .currency-option .cur-name { color: var(--text-dim); font-size: 13px; }
+    .currency-option .cur-check { color: var(--accent); font-size: 14px; }
+
+    /* ── CHARTS ── */
+    .chart-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .chart-card-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-dim); margin-bottom: 18px;
+    }
+    .donut-wrap {
+      position: relative; display: flex;
+      justify-content: center; align-items: center; margin-bottom: 20px;
+    }
+    .donut-center { position: absolute; text-align: center; pointer-events: none; }
+    .donut-total-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted);
+    }
+    .donut-total-amt {
+      font-size: 22px; font-weight: 800; letter-spacing: -1px;
+      color: var(--accent-text); margin-top: 2px;
+      font-family: var(--font-display);
+    }
+    .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+    .legend-row { display: flex; align-items: center; gap: 10px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); }
+    .legend-amt  { font-size: 13px; font-weight: 600; color: var(--text); }
+    .legend-pct  { font-size: 11px; color: var(--muted); margin-left: 6px; }
+    #area-canvas { width: 100%; height: auto; display: block; }
+    .area-labels {
+      display: flex; justify-content: space-between;
+      margin-top: 6px; padding: 0 2px;
+    }
+    .area-labels span { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+    /* ── SMART INSIGHT CARDS ── */
+    .insight-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .insight-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .insight-card.full { grid-column: 1 / -1; }
+    .ic-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted);
+    }
+    .ic-value {
+      font-family: var(--font-display); font-size: 22px; font-weight: 800;
+      letter-spacing: -0.8px; color: var(--accent-text); line-height: 1.1;
+    }
+    .ic-sub { font-size: 11px; color: var(--text-dim); line-height: 1.4; margin-top: 2px; }
+    .ic-delta {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 700; padding: 2px 8px;
+      border-radius: 99px; margin-top: 4px; width: fit-content;
+    }
+    .ic-delta.up   { background: var(--danger-dim);  color: var(--danger); }
+    .ic-delta.down { background: var(--success-dim); color: var(--success); }
+    .ic-delta.flat { background: var(--surface2);    color: var(--muted); }
+
+    /* ── MONTH COMPARISON ── */
+    .compare-row { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .compare-item { display: flex; flex-direction: column; gap: 4px; }
+    .compare-top { display: flex; justify-content: space-between; align-items: center; }
+    .compare-cat { font-size: 12px; font-weight: 600; color: var(--text); }
+    .compare-bars { display: flex; flex-direction: column; gap: 3px; }
+    .compare-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .compare-bar-label { font-size: 10px; color: var(--muted); width: 28px; flex-shrink: 0; }
+    .compare-bar-bg { flex: 1; height: 5px; border-radius: 99px; background: var(--surface2); overflow: hidden; }
+    .compare-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .compare-bar-fill.this-m { background: var(--accent); }
+    .compare-bar-fill.last-m { background: var(--muted); opacity: 0.5; }
+    .compare-delta-row { display: flex; justify-content: flex-end; }
+
+    /* ── DAY OF WEEK ── */
+    .dow-wrap {
+      display: flex; align-items: flex-end; gap: 6px;
+      height: 90px; margin-top: 20px; margin-bottom: 20px;
+      position: relative;
+    }
+    .dow-col {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      position: relative; height: 100%;
+    }
+    .dow-bar {
+      width: 100%; border-radius: 4px 4px 0 0;
+      background: var(--accent); opacity: 0.55; min-height: 3px;
+      transition: height 0.4s ease;
+    }
+    .dow-col.peak .dow-bar { opacity: 1; }
+    .dow-label {
+      position: absolute; bottom: -18px;
+      font-size: 10px; font-weight: 600; color: var(--muted);
+    }
+    .dow-col.peak .dow-label { color: var(--accent-text); font-weight: 800; }
+    .dow-amt {
+      position: absolute; top: -16px;
+      font-size: 9px; font-weight: 700; color: var(--accent-text);
+      white-space: nowrap; display: none;
+    }
+    .dow-col.peak .dow-amt { display: block; }
+
+  </style>
+</head>
+<body>
+
+<!-- PAGE: OVERVIEW -->
+<div id="page-overview" class="page active">
+  <div class="page-header page-header-row">
+    <div>
+      <h1>Kassior</h1>
+      <p id="overview-subtitle">This month so far</p>
+    </div>
+    <button class="gear-btn" onclick="showPage('settings', document.querySelector('#page-settings'))" title="Settings">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+  <div class="month-nav">
+    <button onclick="changeMonth(-1)">‹</button>
+    <span id="month-label" onclick="openMonthPicker('overview')" class="month-label-tap"></span>
+    <button onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="hero-total">
+    <div class="hero-circle-right"></div>
+    <div class="hero-label" id="hero-label">Balance</div>
+    <div class="hero-amount" id="total-spent">
+      <span class="hero-currency">CHF</span><span id="hero-num">0.00</span>
+    </div>
+    <div class="hero-month" id="hero-month-sub"></div>
+    <div class="hero-inc-exp" id="hero-inc-exp"></div>
+  </div>
+  <div class="section-title">By Category</div>
+  <div class="cat-list" id="cat-breakdown"></div>
+  <div class="section-title">By Account</div>
+  <div class="account-grid" id="account-breakdown"></div>
+</div>
+
+<!-- PAGE: ADD -->
+<!-- FLOATING ACTION BUTTON -->
+<div id="fab-wrap">
+  <div id="fab-backdrop" onclick="closeFab()"></div>
+  <div id="fab-options">
+    <button class="fab-option income-opt" onclick="openAddIncome()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      Income
+    </button>
+    <button class="fab-option expense-opt" onclick="openAddExpense()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      Expense
+    </button>
+  </div>
+  <button id="fab" onclick="toggleFab()" title="Add">
+    <svg id="fab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </button>
+</div>
+
+<!-- MODAL: EDIT TRANSACTION -->
+<div class="modal-overlay" id="modal-edit-tx" onclick="closeModalOnOverlay(event,'modal-edit-tx')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Edit Expense</h2>
+    <p class="modal-sub">Update the details below.</p>
+    <div class="form-row">
+      <label>Amount</label>
+      <input type="number" id="edit-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal"
+        style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif" />
+    </div>
+    <div class="form-row">
+      <label>Category</label>
+      <div class="cat-picker" id="edit-cat-picker"></div>
+    </div>
+    <div class="form-row">
+      <label>Account</label>
+      <select id="edit-account"></select>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="edit-date" />
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <textarea id="edit-note" placeholder="e.g. Migros, Netflix renewal…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteFromEdit()">Delete</button>
+      <button class="btn-primary" onclick="saveEditTransaction()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD INCOME -->
+<div class="modal-overlay" id="modal-add-income" onclick="closeModalOnOverlay(event,'modal-add-income')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Add Income</h2>
+    <p class="modal-sub">Log money coming in.</p>
+    <div class="form-row">
+      <label>Amount</label>
+      <input type="number" id="inc-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal"
+        style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif" />
+    </div>
+    <div class="form-row">
+      <label>Source</label>
+      <div class="cat-picker" id="inc-source-picker"></div>
+    </div>
+    <div class="form-row">
+      <label>Account</label>
+      <select id="inc-account"></select>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="inc-date" />
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <textarea id="inc-note" placeholder="e.g. March salary, client payment…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-income')">Cancel</button>
+      <button class="btn-primary" style="background:var(--success)" onclick="addIncome()">Add Income</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD EXPENSE -->
+<div class="modal-overlay" id="modal-add" onclick="closeModalOnOverlay(event,'modal-add')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Add Expense</h2>
+    <p class="modal-sub">Log fast, review later.</p>
+    <div class="form-row">
+      <label id="amount-label">Amount</label>
+      <input type="number" id="input-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif" />
+    </div>
+    <div class="form-row">
+      <label>Category</label>
+      <div class="cat-picker" id="cat-picker"></div>
+    </div>
+    <div class="form-row">
+      <label>Account</label>
+      <select id="input-account">
+        <option value="Bank 1">Bank 1</option>
+        <option value="Bank 2">Bank 2</option>
+        <option value="Cash">Cash</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="input-date" />
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <textarea id="input-note" placeholder="e.g. Migros, Netflix renewal…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add')">Cancel</button>
+      <button class="btn-primary" onclick="addTransaction()">Add Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: TRANSACTIONS -->
+<div id="page-transactions" class="page">
+  <div class="page-header page-header-row">
+    <div>
+      <h1>Transactions</h1>
+      <p id="tx-count">0 entries</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+      <button id="trash-btn" onclick="openModal('modal-trash')" class="gear-btn" title="Trash" style="position:relative">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+        </svg>
+        <span id="trash-count-badge" style="display:none;position:absolute;top:-2px;right:-2px;background:var(--muted);color:var(--bg);font-size:9px;font-weight:700;width:14px;height:14px;border-radius:50%;align-items:center;justify-content:center"></span>
+      </button>
+      <button class="gear-btn" onclick="showPage('settings', document.querySelector('#page-settings'))" title="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="month-nav">
+    <button onclick="changeTxMonth(-1)">‹</button>
+    <span id="tx-month-label" onclick="openMonthPicker('history')" class="month-label-tap"></span>
+    <button onclick="changeTxMonth(1)">›</button>
+  </div>
+  <div class="filter-row" id="filter-row"></div>
+  <div class="tx-list" id="tx-list"></div>
+</div>
+
+<!-- PAGE: RECURRING -->
+<div id="page-recurring" class="page">
+  <div class="page-header page-header-row">
+    <div>
+      <h1>Recurring Bills</h1>
+      <p id="rec-subtitle">Your subscriptions &amp; regular bills</p>
+    </div>
+    <button class="gear-btn" onclick="showPage('settings', document.querySelector('#page-settings'))" title="Settings">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+  <div class="rec-summary">
+    <div class="rec-card"><label>Monthly</label><div class="val accent" id="rec-total">CHF 0</div></div>
+    <div class="rec-card"><label>Paid</label><div class="val success" id="rec-paid-count">0</div></div>
+    <div class="rec-card"><label>Unpaid</label><div class="val danger" id="rec-unpaid-count">0</div></div>
+  </div>
+  <div class="section-header">
+    <div class="section-title">Bills This Month</div>
+    <button class="btn-secondary" onclick="openModal('modal-add-rec')">+ Add Bill</button>
+  </div>
+  <div class="rec-list" id="rec-list"></div>
+</div>
+
+<!-- PAGE: CHARTS -->
+<div id="page-charts" class="page">
+  <div class="page-header page-header-row">
+    <div>
+      <h1>Insights</h1>
+      <p id="chart-subtitle">Spending patterns</p>
+    </div>
+    <button class="gear-btn" onclick="showPage('settings', document.querySelector('#page-settings'))" title="Settings">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+  <div class="month-nav">
+    <button onclick="changeChartMonth(-1)">‹</button>
+    <span id="chart-month-label" onclick="openMonthPicker('charts')" class="month-label-tap"></span>
+    <button onclick="changeChartMonth(1)">›</button>
+  </div>
+
+  <!-- SMART INSIGHTS ROW -->
+  <div id="smart-insights"></div>
+
+  <!-- MONTH COMPARISON -->
+  <div class="chart-card" style="margin-top:16px">
+    <div class="chart-card-title">vs Last Month</div>
+    <div id="month-compare"></div>
+  </div>
+
+  <!-- DAY OF WEEK -->
+  <div class="chart-card" style="margin-top:16px">
+    <div class="chart-card-title">By Day of Week</div>
+    <div id="dow-chart"></div>
+  </div>
+
+  <!-- DONUT -->
+  <div class="chart-card" style="margin-top:16px">
+    <div class="chart-card-title">By Category</div>
+    <div class="donut-wrap">
+      <canvas id="donut-canvas" width="220" height="220"></canvas>
+      <div class="donut-center">
+        <div class="donut-total-label">Total</div>
+        <div class="donut-total-amt" id="donut-total">0</div>
+      </div>
+    </div>
+    <div class="donut-legend" id="donut-legend"></div>
+  </div>
+
+  <!-- AREA TREND -->
+  <div class="chart-card" style="margin-top:16px">
+    <div class="chart-card-title">Daily Spending</div>
+    <canvas id="area-canvas" width="400" height="180"></canvas>
+    <div class="area-labels" id="area-labels"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <button class="active" onclick="showPage('overview', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>Overview
+  </button>
+  <button onclick="showPage('transactions', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>History
+  </button>
+  <button id="nav-recurring" onclick="showPage('recurring', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+      <line x1="8" y1="14" x2="8" y2="14" stroke-width="2.5"/><line x1="12" y1="14" x2="12" y2="14" stroke-width="2.5"/><line x1="16" y1="14" x2="16" y2="14" stroke-width="2.5"/>
+      <line x1="8" y1="18" x2="8" y2="18" stroke-width="2.5"/><line x1="12" y1="18" x2="12" y2="18" stroke-width="2.5"/>
+    </svg>Bills
+  </button>
+  <button onclick="showPage('charts', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6" y1="20" x2="6" y2="14"/>
+      <line x1="2" y1="20" x2="22" y2="20"/>
+    </svg>Insights
+  </button>
+  </button>
+</nav>
+
+<!-- PAGE: SETTINGS -->
+<div id="page-settings" class="page">
+  <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div>
+      <h1>Settings</h1>
+      <p>Personalise your Kassior</p>
+    </div>
+    <button onclick="showPage('overview', document.querySelector('nav button'))" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;margin-top:2px;font-size:13px;font-weight:600;font-family:var(--font);display:flex;align-items:center;gap:4px;transition:color 0.15s" onmouseover="this.style.color='var(--accent-text)'" onmouseout="this.style.color='var(--muted)'" title="Back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+  </div>
+
+  <!-- LANGUAGE -->
+  <div class="settings-section">
+    <div class="section-title" id="settings-lang-title">Language</div>
+    <div class="settings-card">
+      <div class="settings-row" style="cursor:pointer" onclick="openModal('modal-language')">
+        <div class="settings-row-emoji">🌐</div>
+        <div class="settings-row-info">
+          <div class="settings-row-label" id="lang-label">Language</div>
+          <div class="settings-row-sub" id="lang-current">English</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPEARANCE -->
+  <div class="settings-section">
+    <div class="section-title">Appearance</div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-row-emoji">🎨</div>
+        <div class="settings-row-info">
+          <div class="settings-row-label">Theme</div>
+          <div class="settings-row-sub" id="theme-sub">Light</div>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENCY -->
+  <div class="settings-section">
+    <div class="section-title">Currency</div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Base Currency</div>
+          <div class="settings-row-sub">Used as the symbol throughout the app</div>
+        </div>
+        <button class="currency-picker-btn" id="currency-picker-btn" onclick="openModal('modal-currency')">
+          <span id="currency-picker-label">CHF</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNTS -->
+  <div class="settings-section">
+    <div class="section-header">
+      <div class="section-title">Accounts</div>
+      <button class="btn-secondary" onclick="addAccount()">+ Add</button>
+    </div>
+    <div class="settings-card" id="accounts-list"></div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="settings-section">
+    <div class="section-header">
+      <div class="section-title">Categories</div>
+      <button class="btn-secondary" onclick="openModal('modal-add-cat')">+ Add</button>
+    </div>
+    <div class="settings-card" id="categories-list"></div>
+  </div>
+
+  <!-- YOUR DATA -->
+  <div class="settings-section">
+    <div class="section-title">Your Data</div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6">
+      Your data is stored only on this device. Export it to keep a backup — save it anywhere you like. Import to restore on a new device or browser.
+    </p>
+    <div class="data-actions">
+      <button class="data-btn export-btn" onclick="exportData()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <div>
+          <div class="data-btn-label">Export</div>
+          <div class="data-btn-sub">Save a backup file</div>
+        </div>
+      </button>
+      <button class="data-btn import-btn" onclick="document.getElementById('import-file-input').click()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 5 17 10"/>
+          <line x1="12" y1="5" x2="12" y2="17"/>
+        </svg>
+        <div>
+          <div class="data-btn-label">Import</div>
+          <div class="data-btn-sub">Restore from a backup</div>
+        </div>
+      </button>
+    </div>
+    <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="readImportFile(this)" />
+    <div class="data-stats" id="data-stats"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center;padding:24px 0 8px">
+    <div style="font-size:13px;font-weight:600;color:var(--muted)">Kassior</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;opacity:0.7">
+      Crafted in Luzern, Switzerland 🇨🇭
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:6px;opacity:0.5">
+      Your data never leaves your device
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: ADD / EDIT RECURRING BILL -->
+<div class="modal-overlay" id="modal-add-rec" onclick="closeModalOnOverlay(event,'modal-add-rec')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2 id="rec-modal-title">Add Recurring Bill</h2>
+    <p class="modal-sub" id="rec-modal-sub">Define a subscription or regular bill once.</p>
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" id="rec-input-name" placeholder="e.g. Netflix, Rent, Gym…" />
+    </div>
+    <div class="form-row">
+      <label id="rec-amount-label">Amount</label>
+      <input type="number" id="rec-input-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" />
+    </div>
+    <div class="form-row">
+      <label>Due Day of Month</label>
+      <input type="number" id="rec-input-day" placeholder="e.g. 1, 15, 28" min="1" max="31" inputmode="numeric" />
+    </div>
+    <div class="form-row">
+      <label>Category</label>
+      <select id="rec-input-cat">
+        <option value="subscriptions">📱 Subscriptions</option>
+        <option value="utilities">💡 Utilities</option>
+        <option value="rent">🏠 Rent</option>
+        <option value="transport">🚇 Transport</option>
+        <option value="car">🚗 Car</option>
+        <option value="other">💰 Other</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-rec')">Cancel</button>
+      <button class="btn-primary" id="rec-save-btn" onclick="saveRecurring()">Save Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BILL ACTION SHEET (⋯ menu) -->
+<div class="modal-overlay" id="modal-bill-actions" onclick="closeModalOnOverlay(event,'modal-bill-actions')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2 id="action-bill-name">Bill Options</h2>
+    <p class="modal-sub" id="action-bill-meta"></p>
+    <div class="action-sheet">
+      <button class="action-btn" onclick="startEdit('this')">
+        <span class="action-icon">✏️</span>
+        <div><strong>Edit this month only</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">One-off change — amount or date for this month</span></div>
+      </button>
+      <button class="action-btn" onclick="startEdit('future')">
+        <span class="action-icon">🔁</span>
+        <div><strong>Edit from now on</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">Update the bill going forward — e.g. price increased</span></div>
+      </button>
+      <button class="action-btn" onclick="startEdit('all')">
+        <span class="action-icon">📋</span>
+        <div><strong>Edit all</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">Fix a mistake on the original bill setup</span></div>
+      </button>
+      <button class="action-btn danger-btn" onclick="archiveBill()">
+        <span class="action-icon">🗄️</span>
+        <div><strong>Archive bill</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">Hide from active list — history is preserved</span></div>
+      </button>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn-secondary" style="width:100%" onclick="closeModal('modal-bill-actions')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MARK PAID CONFIRM -->
+<div class="modal-overlay" id="modal-confirm-paid" onclick="closeModalOnOverlay(event,'modal-confirm-paid')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Log as Expense</h2>
+    <p class="modal-sub">Confirm the details before it's added to your Overview.</p>
+    <div class="confirm-bill-preview">
+      <div class="preview-emoji" id="confirm-emoji">📱</div>
+      <div>
+        <div class="preview-name" id="confirm-name">Bill</div>
+        <div class="preview-amt" id="confirm-amt">CHF 0.00</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Account</label>
+      <select id="confirm-account">
+        <option value="Bank 1">Bank 1</option>
+        <option value="Bank 2">Bank 2</option>
+        <option value="Cash">Cash</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="confirm-date" />
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <input type="text" id="confirm-note" placeholder="Leave blank to use bill name" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="cancelMarkPaid()">Cancel</button>
+      <button class="btn-primary" onclick="confirmMarkPaid()">Add to Overview</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TRASH -->
+<div class="modal-overlay" id="modal-trash" onclick="closeModalOnOverlay(event,'modal-trash')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>🗑 Trash</h2>
+    <p class="modal-sub">Swipe-deleted transactions. Auto-clears after 30 days.</p>
+    <div id="trash-list" style="display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow-y:auto"></div>
+    <div style="margin-top:16px">
+      <button class="btn-secondary" style="width:100%" onclick="closeModal('modal-trash')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CURRENCY PICKER -->
+<div class="modal-overlay" id="modal-currency" onclick="closeModalOnOverlay(event,'modal-currency')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Base Currency</h2>
+    <p class="modal-sub">Select the currency used throughout the app.</p>
+    <div class="currency-list" id="currency-list"></div>
+    <div style="margin-top:14px">
+      <button class="btn-secondary" style="width:100%" onclick="closeModal('modal-currency')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: IMPORT CONFIRM -->
+<div class="modal-overlay" id="modal-import-confirm" onclick="closeModalOnOverlay(event,'modal-import-confirm')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Restore from Backup?</h2>
+    <p class="modal-sub">This will replace everything currently in the app with the data from your backup file.</p>
+    <div id="import-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:14px 16px;margin-bottom:4px"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:4px">
+      💡 Tip — export your current data first if you want to keep it.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-import-confirm')">Cancel</button>
+      <button class="btn-primary" style="background:var(--danger)" onclick="confirmImport()">Restore</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD CATEGORY -->
+<div class="modal-overlay" id="modal-add-cat" onclick="closeModalOnOverlay(event,'modal-add-cat')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Add Category</h2>
+    <p class="modal-sub">Pick an emoji and give it a name.</p>
+    <div class="form-row">
+      <label>Choose Emoji</label>
+      <div class="emoji-grid" id="emoji-grid"></div>
+      <div class="emoji-custom-row">
+        <input type="text" id="cat-input-emoji" placeholder="✏️" maxlength="2" oninput="onCustomEmoji(this.value)" />
+        <span>Or type your own</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" id="cat-input-name" placeholder="e.g. Gaming, Gym, Pet…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-cat')">Cancel</button>
+      <button class="btn-primary" onclick="saveCustomCategory()">Add Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MONTH PICKER -->
+<div class="modal-overlay" id="modal-month-picker" onclick="closeModalOnOverlay(event,'modal-month-picker')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <div class="month-picker-header">
+      <button onclick="changePickerYear(-1)" class="picker-year-btn">‹</button>
+      <span id="picker-year-label" class="picker-year-label"></span>
+      <button onclick="changePickerYear(1)" class="picker-year-btn">›</button>
+    </div>
+    <div class="month-picker-grid" id="month-picker-grid"></div>
+  </div>
+</div>
+
+<!-- MODAL: LANGUAGE PICKER -->
+<div class="modal-overlay" id="modal-language" onclick="closeModalOnOverlay(event,'modal-language')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2 id="lang-modal-title">Language</h2>
+    <p class="modal-sub" id="lang-modal-sub">Choose your display language.</p>
+    <div style="display:flex;flex-direction:column;gap:8px" id="lang-list">
+      <div class="currency-option selected" onclick="pickLanguage('en')" id="lang-en">
+        <span style="font-size:20px">🇬🇧</span>
+        <span style="flex:1;font-size:14px;font-weight:600;margin-left:12px">English</span>
+        <span class="cur-check" id="lang-check-en">✓</span>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-xs)">
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.5">
+        More languages coming soon — Deutsch and தமிழ் are in development.
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <button class="btn-secondary" style="width:100%" onclick="closeModal('modal-language')" id="lang-cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ── INTERNATIONALISATION ──
+  const TRANSLATIONS = {
+    en: {
+      // app
+      appName:        "Kassior",
+      tagline:        "This month so far",
+
+      // nav
+      navOverview:    "Overview",
+      navHistory:     "History",
+      navBills:       "Bills",
+      navInsights:    "Insights",
+
+      // overview
+      totalSpent:     "Total Spent",
+      byCategory:     "By Category",
+      byAccount:      "By Account",
+      noData:         "No data yet",
+      noExpenses:     "Nothing logged yet",
+      noExpensesSub:  "Tap the + button to add your first expense.",
+      transactions:   "transactions",
+      transaction:    "transaction",
+
+      // add expense
+      addExpense:     "Add Expense",
+      addSub:         "Log fast, review later.",
+      amount:         "Amount",
+      category:       "Category",
+      account:        "Account",
+      date:           "Date",
+      noteOptional:   "Note (optional)",
+      notePlaceholder:"e.g. Migros, Netflix…",
+      addBtn:         "Add Expense",
+      cancel:         "Cancel",
+
+      // history
+      history:        "Transactions",
+      noHistory:      "No expenses here",
+      noHistorySub:   "Nothing logged for this month yet.",
+      entries:        "entries",
+      entry:          "entry",
+      all:            "All",
+
+      // trash
+      trash:          "🗑 Trash",
+      trashSub:       "Swipe-deleted transactions. Auto-clears after 30 days.",
+      trashEmpty:     "Trash is clear",
+      trashEmptySub:  "Deleted transactions appear here for 30 days.",
+      restore:        "Restore",
+      expiresIn:      "expires in",
+      days:           "d",
+      close:          "Close",
+
+      // bills
+      bills:          "Recurring Bills",
+      billsSub:       "Your subscriptions & regular bills",
+      monthly:        "Monthly",
+      paid:           "Paid",
+      unpaid:         "Unpaid",
+      addBill:        "+ Add Bill",
+      noBills:        "No bills yet",
+      noBillsSub:     "Add your subscriptions and regular bills.",
+      dueDay:         "due day",
+      markPaid:       "Log as Expense",
+      markPaidSub:    "Confirm the details before adding to your Overview.",
+      addToOverview:  "Add to Overview",
+      billOptions:    "Bill Options",
+      editThisMonth:  "Edit this month only",
+      editThisMonthSub: "One-off change for this month",
+      editFuture:     "Edit from now on",
+      editFutureSub:  "Update the bill going forward",
+      editAll:        "Edit all",
+      editAllSub:     "Fix a mistake on the original setup",
+      archiveBill:    "Archive bill",
+      archiveBillSub: "Hide from active list — history preserved",
+      addBillTitle:   "Add Recurring Bill",
+      addBillDesc:    "Define a subscription or regular bill once.",
+      billName:       "Name",
+      billNamePlaceholder: "e.g. Netflix, Rent, Gym…",
+      billDueDay:     "Due Day of Month",
+      billDuePlaceholder: "e.g. 1, 15, 28",
+      saveBill:       "Save Bill",
+      saveChanges:    "Save Changes",
+      statusPaid:     "Paid",
+      statusOverdue:  "Overdue",
+      statusDueSoon:  "Due soon",
+
+      // insights
+      insights:       "Insights",
+      insightsSub:    "Spending patterns",
+      byCategory2:    "By Category",
+      dailySpending:  "Daily Spending",
+      total:          "Total",
+      noChartData:    "No data this month",
+
+      // settings
+      settings:       "Settings",
+      settingsSub:    "Personalise your Kassior",
+      back:           "← Back",
+      appearance:     "Appearance",
+      theme:          "Theme",
+      themeLight:     "Light",
+      themeDark:      "Dark",
+      currency:       "Currency",
+      baseCurrency:   "Base Currency",
+      baseCurrencySub:"Used as the symbol throughout the app",
+      accounts:       "Accounts",
+      addAccount:     "+ Add",
+      categories:     "Categories",
+      addCategory:    "+ Add",
+      builtIn:        "Built-in",
+      custom:         "Custom · swipe to remove",
+      yourData:       "Your Data",
+      yourDataDesc:   "Your data is stored only on this device. Export to back up, import to restore.",
+      export:         "Export",
+      exportSub:      "Save a backup file",
+      import:         "Import",
+      importSub:      "Restore from a backup",
+      language:       "Language",
+      languageSub:    "App display language",
+      addCategoryTitle: "Add Category",
+      addCategorySub:   "Pick an emoji and give it a name.",
+      chooseEmoji:    "Choose Emoji",
+      categoryName:   "Name",
+      categoryPlaceholder: "e.g. Gaming, Gym, Pet…",
+      orTypeOwn:      "Or type your own",
+
+      // import confirm
+      restoreTitle:   "Restore from Backup?",
+      restoreSub:     "This will replace everything currently in the app.",
+      restoreBtn:     "Restore",
+      restoreTip:     "💡 Export your current data first if you want to keep it.",
+
+      // currency picker
+      currencyTitle:  "Base Currency",
+      currencySub:    "Select the currency used throughout the app.",
+
+      // month picker
+      monthPickerTitle: "Select Month",
+
+      // categories
+      catRent:        "Rent",
+      catFood:        "Food",
+      catTransport:   "Transport",
+      catCar:         "Car",
+      catSubs:        "Subscriptions",
+      catUtilities:   "Utilities",
+      catShopping:    "Shopping",
+      catOther:       "Other",
+
+      // months
+      months: ["January","February","March","April","May","June",
+               "July","August","September","October","November","December"],
+      monthsShort: ["Jan","Feb","Mar","Apr","May","Jun",
+                    "Jul","Aug","Sep","Oct","Nov","Dec"],
+
+      // toast
+      expenseAdded:   "✓ Expense added",
+      removed:        "🗑 Moved to trash · Tap trash to restore",
+      restored:       "↩ Restored",
+      billAdded:      "✓ Bill added",
+      billUpdated:    "✓ Bill updated",
+      billArchived:   "🗄 Bill archived",
+      billRemoved:    "🗑 Bill removed",
+      markedPaid:     "✓ Logged & marked paid",
+      markedUnpaid:   "↩ Marked unpaid",
+      categoryAdded:  "added",
+      categoryRemoved:"Category removed",
+      accountRemoved: "Account removed",
+      dataRestored:   "✓ Data restored",
+      invalidBackup:  "⚠ Not a valid Kassior backup",
+      cantRead:       "⚠ Could not read file",
+
+      // footer
+      craftedIn:      "Crafted in Luzern, Switzerland 🇨🇭",
+      dataPrivacy:    "Your data never leaves your device",
+    },
+
+    de: {
+      appName:        "Kassior",
+      tagline:        "Diesen Monat bisher",
+      navOverview:    "Übersicht",
+      navHistory:     "Verlauf",
+      navBills:       "Rechnungen",
+      navInsights:    "Statistik",
+      totalSpent:     "Ausgaben",
+      byCategory:     "Nach Kategorie",
+      byAccount:      "Nach Konto",
+      noData:         "Noch keine Daten",
+      noExpenses:     "Noch nichts erfasst",
+      noExpensesSub:  "Tippe auf + um deine erste Ausgabe hinzuzufügen.",
+      transactions:   "Transaktionen",
+      transaction:    "Transaktion",
+      addExpense:     "Ausgabe hinzufügen",
+      addSub:         "Schnell erfassen, später überprüfen.",
+      amount:         "Betrag",
+      category:       "Kategorie",
+      account:        "Konto",
+      date:           "Datum",
+      noteOptional:   "Notiz (optional)",
+      notePlaceholder:"z.B. Migros, Netflix…",
+      addBtn:         "Hinzufügen",
+      cancel:         "Abbrechen",
+      history:        "Transaktionen",
+      noHistory:      "Keine Ausgaben",
+      noHistorySub:   "Für diesen Monat noch nichts erfasst.",
+      entries:        "Einträge",
+      entry:          "Eintrag",
+      all:            "Alle",
+      trash:          "🗑 Papierkorb",
+      trashSub:       "Gelöschte Transaktionen. Automatisch nach 30 Tagen gelöscht.",
+      trashEmpty:     "Papierkorb ist leer",
+      trashEmptySub:  "Gelöschte Transaktionen erscheinen hier für 30 Tage.",
+      restore:        "Wiederherstellen",
+      expiresIn:      "läuft ab in",
+      days:           "T",
+      close:          "Schliessen",
+      bills:          "Wiederkehrende Rechnungen",
+      billsSub:       "Deine Abonnements & regelmässige Rechnungen",
+      monthly:        "Monatlich",
+      paid:           "Bezahlt",
+      unpaid:         "Offen",
+      addBill:        "+ Hinzufügen",
+      noBills:        "Noch keine Rechnungen",
+      noBillsSub:     "Füge deine Abonnements und Rechnungen hinzu.",
+      dueDay:         "fällig am",
+      markPaid:       "Als Ausgabe erfassen",
+      markPaidSub:    "Bestätige die Details bevor du zur Übersicht hinzufügst.",
+      addToOverview:  "Zur Übersicht hinzufügen",
+      billOptions:    "Optionen",
+      editThisMonth:  "Nur diesen Monat bearbeiten",
+      editThisMonthSub: "Einmalige Änderung für diesen Monat",
+      editFuture:     "Ab jetzt bearbeiten",
+      editFutureSub:  "Rechnung ab diesem Monat aktualisieren",
+      editAll:        "Alle bearbeiten",
+      editAllSub:     "Fehler in der ursprünglichen Einrichtung korrigieren",
+      archiveBill:    "Rechnung archivieren",
+      archiveBillSub: "Aus der aktiven Liste entfernen — Verlauf bleibt erhalten",
+      addBillTitle:   "Rechnung hinzufügen",
+      addBillDesc:    "Definiere ein Abonnement oder eine Rechnung einmalig.",
+      billName:       "Name",
+      billNamePlaceholder: "z.B. Netflix, Miete, Fitnessstudio…",
+      billDueDay:     "Fälligkeitstag",
+      billDuePlaceholder: "z.B. 1, 15, 28",
+      saveBill:       "Speichern",
+      saveChanges:    "Änderungen speichern",
+      statusPaid:     "Bezahlt",
+      statusOverdue:  "Überfällig",
+      statusDueSoon:  "Bald fällig",
+      insights:       "Statistik",
+      insightsSub:    "Ausgabenmuster",
+      byCategory2:    "Nach Kategorie",
+      dailySpending:  "Tägliche Ausgaben",
+      total:          "Gesamt",
+      noChartData:    "Keine Daten diesen Monat",
+      settings:       "Einstellungen",
+      settingsSub:    "Kassior personalisieren",
+      back:           "← Zurück",
+      appearance:     "Erscheinungsbild",
+      theme:          "Design",
+      themeLight:     "Hell",
+      themeDark:      "Dunkel",
+      currency:       "Währung",
+      baseCurrency:   "Basiswährung",
+      baseCurrencySub:"Wird überall in der App verwendet",
+      accounts:       "Konten",
+      addAccount:     "+ Hinzufügen",
+      categories:     "Kategorien",
+      addCategory:    "+ Hinzufügen",
+      builtIn:        "Standard",
+      custom:         "Benutzerdefiniert · zum Löschen wischen",
+      yourData:       "Deine Daten",
+      yourDataDesc:   "Deine Daten sind nur auf diesem Gerät gespeichert. Exportiere sie als Backup.",
+      export:         "Exportieren",
+      exportSub:      "Backup-Datei speichern",
+      import:         "Importieren",
+      importSub:      "Aus Backup wiederherstellen",
+      language:       "Sprache",
+      languageSub:    "Anzeigesprache der App",
+      addCategoryTitle: "Kategorie hinzufügen",
+      addCategorySub:   "Wähle ein Emoji und gib einen Namen ein.",
+      chooseEmoji:    "Emoji wählen",
+      categoryName:   "Name",
+      categoryPlaceholder: "z.B. Gaming, Fitness, Haustier…",
+      orTypeOwn:      "Oder eigenes eingeben",
+      restoreTitle:   "Aus Backup wiederherstellen?",
+      restoreSub:     "Dies ersetzt alle aktuellen Daten in der App.",
+      restoreBtn:     "Wiederherstellen",
+      restoreTip:     "💡 Exportiere deine Daten zuerst, wenn du sie behalten möchtest.",
+      currencyTitle:  "Basiswährung",
+      currencySub:    "Währung für die gesamte App auswählen.",
+      monthPickerTitle: "Monat wählen",
+      catRent:        "Miete",
+      catFood:        "Lebensmittel",
+      catTransport:   "Transport",
+      catCar:         "Auto",
+      catSubs:        "Abonnements",
+      catUtilities:   "Nebenkosten",
+      catShopping:    "Einkaufen",
+      catOther:       "Sonstiges",
+      months: ["Januar","Februar","März","April","Mai","Juni",
+               "Juli","August","September","Oktober","November","Dezember"],
+      monthsShort: ["Jan","Feb","Mär","Apr","Mai","Jun",
+                    "Jul","Aug","Sep","Okt","Nov","Dez"],
+      expenseAdded:   "✓ Ausgabe hinzugefügt",
+      removed:        "🗑 In Papierkorb verschoben",
+      restored:       "↩ Wiederhergestellt",
+      billAdded:      "✓ Rechnung hinzugefügt",
+      billUpdated:    "✓ Rechnung aktualisiert",
+      billArchived:   "🗄 Rechnung archiviert",
+      billRemoved:    "🗑 Rechnung entfernt",
+      markedPaid:     "✓ Erfasst & als bezahlt markiert",
+      markedUnpaid:   "↩ Als unbezahlt markiert",
+      categoryAdded:  "hinzugefügt",
+      categoryRemoved:"Kategorie entfernt",
+      accountRemoved: "Konto entfernt",
+      dataRestored:   "✓ Daten wiederhergestellt",
+      invalidBackup:  "⚠ Kein gültiges Kassior-Backup",
+      cantRead:       "⚠ Datei konnte nicht gelesen werden",
+      craftedIn:      "Entwickelt in Luzern, Schweiz 🇨🇭",
+      dataPrivacy:    "Deine Daten verlassen nie dein Gerät",
+    },
+
+    ta: {
+      appName:        "Kassior",
+      tagline:        "இந்த மாதம் இதுவரை",
+      navOverview:    "கண்ணோட்டம்",
+      navHistory:     "வரலாறு",
+      navBills:       "பில்கள்",
+      navInsights:    "பகுப்பாய்வு",
+      totalSpent:     "மொத்த செலவு",
+      byCategory:     "வகை வாரியாக",
+      byAccount:      "கணக்கு வாரியாக",
+      noData:         "இன்னும் தரவு இல்லை",
+      noExpenses:     "இன்னும் பதிவு இல்லை",
+      noExpensesSub:  "+ பொத்தானை தட்டி முதல் செலவை சேர்க்கவும்.",
+      transactions:   "பரிவர்த்தனைகள்",
+      transaction:    "பரிவர்த்தனை",
+      addExpense:     "செலவு சேர்க்க",
+      addSub:         "விரைவாக பதிவு செய்யுங்கள்.",
+      amount:         "தொகை",
+      category:       "வகை",
+      account:        "கணக்கு",
+      date:           "தேதி",
+      noteOptional:   "குறிப்பு (விருப்பம்)",
+      notePlaceholder:"எ.கா. மிக்ரோஸ், நெட்ஃப்ளிக்ஸ்…",
+      addBtn:         "சேர்க்கவும்",
+      cancel:         "ரத்து செய்",
+      history:        "பரிவர்த்தனைகள்",
+      noHistory:      "செலவுகள் இல்லை",
+      noHistorySub:   "இந்த மாதம் இன்னும் பதிவு இல்லை.",
+      entries:        "உள்ளீடுகள்",
+      entry:          "உள்ளீடு",
+      all:            "அனைத்தும்",
+      trash:          "🗑 குப்பை",
+      trashSub:       "30 நாட்களுக்கு பிறகு தானாக நீக்கப்படும்.",
+      trashEmpty:     "குப்பை காலியாக உள்ளது",
+      trashEmptySub:  "நீக்கப்பட்ட பரிவர்த்தனைகள் 30 நாட்கள் இங்கே தோன்றும்.",
+      restore:        "மீட்டெடுக்கவும்",
+      expiresIn:      "காலாவதியாகும்",
+      days:           "நா",
+      close:          "மூடு",
+      bills:          "தொடர் பில்கள்",
+      billsSub:       "உங்கள் சந்தாக்கள் & தொடர் பில்கள்",
+      monthly:        "மாதாந்திர",
+      paid:           "செலுத்தியது",
+      unpaid:         "நிலுவை",
+      addBill:        "+ சேர்க்க",
+      noBills:        "இன்னும் பில்கள் இல்லை",
+      noBillsSub:     "உங்கள் சந்தாக்கள் மற்றும் பில்களை சேர்க்கவும்.",
+      dueDay:         "நாள்",
+      markPaid:       "செலவாக பதிவு செய்",
+      markPaidSub:    "கண்ணோட்டத்தில் சேர்ப்பதற்கு முன் விவரங்களை உறுதிப்படுத்தவும்.",
+      addToOverview:  "கண்ணோட்டத்தில் சேர்க்க",
+      billOptions:    "விருப்பங்கள்",
+      editThisMonth:  "இந்த மாதம் மட்டும் திருத்து",
+      editThisMonthSub: "இந்த மாதத்திற்கு மட்டுமான மாற்றம்",
+      editFuture:     "இனி திருத்து",
+      editFutureSub:  "இந்த மாதத்திலிருந்து புதுப்பிக்கவும்",
+      editAll:        "அனைத்தையும் திருத்து",
+      editAllSub:     "அசல் அமைப்பில் தவறை சரிசெய்",
+      archiveBill:    "பில் காப்பகப்படுத்து",
+      archiveBillSub: "செயலில் உள்ள பட்டியலிலிருந்து மறை",
+      addBillTitle:   "பில் சேர்க்க",
+      addBillDesc:    "ஒரு சந்தா அல்லது பில்லை ஒருமுறை வரையறுக்கவும்.",
+      billName:       "பெயர்",
+      billNamePlaceholder: "எ.கா. நெட்ஃப்ளிக்ஸ், வாடகை, ஜிம்…",
+      billDueDay:     "நிலுவை தேதி",
+      billDuePlaceholder: "எ.கா. 1, 15, 28",
+      saveBill:       "சேமிக்கவும்",
+      saveChanges:    "மாற்றங்களை சேமி",
+      statusPaid:     "செலுத்தியது",
+      statusOverdue:  "தாமதமானது",
+      statusDueSoon:  "விரைவில் நிலுவை",
+      insights:       "பகுப்பாய்வு",
+      insightsSub:    "செலவு முறைகள்",
+      byCategory2:    "வகை வாரியாக",
+      dailySpending:  "தினசரி செலவு",
+      total:          "மொத்தம்",
+      noChartData:    "இந்த மாதம் தரவு இல்லை",
+      settings:       "அமைப்புகள்",
+      settingsSub:    "Kassior-ஐ தனிப்பயனாக்கு",
+      back:           "← பின்னால்",
+      appearance:     "தோற்றம்",
+      theme:          "தீம்",
+      themeLight:     "வெளிர்",
+      themeDark:      "இருண்ட",
+      currency:       "நாணயம்",
+      baseCurrency:   "அடிப்படை நாணயம்",
+      baseCurrencySub:"பயன்பாடு முழுவதும் பயன்படுத்தப்படும்",
+      accounts:       "கணக்குகள்",
+      addAccount:     "+ சேர்க்க",
+      categories:     "வகைகள்",
+      addCategory:    "+ சேர்க்க",
+      builtIn:        "உள்ளமைக்கப்பட்டது",
+      custom:         "தனிப்பயன் · நீக்க ஸ்வைப் செய்யவும்",
+      yourData:       "உங்கள் தரவு",
+      yourDataDesc:   "உங்கள் தரவு இந்த சாதனத்தில் மட்டுமே சேமிக்கப்படும்.",
+      export:         "ஏற்றுமதி",
+      exportSub:      "காப்பு கோப்பை சேமிக்கவும்",
+      import:         "இறக்குமதி",
+      importSub:      "காப்பிலிருந்து மீட்டெடு",
+      language:       "மொழி",
+      languageSub:    "பயன்பாட்டு மொழி",
+      addCategoryTitle: "வகை சேர்க்க",
+      addCategorySub:   "ஒரு emoji தேர்ந்தெடுத்து பெயர் கொடுக்கவும்.",
+      chooseEmoji:    "Emoji தேர்ந்தெடு",
+      categoryName:   "பெயர்",
+      categoryPlaceholder: "எ.கா. கேமிங், ஜிம், செல்லப்பிராணி…",
+      orTypeOwn:      "அல்லது சொந்தமாக தட்டச்சு செய்யவும்",
+      restoreTitle:   "காப்பிலிருந்து மீட்டெடுக்கவா?",
+      restoreSub:     "இது பயன்பாட்டில் உள்ள அனைத்தையும் மாற்றும்.",
+      restoreBtn:     "மீட்டெடு",
+      restoreTip:     "💡 தரவை வைத்திருக்க முதலில் ஏற்றுமதி செய்யவும்.",
+      currencyTitle:  "அடிப்படை நாணயம்",
+      currencySub:    "பயன்பாட்டிற்கான நாணயத்தை தேர்ந்தெடுக்கவும்.",
+      monthPickerTitle: "மாதம் தேர்ந்தெடு",
+      catRent:        "வாடகை",
+      catFood:        "உணவு",
+      catTransport:   "போக்குவரத்து",
+      catCar:         "கார்",
+      catSubs:        "சந்தாக்கள்",
+      catUtilities:   "பயன்பாடுகள்",
+      catShopping:    "கடை",
+      catOther:       "மற்றவை",
+      months: ["ஜனவரி","பிப்ரவரி","மார்ச்","ஏப்ரல்","மே","ஜூன்",
+               "ஜூலை","ஆகஸ்ட்","செப்டம்பர்","அக்டோபர்","நவம்பர்","டிசம்பர்"],
+      monthsShort: ["ஜன","பிப்","மார்","ஏப்","மே","ஜூன்",
+                    "ஜூலை","ஆக","செப்","அக்","நவ","டிச"],
+      expenseAdded:   "✓ செலவு சேர்க்கப்பட்டது",
+      removed:        "🗑 குப்பையில் நகர்த்தப்பட்டது",
+      restored:       "↩ மீட்டெடுக்கப்பட்டது",
+      billAdded:      "✓ பில் சேர்க்கப்பட்டது",
+      billUpdated:    "✓ பில் புதுப்பிக்கப்பட்டது",
+      billArchived:   "🗄 பில் காப்பகப்படுத்தப்பட்டது",
+      billRemoved:    "🗑 பில் நீக்கப்பட்டது",
+      markedPaid:     "✓ பதிவு செய்யப்பட்டது & செலுத்தியதாக குறிக்கப்பட்டது",
+      markedUnpaid:   "↩ நிலுவையாக குறிக்கப்பட்டது",
+      categoryAdded:  "சேர்க்கப்பட்டது",
+      categoryRemoved:"வகை நீக்கப்பட்டது",
+      accountRemoved: "கணக்கு நீக்கப்பட்டது",
+      dataRestored:   "✓ தரவு மீட்டெடுக்கப்பட்டது",
+      invalidBackup:  "⚠ சரியான Kassior காப்பு இல்லை",
+      cantRead:       "⚠ கோப்பை படிக்க முடியவில்லை",
+      craftedIn:      "லுசர்னில் உருவாக்கப்பட்டது, சுவிட்சர்லாந்து 🇨🇭",
+      dataPrivacy:    "உங்கள் தரவு எப்போதும் உங்கள் சாதனத்தில் மட்டுமே இருக்கும்",
+    }
+  };
+
+  // detect device language — German and Tamil coming soon
+  function detectLanguage() {
+    return 'en'; // only English available in this release
+  }
+
+  let currentLang = 'en'; // set properly in init after settings load
+
+  // shorthand — t('key') returns translated string
+  function t(key) {
+    return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key])
+      || TRANSLATIONS.en[key]
+      || key;
+  }
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    // update html lang attribute for accessibility
+    document.documentElement.lang =
+      lang === 'de' ? 'de' : lang === 'ta' ? 'ta' : 'en';
+    // rebuild dynamic content
+    buildCatPicker();
+    rebuildCategories();
+    updateAccountSelectors();
+    renderOverview();
+    renderTransactions();
+    renderRecurring();
+    renderCharts();
+    renderSettings();
+    // re-render active page nav labels
+    updateNavLabels();
+  }
+
+  function updateNavLabels() {
+    const labels = [t('navOverview'), t('navHistory'), t('navBills'), t('navInsights')];
+    document.querySelectorAll('nav button').forEach((btn, i) => {
+      if (labels[i]) {
+        const textNode = [...btn.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+        if (textNode) textNode.textContent = labels[i];
+      }
+    });
+  }
+
+  // ── CONSTANTS ──
+  // Category labels pull from translations at render time via t()
+  const CATEGORIES = [
+    { id: 'rent',          labelKey: 'catRent',      emoji: '🏠' },
+    { id: 'food',          labelKey: 'catFood',      emoji: '🛒' },
+    { id: 'transport',     labelKey: 'catTransport', emoji: '🚇' },
+    { id: 'car',           labelKey: 'catCar',       emoji: '🚗' },
+    { id: 'subscriptions', labelKey: 'catSubs',      emoji: '📱' },
+    { id: 'utilities',     labelKey: 'catUtilities', emoji: '💡' },
+    { id: 'shopping',      labelKey: 'catShopping',  emoji: '🛍️' },
+    { id: 'other',         labelKey: 'catOther',     emoji: '💰' },
+  ];
+  // helper — get translated label for a category
+  function catLabel(cat) {
+    if (cat.labelKey) return t(cat.labelKey);
+    return cat.label || cat.id;
+  }
+
+  const INCOME_SOURCES = [
+    { id: 'salary',    label: 'Salary',     emoji: '💼' },
+    { id: 'freelance', label: 'Freelance',  emoji: '💻' },
+    { id: 'gift',      label: 'Gift',       emoji: '🎁' },
+    { id: 'refund',    label: 'Refund',     emoji: '↩️' },
+    { id: 'investment',label: 'Investment', emoji: '📈' },
+    { id: 'other_inc', label: 'Other',      emoji: '💰' },
+  ];
+  // MONTHS pulled from current translation at render time
+  function getMonths()      { return t('months'); }
+  function getMonthsShort() { return t('monthsShort'); }
+
+  // ── STATE ──
+  // ── SAFE STORAGE ──
+  // Defensive wrapper — if data is corrupted, clears that key and returns fallback
+  // rather than crashing the whole app
+  function loadJSON(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch {
+      localStorage.removeItem(key);
+      return fallback;
+    }
+  }
+
+  let transactions = loadJSON('wdig_tx',    []);
+  let income       = loadJSON('wdig_inc',   []);
+  let recurring    = loadJSON('wdig_rec',   []);
+  let paidStatus   = loadJSON('wdig_paid',  {});
+  let overrides    = loadJSON('wdig_ovr',   {});
+  let trash        = loadJSON('wdig_trash', []);
+  let settingsRaw  = loadJSON('wdig_settings', {});
+  // clear trash older than 30 days on load
+  trash = trash.filter(t => t.trashedAt && (Date.now() - t.trashedAt) < 30 * 86400000);
+  localStorage.setItem('wdig_trash', JSON.stringify(trash));
+
+  // ── XSS PROTECTION ──
+  // Escapes user-entered text before inserting into innerHTML
+  // Prevents malicious input like <img src=x onerror=alert(1)> from executing
+  function esc(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  let selectedCat  = null;
+  let currentMonth = new Date().getMonth();
+  let currentYear  = new Date().getFullYear();
+  let txMonth      = new Date().getMonth();
+  let txYear       = new Date().getFullYear();
+  let txFilter     = 'all';
+
+  // edit/action state
+  let activeRecId   = null;
+  let editScope     = null; // 'this' | 'future' | 'all'
+  let pendingPayId  = null; // rec id waiting for confirm-paid
+
+  function save() {
+    localStorage.setItem('wdig_tx',    JSON.stringify(transactions));
+    localStorage.setItem('wdig_inc',   JSON.stringify(income));
+    localStorage.setItem('wdig_rec',   JSON.stringify(recurring));
+    localStorage.setItem('wdig_paid',  JSON.stringify(paidStatus));
+    localStorage.setItem('wdig_ovr',   JSON.stringify(overrides));
+    localStorage.setItem('wdig_trash', JSON.stringify(trash));
+  }
+
+  // ── MODAL HELPERS ──
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    if (id === 'modal-trash')         renderTrash();
+    if (id === 'modal-currency')      renderCurrencyList();
+    if (id === 'modal-add-cat')       { selectedEmoji = ''; renderEmojiGrid(); }
+    if (id === 'modal-language')      renderLanguagePicker();
+    if (id === 'modal-add') {
+      document.getElementById('input-date').value = todayStr();
+      document.getElementById('input-amount').focus();
+    }
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+  function closeModalOnOverlay(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+  function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  }
+
+  // ── NAVIGATION ──
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    // only update nav active state for nav buttons
+    if (btn && btn.closest('nav')) {
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    if (name === 'overview')     renderOverview();
+    if (name === 'transactions') renderTransactions();
+    if (name === 'recurring')    renderRecurring();
+    if (name === 'charts')       renderCharts();
+    if (name === 'settings')     renderSettings();
+  }
+
+  // ── MONTH HELPERS ──
+  function changeMonth(d) {
+    currentMonth += d;
+    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+    if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+    renderOverview();
+  }
+  function changeTxMonth(d) {
+    txMonth += d;
+    if (txMonth > 11) { txMonth = 0; txYear++; }
+    if (txMonth < 0)  { txMonth = 11; txYear--; }
+    renderTransactions();
+  }
+  function monthTx(m, y) {
+    return transactions.filter(t => {
+      const d = parseLocalDate(t.date);
+      return d.getMonth() === m && d.getFullYear() === y;
+    });
+  }
+  function paidKey(recId, m, y) { return `${recId}_${y}_${m}`; }
+
+  // ── OVERVIEW ──
+  function renderOverview() {
+    document.getElementById('month-label').textContent = `${getMonths()[currentMonth]} ${currentYear}`;
+    const isNow = currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
+    document.getElementById('overview-subtitle').textContent = isNow ? t('tagline') : `${getMonths()[currentMonth]} ${currentYear}`;
+
+    const txs        = monthTx(currentMonth, currentYear);
+    const incTxs     = monthInc(currentMonth, currentYear);
+    const totalExp   = txs.reduce((s, t) => s + t.amount, 0);
+    const totalInc   = incTxs.reduce((s, i) => s + i.amount, 0);
+    const balance    = totalInc - totalExp;
+    const hasIncome  = totalInc > 0;
+
+    // hero — show balance if income exists, else show expenses
+    const heroNum  = hasIncome ? balance : totalExp;
+    const heroSign = hasIncome && balance < 0 ? '-' : '';
+    document.getElementById('hero-label').textContent = hasIncome ? 'Balance' : 'Total Spent';
+    document.getElementById('hero-num').textContent   = Math.abs(heroNum).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    document.getElementById('hero-num').style.color   = hasIncome
+      ? (balance >= 0 ? 'var(--accent-text)' : 'var(--danger)')
+      : 'var(--accent-text)';
+
+    // sub line
+    document.getElementById('hero-month-sub').textContent =
+      `${txs.length} ${txs.length !== 1 ? t('transactions') : t('transaction')} · ${getMonths()[currentMonth]}`;
+
+    // income/expense pills
+    const incExpEl = document.getElementById('hero-inc-exp');
+    if (hasIncome) {
+      incExpEl.innerHTML = `
+        <div class="inc-pill">
+          <div class="pill-dot"></div>
+          +${fmt(totalInc)}
+        </div>
+        <div class="exp-pill">
+          <div class="pill-dot"></div>
+          -${fmt(totalExp)}
+        </div>`;
+    } else {
+      incExpEl.innerHTML = '';
+    }
+
+    const catEl = document.getElementById('cat-breakdown');
+    const byCat = {};
+    CATEGORIES.forEach(c => byCat[c.id] = 0);
+    txs.forEach(t => { if (byCat[t.category] !== undefined) byCat[t.category] += t.amount; });
+    const maxCat = Math.max(...Object.values(byCat), 1);
+    catEl.innerHTML = '';
+    catEl.classList.remove('fade-in');
+    void catEl.offsetWidth; // force reflow
+    catEl.classList.add('fade-in');
+    CATEGORIES.filter(c => byCat[c.id] > 0).sort((a,b) => byCat[b.id]-byCat[a.id]).forEach(c => {
+      const pct    = (byCat[c.id] / maxCat * 100).toFixed(1);
+      const share  = totalExp > 0 ? Math.round(byCat[c.id] / totalExp * 100) : 0;
+      catEl.innerHTML += `
+        <div class="cat-row">
+          <div class="cat-row-top">
+            <div class="cat-name">${esc(c.emoji)} ${esc(catLabel(c))} <span class="cat-pct">${share}%</span></div>
+            <div class="cat-amount">${fmt(byCat[c.id])}</div>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
+    });
+    if (!txs.length) catEl.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">💸</div>
+        <h3>Nothing logged yet</h3>
+        <p>Tap the + button to add your first expense and start tracking.</p>
+      </div>`;
+
+    const accEl = document.getElementById('account-breakdown');
+    const byAcc = {};
+    txs.forEach(t => { byAcc[t.account] = (byAcc[t.account]||0) + t.amount; });
+    accEl.innerHTML = '';
+    Object.entries(byAcc).sort((a,b)=>b[1]-a[1]).forEach(([acc,amt]) => {
+      accEl.innerHTML += `<div class="account-pill">${esc(acc)}<span class="pill-amt">${fmt(amt)}</span></div>`;
+    });
+    if (!Object.keys(byAcc).length) accEl.innerHTML = `<div style="color:var(--muted);font-size:13px">No data yet</div>`;
+  }
+
+  // ── ADD EXPENSE ──
+  function buildCatPicker() {
+    document.getElementById('cat-picker').innerHTML = CATEGORIES.map(c => `
+      <button class="cat-btn" onclick="selectCat('${c.id}',this)" type="button">
+        <span class="cat-icon">${esc(c.emoji)}</span>
+        <span class="cat-label">${esc(catLabel(c))}</span>
+      </button>`).join('');
+  }
+  function selectCat(id, btn) {
+    selectedCat = id;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  function addTransaction() {
+    const amount  = parseFloat(document.getElementById('input-amount').value);
+    const account = sanitiseText(document.getElementById('input-account').value, 50);
+    const date    = document.getElementById('input-date').value;
+    const note    = sanitiseText(document.getElementById('input-note').value, 200);
+    if (!amount || amount <= 0 || amount > 999999999) { shake('input-amount'); return; }
+    if (!selectedCat)   { shake('cat-picker');  return; }
+    if (!date)          { shake('input-date');   return; }
+    if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('input-date'); return; }
+    transactions.unshift({ id: Date.now(), amount, category: selectedCat, account, date, note });
+    save();
+    // reset form
+    document.getElementById('input-amount').value = '';
+    document.getElementById('input-note').value   = '';
+    document.getElementById('input-date').value   = todayStr();
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    selectedCat = null;
+    closeModal('modal-add');
+    // refresh overview if it's the active page
+    if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
+    showToast(t('expenseAdded'));
+  }
+
+  // ── TRANSACTIONS ──
+  function renderTransactions() {
+    document.getElementById('tx-month-label').textContent = `${getMonths()[txMonth]} ${txYear}`;
+    let txs = monthTx(txMonth, txYear);
+
+    const cats = ['all', ...new Set(txs.map(t => t.category))];
+    document.getElementById('filter-row').innerHTML = cats.map(c => {
+      const cat = CATEGORIES.find(x => x.id === c);
+      const lbl = c === 'all' ? 'All' : `${cat?.emoji} ${cat?.label}`;
+      return `<div class="filter-pill ${txFilter===c?'active':''}" onclick="setFilter('${c}')">${lbl}</div>`;
+    }).join('');
+
+    if (txFilter !== 'all') txs = txs.filter(t => t.category === txFilter);
+    document.getElementById('tx-count').textContent = `${txs.length} entr${txs.length===1?'y':'ies'}`;
+
+    const listEl = document.getElementById('tx-list');
+    listEl.classList.remove('fade-in');
+    void listEl.offsetWidth;
+    listEl.classList.add('fade-in');
+    if (!txs.length) { listEl.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🗂️</div>
+        <h3>No expenses here</h3>
+        <p>Nothing logged for this month yet.</p>
+      </div>`; return; }
+
+    listEl.innerHTML = txs.map(t => {
+      const cat     = CATEGORIES.find(c => c.id === t.category) || { emoji:'💰', label: t.category };
+      const dateStr = parseLocalDate(t.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      const meta    = [t.account, t.note].filter(Boolean).map(esc).join(' · ');
+      const recClass = t.fromRecurring ? 'from-recurring' : '';
+      return `
+        <div class="tx-swipe-wrap" data-id="${t.id}">
+          <div class="tx-delete-bg">🗑</div>
+          <div class="tx-item ${recClass}" data-id="${t.id}" onclick="openEditTransaction(${t.id})" style="cursor:pointer">
+            <div class="tx-emoji-wrap">${esc(cat.emoji)}</div>
+            <div class="tx-info">
+              <div class="tx-cat">${esc(catLabel(cat))}</div>
+              <div class="tx-meta">${meta}${t.fromRecurring?' · 🔁':''}</div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amount">-${fmt(t.amount)}</div>
+              <div class="tx-date">${dateStr}</div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // attach swipe listeners
+    listEl.querySelectorAll('.tx-item').forEach(el => attachSwipe(el));
+    updateTrashBadge();
+  }
+  function setFilter(cat) { txFilter = cat; renderTransactions(); }
+
+  // ── SWIPE TO DELETE ──
+  function attachSwipe(el) {
+    let startX = 0, currentX = 0, swiping = false, didSwipe = false;
+    const THRESHOLD = 60;
+
+    function onStart(x) { startX = x; swiping = true; didSwipe = false; el.style.transition = 'none'; }
+    function onMove(x) {
+      if (!swiping) return;
+      const dx = x - startX;
+      if (Math.abs(dx) > 6) didSwipe = true; // mark as swipe intent
+      currentX = Math.min(0, Math.max(-90, dx));
+      el.style.transform = `translateX(${currentX}px)`;
+    }
+    function onEnd() {
+      if (!swiping) return; swiping = false;
+      el.style.transition = 'transform 0.2s ease';
+      if (currentX < -THRESHOLD) {
+        el.style.transform = 'translateX(-80px)';
+        el.classList.add('swiped');
+        el.closest('.tx-swipe-wrap').querySelector('.tx-delete-bg').style.pointerEvents = 'all';
+        el.closest('.tx-swipe-wrap').querySelector('.tx-delete-bg').onclick = () => trashTransaction(parseInt(el.dataset.id));
+      } else {
+        el.style.transform = 'translateX(0)';
+        el.classList.remove('swiped');
+      }
+      currentX = 0;
+    }
+
+    // block the onclick if the user actually swiped
+    el.addEventListener('click', e => {
+      if (didSwipe) { e.stopImmediatePropagation(); didSwipe = false; }
+    }, true);
+
+    // touch
+    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
+    el.addEventListener('touchmove',  e => onMove(e.touches[0].clientX),  { passive: true });
+    el.addEventListener('touchend',   () => onEnd());
+    // mouse (desktop)
+    el.addEventListener('mousedown',  e => onStart(e.clientX));
+    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX); });
+    el.addEventListener('mouseup',    () => onEnd());
+    el.addEventListener('mouseleave', () => onEnd());
+  }
+
+  function trashTransaction(id) {
+    const tx = transactions.find(t => t.id === id);
+    if (!tx) return;
+    tx.trashedAt = Date.now();
+    trash.push(tx);
+    transactions = transactions.filter(t => t.id !== id);
+    save(); renderTransactions();
+    showToast(t('removed'));
+  }
+
+  // ── TRASH ──
+  function updateTrashBadge() {
+    const badge = document.getElementById('trash-count-badge');
+    if (!badge) return;
+    const count = trash.length;
+    if (count > 0) {
+      badge.textContent = count; badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function renderTrash() {
+    const listEl = document.getElementById('trash-list');
+    if (!trash.length) {
+      listEl.innerHTML = `<div class="empty" style="padding:24px 0"><div class="emoji">✨</div><p>Trash is empty.</p></div>`;
+      return;
+    }
+    listEl.innerHTML = trash.map(t => {
+      const cat     = CATEGORIES.find(c => c.id === t.category) || { emoji:'💰', label: t.category };
+      const dateStr = parseLocalDate(t.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      const daysLeft = Math.max(0, 30 - Math.floor((Date.now() - t.trashedAt) / 86400000));
+      return `
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px">
+          <div style="font-size:20px;width:32px;text-align:center">${esc(cat.emoji)}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600">${esc(catLabel(cat))}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">${dateStr} · expires in ${daysLeft}d</div>
+          </div>
+          <div style="font-size:14px;font-weight:700;color:var(--danger);margin-right:8px">-${fmt(t.amount)}</div>
+          <button onclick="restoreTransaction(${t.id})" style="background:var(--success-dim);border:1px solid var(--success);color:var(--success);border-radius:var(--radius-sm);padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)">Restore</button>
+        </div>`;
+    }).join('');
+  }
+
+  function restoreTransaction(id) {
+    const tx = trash.find(t => t.id === id);
+    if (!tx) return;
+    delete tx.trashedAt;
+    transactions.unshift(tx);
+    trash = trash.filter(t => t.id !== id);
+    save(); renderTransactions(); renderTrash();
+    showToast(t('restored'));
+  }
+
+  // ── RECURRING: RENDER ──
+  function getRecStatus(rec) {
+    const now = new Date();
+    const key = paidKey(rec.id, now.getMonth(), now.getFullYear());
+    if (paidStatus[key]) return 'paid';
+    const today = now.getDate();
+    if (today > rec.day) return 'overdue';
+    if (rec.day - today <= 5) return 'due-soon';
+    return 'upcoming';
+  }
+
+  function renderRecurring() {
+    const now    = new Date();
+    const m      = now.getMonth();
+    const y      = now.getFullYear();
+    const active = recurring.filter(r => !r.archived);
+    const total  = active.reduce((s,r) => s + r.amount, 0);
+    const paid   = active.filter(r => paidStatus[paidKey(r.id,m,y)]).length;
+    const unpaid = active.length - paid;
+
+    document.getElementById('rec-subtitle').textContent =
+      active.length ? `${getMonths()[m]} · CHF ${total.toFixed(2)} committed monthly` : 'Your subscriptions & regular bills';
+    document.getElementById('rec-total').textContent        = `CHF ${total.toFixed(0)}`;
+    document.getElementById('rec-paid-count').textContent   = paid;
+    document.getElementById('rec-unpaid-count').textContent = unpaid;
+
+    // nav badge
+    let badge = document.getElementById('rec-badge');
+    if (unpaid > 0) {
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'nav-badge'; badge.id = 'rec-badge';
+        document.getElementById('nav-recurring').appendChild(badge);
+      }
+      badge.textContent = unpaid;
+    } else if (badge) badge.remove();
+
+    const listEl = document.getElementById('rec-list');
+    if (!active.length) {
+      listEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">📋</div>
+          <h3>No bills yet</h3>
+          <p>Add your subscriptions and regular bills — the app will track what's paid each month.</p>
+        </div>`;
+      return;
+    }
+
+    const sorted = [...active].sort((a,b) => a.day - b.day);
+    listEl.innerHTML = sorted.map(r => {
+      const status = getRecStatus(r);
+      const cat    = CATEGORIES.find(c => c.id === r.category) || { emoji:'💰', label:'Other' };
+      const ovKey  = paidKey(r.id, m, y);
+      const eff    = overrides[ovKey] || {};
+      const dispAmt = eff.amount || r.amount;
+      const statusLabel = { paid:'Paid', overdue:'Overdue', 'due-soon':'Due soon', upcoming:'' }[status];
+      return `
+        <div class="rec-item ${status}">
+          <button class="rec-check" onclick="initMarkPaid('${r.id}')" title="${status==='paid'?'Mark unpaid':'Mark as paid'}">
+            ${status==='paid'?'✓':''}
+          </button>
+          <div class="rec-info">
+            <div class="rec-name">${esc(cat.emoji)} ${esc(r.name)}</div>
+            <div class="rec-meta">${esc(catLabel(cat))} · due day ${r.day}</div>
+            ${statusLabel ? `<span class="rec-status">${statusLabel}</span>` : ''}
+          </div>
+          <div class="rec-right">
+            <div class="rec-amount">${fmt(dispAmt)}</div>
+            <div class="rec-per">/ month</div>
+          </div>
+          <button class="rec-menu-btn" onclick="openBillActions('${r.id}')" title="Options">⋯</button>
+        </div>`;
+    }).join('');
+  }
+
+  // ── MARK PAID FLOW ──
+  function initMarkPaid(id) {
+    const now = new Date();
+    const m   = now.getMonth();
+    const y   = now.getFullYear();
+    const key = paidKey(id, m, y);
+
+    // if already paid — toggle off, also remove the auto-logged transaction
+    if (paidStatus[key]) {
+      delete paidStatus[key];
+      // remove the auto-logged transaction for this bill this month if it exists
+      transactions = transactions.filter(t => t.fromRecurring !== id || {
+        check: (() => {
+          const d = parseLocalDate(t.date);
+          return !(d.getMonth() === m && d.getFullYear() === y);
+        })()
+      }.check);
+      // simpler: remove transactions tagged fromRecurring===id in this month
+      transactions = transactions.filter(t => {
+        if (t.fromRecurring !== id) return true;
+        const d = parseLocalDate(t.date);
+        return !(d.getMonth() === m && d.getFullYear() === y);
+      });
+      save(); renderRecurring(); showToast(t('markedUnpaid'));
+      return;
+    }
+
+    // open confirm screen
+    const rec = recurring.find(r => r.id === id);
+    if (!rec) return;
+    const cat  = CATEGORIES.find(c => c.id === rec.category) || { emoji:'💰' };
+    const ovKey = paidKey(id, m, y);
+    const eff   = overrides[ovKey] || {};
+    const amt   = eff.amount || rec.amount;
+
+    pendingPayId = id;
+    document.getElementById('confirm-emoji').textContent = cat.emoji;
+    document.getElementById('confirm-name').textContent  = rec.name;
+    document.getElementById('confirm-amt').textContent   = fmt(amt);
+    document.getElementById('confirm-date').value        = todayStr();
+    document.getElementById('confirm-note').value        = '';
+    openModal('modal-confirm-paid');
+  }
+
+  function cancelMarkPaid() {
+    pendingPayId = null;
+    closeModal('modal-confirm-paid');
+  }
+
+  function confirmMarkPaid() {
+    if (!pendingPayId) return;
+    const now     = new Date();
+    const m       = now.getMonth();
+    const y       = now.getFullYear();
+    const rec     = recurring.find(r => r.id === pendingPayId);
+    if (!rec) return;
+    const ovKey   = paidKey(pendingPayId, m, y);
+    const eff     = overrides[ovKey] || {};
+    const amount  = eff.amount || rec.amount;
+    const account = document.getElementById('confirm-account').value;
+    const date    = document.getElementById('confirm-date').value || todayStr();
+    const note    = document.getElementById('confirm-note').value.trim() || rec.name;
+
+    // log the transaction
+    transactions.unshift({
+      id: Date.now(), amount, category: rec.category,
+      account, date, note, fromRecurring: pendingPayId
+    });
+
+    // mark paid
+    paidStatus[paidKey(pendingPayId, m, y)] = true;
+    save();
+
+    closeModal('modal-confirm-paid');
+    pendingPayId = null;
+    renderRecurring();
+    showToast(t('markedPaid'));
+  }
+
+  // ── BILL ACTIONS (⋯ menu) ──
+  function openBillActions(id) {
+    activeRecId = id;
+    const rec = recurring.find(r => r.id === id);
+    if (!rec) return;
+    const cat = CATEGORIES.find(c => c.id === rec.category) || { emoji:'💰' };
+    document.getElementById('action-bill-name').textContent = `${cat.emoji} ${rec.name}`;
+    document.getElementById('action-bill-meta').textContent = `${fmt(rec.amount)} / month · due day ${rec.day}`;
+    openModal('modal-bill-actions');
+  }
+
+  function startEdit(scope) {
+    editScope = scope;
+    closeModal('modal-bill-actions');
+    const rec = recurring.find(r => r.id === activeRecId);
+    if (!rec) return;
+
+    const titles = {
+      'this':   'Edit This Month Only',
+      'future': 'Edit From Now On',
+      'all':    'Edit All Occurrences'
+    };
+    const subs = {
+      'this':   'This change applies to this month only.',
+      'future': 'Updates the bill going forward from this month.',
+      'all':    'Corrects the original bill definition.'
+    };
+    document.getElementById('rec-modal-title').textContent = titles[scope];
+    document.getElementById('rec-modal-sub').textContent   = subs[scope];
+    document.getElementById('rec-save-btn').textContent    = 'Save Changes';
+    document.getElementById('rec-input-name').value        = rec.name;
+    document.getElementById('rec-input-amount').value      = rec.amount;
+    document.getElementById('rec-input-day').value         = rec.day;
+    document.getElementById('rec-input-cat').value         = rec.category;
+    openModal('modal-add-rec');
+  }
+
+  function archiveBill() {
+    const rec = recurring.find(r => r.id === activeRecId);
+    if (!rec) return;
+    rec.archived = true;
+    save(); closeModal('modal-bill-actions'); renderRecurring();
+    showToast(t('billArchived'));
+  }
+
+  // ── ADD / SAVE RECURRING ──
+  function saveRecurring() {
+    const name   = sanitiseText(document.getElementById('rec-input-name').value, 80);
+    const amount = parseFloat(document.getElementById('rec-input-amount').value);
+    const day    = parseInt(document.getElementById('rec-input-day').value);
+    const cat    = document.getElementById('rec-input-cat').value;
+
+    if (!name)                            { shake('rec-input-name');   return; }
+    if (!amount || amount <= 0 || amount > 999999999) { shake('rec-input-amount'); return; }
+    if (!day || day < 1 || day > 31)      { shake('rec-input-day');    return; }
+
+    const now = new Date();
+    const m   = now.getMonth();
+    const y   = now.getFullYear();
+
+    if (activeRecId && editScope) {
+      // EDIT MODE
+      const rec = recurring.find(r => r.id === activeRecId);
+      if (rec) {
+        if (editScope === 'all' || editScope === 'future') {
+          rec.name = name; rec.amount = amount; rec.day = day; rec.category = cat;
+        }
+        if (editScope === 'this') {
+          // store override for this month only
+          overrides[paidKey(activeRecId, m, y)] = { amount, note: name };
+        }
+      }
+      showToast(t('billUpdated'));
+    } else {
+      // ADD MODE
+      recurring.push({ id: Date.now().toString(), name, amount, day, category: cat });
+      showToast(t('billAdded'));
+    }
+
+    save();
+    // reset modal state
+    activeRecId = null; editScope = null;
+    document.getElementById('rec-modal-title').textContent = 'Add Recurring Bill';
+    document.getElementById('rec-modal-sub').textContent   = 'Define a subscription or regular bill once.';
+    document.getElementById('rec-save-btn').textContent    = 'Save Bill';
+    document.getElementById('rec-input-name').value        = '';
+    document.getElementById('rec-input-amount').value      = '';
+    document.getElementById('rec-input-day').value         = '';
+    closeModal('modal-add-rec');
+    renderRecurring();
+  }
+
+  // ── CHARTS ──
+  let chartMonth = new Date().getMonth();
+  let chartYear  = new Date().getFullYear();
+
+  function changeChartMonth(d) {
+    chartMonth += d;
+    if (chartMonth > 11) { chartMonth = 0; chartYear++; }
+    if (chartMonth < 0)  { chartMonth = 11; chartYear--; }
+    renderCharts();
+  }
+
+  // chart colours derived from CSS token system — no hardcoding
+  // all tones of the same warm brick family, stepped light to dark
+  function getCSSVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  const CHART_COLOURS = [
+    '#c06840', // --accent
+    '#e08860', // --accent-text
+    '#7a4a2c', // dark mahogany — deeper brick
+    '#d4a878', // sand — lightest warm tone
+    '#8a5a3c', // leather
+    '#c89060', // caramel
+    '#6a3820', // deep brown
+    '#b07848', // warm umber
+  ];
+
+  function renderCharts() {
+    document.getElementById('chart-month-label').textContent = `${getMonths()[chartMonth]} ${chartYear}`;
+    document.getElementById('chart-subtitle').textContent    = `${getMonths()[chartMonth]} ${chartYear} spending`;
+
+    const txs = monthTx(chartMonth, chartYear);
+
+    // get last month's data for comparison
+    let lastM = chartMonth - 1, lastY = chartYear;
+    if (lastM < 0) { lastM = 11; lastY--; }
+    const lastTxs = monthTx(lastM, lastY);
+
+    renderSmartInsights(txs, lastTxs);
+    renderMonthCompare(txs, lastTxs, lastM, lastY);
+    renderDayOfWeek(txs);
+    renderDonut(txs);
+    renderArea(txs);
+  }
+
+  // ── SMART INSIGHT CARDS ──
+  function renderSmartInsights(txs, lastTxs) {
+    const el = document.getElementById('smart-insights');
+    if (!el) return;
+
+    const total     = txs.reduce((s, t) => s + t.amount, 0);
+    const lastTotal = lastTxs.reduce((s, t) => s + t.amount, 0);
+    const incTxs    = monthInc(chartMonth, chartYear);
+    const totalInc  = incTxs.reduce((s, i) => s + i.amount, 0);
+
+    // daily average and projection
+    const now         = new Date();
+    const isThisMonth = chartMonth === now.getMonth() && chartYear === now.getFullYear();
+    const daysInMonth = new Date(chartYear, chartMonth + 1, 0).getDate();
+    const daysSoFar   = isThisMonth ? now.getDate() : daysInMonth;
+    const dailyAvg    = daysSoFar > 0 ? total / daysSoFar : 0;
+    const projection  = dailyAvg * daysInMonth;
+
+    // month delta
+    const delta    = total - lastTotal;
+    const deltaPct = lastTotal > 0 ? Math.round(Math.abs(delta) / lastTotal * 100) : null;
+    const deltaDir = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+    const deltaLabel = delta === 0 ? '— Same as last month'
+      : `${delta > 0 ? '▲' : '▼'} ${deltaPct !== null ? deltaPct + '%' : fmt(Math.abs(delta))} ${delta > 0 ? 'more' : 'less'} than last month`;
+
+    // top category
+    const byCat   = {};
+    txs.forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + t.amount; });
+    const topEntry = Object.entries(byCat).sort((a,b) => b[1]-a[1])[0];
+    const topCat   = topEntry
+      ? CATEGORIES.find(c => c.id === topEntry[0]) || { emoji:'💰', label: topEntry[0] }
+      : null;
+    const topPct   = topEntry && total > 0 ? Math.round(topEntry[1] / total * 100) : 0;
+
+    if (total === 0) {
+      el.innerHTML = '';
+      return;
+    }
+
+    const netBalance = totalInc - total;
+    const netDir     = netBalance >= 0 ? 'down' : 'up'; // green if positive
+    const netLabel   = netBalance >= 0 ? `▼ Saving ${fmt(netBalance)}` : `▲ Overspending ${fmt(Math.abs(netBalance))}`;
+
+    el.innerHTML = `
+      <div class="insight-cards">
+        <div class="insight-card">
+          <div class="ic-label">Daily Avg</div>
+          <div class="ic-value">${fmt(dailyAvg)}</div>
+          ${isThisMonth && daysSoFar < daysInMonth
+            ? `<div class="ic-sub">Projected <strong>${fmt(projection)}</strong> this month</div>`
+            : `<div class="ic-sub">${daysInMonth} days tracked</div>`
+          }
+        </div>
+        <div class="insight-card">
+          <div class="ic-label">Top Category</div>
+          <div class="ic-value" style="font-size:18px">${topCat ? esc(topCat.emoji) + ' ' + esc(catLabel(topCat)) : '—'}</div>
+          <div class="ic-sub">${topPct}% of spending</div>
+        </div>
+        ${totalInc > 0 ? `
+        <div class="insight-card full">
+          <div class="ic-label">Net Balance</div>
+          <div class="ic-value" style="color:${netBalance >= 0 ? 'var(--success)' : 'var(--danger)'}">${fmt(Math.abs(netBalance))}</div>
+          <div class="ic-delta ${netDir}">${netLabel}</div>
+        </div>` : ''}
+        <div class="insight-card full">
+          <div class="ic-label">vs Last Month</div>
+          <div class="ic-value">${fmt(total)}</div>
+          <div class="ic-delta ${deltaDir}">${deltaLabel}</div>
+        </div>
+      </div>`;
+  }
+
+  // ── MONTH-OVER-MONTH COMPARISON ──
+  function renderMonthCompare(txs, lastTxs, lastM, lastY) {
+    const el = document.getElementById('month-compare');
+    if (!el) return;
+
+    const thisLabel = getMonths()[chartMonth].slice(0,3);
+    const lastLabel = getMonths()[lastM].slice(0,3);
+
+    // aggregate both months by category
+    const thisByCat = {}, lastByCat = {};
+    txs.forEach(t => { thisByCat[t.category] = (thisByCat[t.category] || 0) + t.amount; });
+    lastTxs.forEach(t => { lastByCat[t.category] = (lastByCat[t.category] || 0) + t.amount; });
+
+    // union of categories from both months, sorted by this month spend
+    const allCats = [...new Set([...Object.keys(thisByCat), ...Object.keys(lastByCat)])];
+    allCats.sort((a,b) => (thisByCat[b] || 0) - (thisByCat[a] || 0));
+
+    if (allCats.length === 0) {
+      el.innerHTML = `<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">No data to compare</div>`;
+      return;
+    }
+
+    const maxAmt = Math.max(...allCats.map(id => Math.max(thisByCat[id] || 0, lastByCat[id] || 0)), 1);
+
+    el.innerHTML = `<div class="compare-row">
+      ${allCats.slice(0, 5).map(catId => {
+        const cat      = CATEGORIES.find(c => c.id === catId) || { emoji:'💰', labelKey: null, label: catId };
+        const thisAmt  = thisByCat[catId] || 0;
+        const lastAmt  = lastByCat[catId] || 0;
+        const thisPct  = Math.round(thisAmt / maxAmt * 100);
+        const lastPct  = Math.round(lastAmt / maxAmt * 100);
+        const delta    = thisAmt - lastAmt;
+        const dir      = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
+        const sign     = delta > 0 ? '▲' : delta < 0 ? '▼' : '—';
+        return `
+          <div class="compare-item">
+            <div class="compare-top">
+              <span class="compare-cat">${esc(cat.emoji)} ${esc(catLabel(cat))}</span>
+              <span class="ic-delta ${dir}" style="font-size:10px;padding:1px 6px">
+                ${sign} ${fmt(Math.abs(delta))}
+              </span>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar-wrap">
+                <span class="compare-bar-label">${esc(thisLabel)}</span>
+                <div class="compare-bar-bg">
+                  <div class="compare-bar-fill this-m" style="width:${thisPct}%"></div>
+                </div>
+                <span style="font-size:10px;color:var(--accent-text);font-weight:700;min-width:44px;text-align:right">${fmt(thisAmt)}</span>
+              </div>
+              <div class="compare-bar-wrap">
+                <span class="compare-bar-label">${esc(lastLabel)}</span>
+                <div class="compare-bar-bg">
+                  <div class="compare-bar-fill last-m" style="width:${lastPct}%"></div>
+                </div>
+                <span style="font-size:10px;color:var(--muted);min-width:44px;text-align:right">${fmt(lastAmt)}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  // ── DAY OF WEEK ──
+  function renderDayOfWeek(txs) {
+    const el = document.getElementById('dow-chart');
+    if (!el) return;
+
+    const days    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const totals  = Array(7).fill(0);
+    const counts  = Array(7).fill(0);
+
+    txs.forEach(t => {
+      const d = parseLocalDate(t.date);
+      // getDay() returns 0=Sun, convert to Mon=0
+      const dow = (d.getDay() + 6) % 7;
+      totals[dow] += t.amount;
+      counts[dow]++;
+    });
+
+    const maxTotal = Math.max(...totals, 1);
+    const peakIdx  = totals.indexOf(Math.max(...totals));
+
+    if (txs.length === 0) {
+      el.innerHTML = `<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">No data this month</div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="dow-wrap">
+        ${days.map((day, i) => {
+          const h   = Math.round((totals[i] / maxTotal) * 100);
+          const isPeak = i === peakIdx && totals[i] > 0;
+          return `
+            <div class="dow-col ${isPeak ? 'peak' : ''}">
+              <div class="dow-amt">${fmt(totals[i])}</div>
+              <div class="dow-bar" style="height:${Math.max(h, totals[i] > 0 ? 4 : 1)}%"></div>
+              <span class="dow-label">${day}</span>
+            </div>`;
+        }).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:6px">
+        ${totals[peakIdx] > 0
+          ? `You spend most on <strong>${days[peakIdx]}s</strong> — ${fmt(totals[peakIdx])} this month`
+          : 'No spending data this month'}
+      </div>`;
+  }
+
+  function renderDonut(txs) {
+    const canvas = document.getElementById('donut-canvas');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    const outerR = 88, innerR = 58;
+    ctx.clearRect(0, 0, W, H);
+
+    // aggregate by category
+    const byCat = {};
+    txs.forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + t.amount; });
+    const entries = Object.entries(byCat).sort((a,b) => b[1]-a[1]);
+    const total   = entries.reduce((s,[,v]) => s + v, 0);
+
+    document.getElementById('donut-total').textContent =
+      total > 0 ? total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "'") : '0';
+
+    if (total === 0) {
+      // empty ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+      ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
+      ctx.fillStyle = getCSSVar('--border-sub') || '#2e2018';
+      ctx.fill();
+      document.getElementById('donut-legend').innerHTML =
+        `<div style="text-align:center;color:var(--muted);font-size:13px;padding:8px 0">No data this month</div>`;
+      return;
+    }
+
+    // draw segments
+    let angle = -Math.PI / 2;
+    const GAP = 0.03;
+    entries.forEach(([catId, amt], i) => {
+      const slice = (amt / total) * (Math.PI * 2 - GAP * entries.length);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, outerR, angle + GAP/2, angle + slice + GAP/2);
+      ctx.arc(cx, cy, innerR, angle + slice + GAP/2, angle + GAP/2, true);
+      ctx.closePath();
+      ctx.fillStyle = CHART_COLOURS[i % CHART_COLOURS.length];
+      ctx.fill();
+      angle += slice + GAP;
+    });
+
+    // legend
+    const legendEl = document.getElementById('donut-legend');
+    legendEl.innerHTML = entries.map(([catId, amt], i) => {
+      const cat = CATEGORIES.find(c => c.id === catId) || { emoji:'💰', label: catId };
+      const pct = Math.round(amt / total * 100);
+      return `
+        <div class="legend-row">
+          <div class="legend-dot" style="background:${CHART_COLOURS[i % CHART_COLOURS.length]}"></div>
+          <div class="legend-name">${esc(cat.emoji)} ${esc(catLabel(cat))}</div>
+          <div class="legend-amt">CHF ${amt.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,"'")}<span class="legend-pct">${pct}%</span></div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderArea(txs) {
+    const canvas = document.getElementById('area-canvas');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const PAD = { top: 16, right: 12, bottom: 24, left: 44 };
+    ctx.clearRect(0, 0, W, H);
+
+    // days in month
+    const daysInMonth = new Date(chartYear, chartMonth + 1, 0).getDate();
+    const dailyTotals = Array(daysInMonth).fill(0);
+    txs.forEach(t => {
+      const day = parseLocalDate(t.date).getDate() - 1;
+      if (day >= 0 && day < daysInMonth) dailyTotals[day] += t.amount;
+    });
+
+    // cumulative
+    const cumulative = [];
+    let running = 0;
+    dailyTotals.forEach(d => { running += d; cumulative.push(running); });
+
+    const maxVal = Math.max(...cumulative, 1);
+    const chartW = W - PAD.left - PAD.right;
+    const chartH = H - PAD.top  - PAD.bottom;
+
+    const xPos = i => PAD.left + (i / (daysInMonth - 1)) * chartW;
+    const yPos = v => PAD.top  + chartH - (v / maxVal) * chartH;
+
+    // grid lines — very subtle
+    ctx.strokeStyle = getCSSVar('--border') || '#2e2018';
+    ctx.lineWidth   = 1;
+    [0.25, 0.5, 0.75, 1].forEach(frac => {
+      const y = PAD.top + chartH * (1 - frac);
+      ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(W - PAD.right, y);
+      ctx.stroke();
+      // y axis label
+      ctx.fillStyle = getCSSVar('--muted') || '#5a4538';
+      ctx.font = '9px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(maxVal * frac).toString(), PAD.left - 5, y + 3);
+    });
+
+    // area fill
+    const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + chartH);
+    const accentRgba = getComputedStyle(document.documentElement)
+      .getPropertyValue('--accent').trim()
+      .replace('#','').match(/.{2}/g)
+      .map(x => parseInt(x,16)).join(',');
+    grad.addColorStop(0,   `rgba(${accentRgba},0.30)`);
+    grad.addColorStop(1,   `rgba(${accentRgba},0.02)`);
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(cumulative[0]));
+    for (let i = 1; i < daysInMonth; i++) {
+      const x0 = xPos(i-1), y0 = yPos(cumulative[i-1]);
+      const x1 = xPos(i),   y1 = yPos(cumulative[i]);
+      const cpx = (x0 + x1) / 2;
+      ctx.bezierCurveTo(cpx, y0, cpx, y1, x1, y1);
+    }
+    ctx.lineTo(xPos(daysInMonth-1), PAD.top + chartH);
+    ctx.lineTo(xPos(0), PAD.top + chartH);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // line
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(cumulative[0]));
+    for (let i = 1; i < daysInMonth; i++) {
+      const x0 = xPos(i-1), y0 = yPos(cumulative[i-1]);
+      const x1 = xPos(i),   y1 = yPos(cumulative[i]);
+      const cpx = (x0 + x1) / 2;
+      ctx.bezierCurveTo(cpx, y0, cpx, y1, x1, y1);
+    }
+    ctx.strokeStyle = getCSSVar('--accent') || '#c06840';
+    ctx.lineWidth   = 2;
+    ctx.stroke();
+
+    // dot at last data point
+    const lastIdx = cumulative.reduce((last, v, i) => v > 0 ? i : last, 0);
+    if (cumulative[lastIdx] > 0) {
+      ctx.beginPath();
+      ctx.arc(xPos(lastIdx), yPos(cumulative[lastIdx]), 4, 0, Math.PI * 2);
+      ctx.fillStyle = getCSSVar('--accent-text') || '#e08860';
+      ctx.fill();
+    }
+
+    // x axis day labels — show 1, middle, last
+    const labelIndices = [0, Math.floor(daysInMonth/4), Math.floor(daysInMonth/2), Math.floor(daysInMonth*3/4), daysInMonth-1];
+    const labelsEl = document.getElementById('area-labels');
+    labelsEl.innerHTML = '';
+    labelIndices.forEach(i => {
+      const span = document.createElement('span');
+      span.textContent = i + 1;
+      labelsEl.appendChild(span);
+    });
+  }
+
+  const CURRENCIES = [
+    { code: 'CHF', name: 'Swiss Franc' },
+    { code: 'EUR', name: 'Euro' },
+    { code: 'USD', name: 'US Dollar' },
+    { code: 'GBP', name: 'British Pound' },
+    { code: 'SEK', name: 'Swedish Krona' },
+    { code: 'NOK', name: 'Norwegian Krone' },
+    { code: 'DKK', name: 'Danish Krone' },
+    { code: 'PLN', name: 'Polish Złoty' },
+    { code: 'CZK', name: 'Czech Koruna' },
+    { code: 'HUF', name: 'Hungarian Forint' },
+    { code: 'RON', name: 'Romanian Leu' },
+    { code: 'TRY', name: 'Turkish Lira' },
+    { code: 'INR', name: 'Indian Rupee' },
+    { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'CAD', name: 'Canadian Dollar' },
+    { code: 'JPY', name: 'Japanese Yen' },
+    { code: 'SGD', name: 'Singapore Dollar' },
+    { code: 'AED', name: 'UAE Dirham' },
+  ];
+
+  function renderCurrencyList() {
+    const el = document.getElementById('currency-list');
+    if (!el) return;
+    el.innerHTML = CURRENCIES.map(c => `
+      <div class="currency-option ${c.code === settings.currency ? 'selected' : ''}"
+           onclick="pickCurrency('${c.code}')">
+        <span class="cur-code">${c.code}</span>
+        <span class="cur-name">${c.name}</span>
+        ${c.code === settings.currency ? '<span class="cur-check">✓</span>' : ''}
+      </div>`).join('');
+  }
+
+  function pickLanguage(lang) {
+    settings.language = lang;
+    saveSettings();
+    closeModal('modal-language');
+    applyLanguage(lang);
+    showToast(lang === 'de' ? '✓ Sprache geändert' : lang === 'ta' ? '✓ மொழி மாற்றப்பட்டது' : '✓ Language changed');
+  }
+
+  function renderLanguagePicker() {
+    const cur = currentLang;
+    ['en','de','ta'].forEach(l => {
+      const opt   = document.getElementById(`lang-${l}`);
+      const check = document.getElementById(`lang-check-${l}`);
+      if (opt)   opt.classList.toggle('selected', l === cur);
+      if (check) check.textContent = l === cur ? '✓' : '';
+    });
+  }
+
+  function getLanguageName(lang) {
+    return { en: 'English', de: 'Deutsch', ta: 'தமிழ்' }[lang] || 'English';
+  }
+
+  function pickCurrency(code) {
+    saveCurrency(code);
+    closeModal('modal-currency');
+    renderCurrencyList();
+  }
+
+  // ── SETTINGS ──
+  let settings = settingsRaw;
+  settings.currency   = settings.currency   || 'CHF';
+  settings.accounts   = settings.accounts   || ['Bank 1', 'Bank 2', 'Cash'];
+  settings.customCats = settings.customCats || [];
+
+  // merge custom cats into CATEGORIES on load
+  function rebuildCategories() {
+    // remove any previously added custom cats
+    while (CATEGORIES.length > 8) CATEGORIES.pop();
+    settings.customCats.forEach(c => {
+      if (!CATEGORIES.find(x => x.id === c.id)) CATEGORIES.push(c);
+    });
+  }
+
+  function saveSettings() {
+    localStorage.setItem('wdig_settings', JSON.stringify(settings));
+  }
+
+  function saveCurrency(val) {
+    settings.currency = val;
+    saveSettings();
+    const lbl = document.getElementById('currency-picker-label');
+    if (lbl) lbl.textContent = val;
+    const al = document.getElementById('amount-label');
+    const rl = document.getElementById('rec-amount-label');
+    if (al) al.textContent = `Amount (${val})`;
+    if (rl) rl.textContent = `Amount (${val})`;
+    const hero = document.querySelector('.hero-currency');
+    if (hero) hero.textContent = val;
+    showToast(`✓ Currency set to ${val}`);
+    renderOverview();
+  }
+
+  function renderSettings() {
+    const lbl = document.getElementById('currency-picker-label');
+    if (lbl) lbl.textContent = settings.currency;
+    const langCurrent = document.getElementById('lang-current');
+    if (langCurrent) langCurrent.textContent = getLanguageName(currentLang);
+    const isDark = (settings.theme || 'light') === 'dark';
+    const sub  = document.getElementById('theme-sub');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (sub)  sub.textContent  = isDark ? 'Dark'  : 'Light';
+    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    renderDataStats();
+
+    // accounts — swipeable, no X button
+    const accEl = document.getElementById('accounts-list');
+    if (accEl) {
+      accEl.innerHTML = settings.accounts.map((acc, i) => `
+        <div class="settings-swipe-wrap" data-acc-idx="${i}">
+          <div class="settings-delete-bg">🗑</div>
+          <div class="settings-row ${settings.accounts.length <= 1 ? 'no-swipe' : ''}" data-acc-idx="${i}">
+            <div class="settings-row-emoji">🏦</div>
+            <div class="settings-row-info">
+              <input class="settings-inline-input" value="${esc(acc)}"
+                onchange="renameAccount(${i}, this.value)"
+                placeholder="Account name" />
+            </div>
+          </div>
+        </div>`).join('');
+      // attach swipe to deletable accounts
+      if (settings.accounts.length > 1) {
+        accEl.querySelectorAll('.settings-row:not(.no-swipe)').forEach(el => attachSettingsSwipe(el, () => {
+          const idx = parseInt(el.dataset.accIdx);
+          removeAccount(idx);
+        }));
+      }
+    }
+
+    // categories — built-in (no swipe) + custom (swipeable)
+    const catEl = document.getElementById('categories-list');
+    if (catEl) {
+      const builtIn = CATEGORIES.slice(0, 8).map(c => `
+        <div class="settings-swipe-wrap">
+          <div class="settings-row no-swipe">
+            <div class="settings-row-emoji">${esc(c.emoji)}</div>
+            <div class="settings-row-info">
+              <div class="settings-row-label">${catLabel(c)}</div>
+              <div class="settings-row-sub">Built-in</div>
+            </div>
+          </div>
+        </div>`).join('');
+      const custom = settings.customCats.map((c, i) => `
+        <div class="settings-swipe-wrap" data-cat-idx="${i}">
+          <div class="settings-delete-bg">🗑</div>
+          <div class="settings-row" data-cat-idx="${i}">
+            <div class="settings-row-emoji">${esc(c.emoji)}</div>
+            <div class="settings-row-info">
+              <div class="settings-row-label">${esc(catLabel(c))}</div>
+              <div class="settings-row-sub">Custom · swipe to remove</div>
+            </div>
+          </div>
+        </div>`).join('');
+      catEl.innerHTML = builtIn + custom;
+      catEl.querySelectorAll('.settings-row[data-cat-idx]').forEach(el => attachSettingsSwipe(el, () => {
+        removeCustomCat(parseInt(el.dataset.catIdx));
+      }));
+    }
+  }
+
+  function addAccount() {
+    settings.accounts.push('New Account');
+    saveSettings();
+    renderSettings();
+    const inputs = document.querySelectorAll('.settings-inline-input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }
+
+  // ── INPUT SANITISATION ──
+  // Strip control characters and enforce max length on all user text inputs
+  function sanitiseText(val, maxLen = 100) {
+    return String(val)
+      .replace(/[\u0000-\u001F\u007F]/g, '') // strip control chars
+      .trim()
+      .slice(0, maxLen);
+  }
+
+  function renameAccount(i, val) {
+    const clean = sanitiseText(val, 50) || 'Account';
+    settings.accounts[i] = clean;
+    saveSettings();
+    updateAccountSelectors();
+  }
+
+  function removeAccount(i) {
+    settings.accounts.splice(i, 1);
+    saveSettings(); renderSettings(); updateAccountSelectors();
+    showToast(t('accountRemoved'));
+  }
+
+  function updateAccountSelectors() {
+    ['input-account', 'confirm-account'].forEach(id => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = settings.accounts.map(a =>
+        `<option value="${esc(a)}" ${a === current ? 'selected' : ''}>${esc(a)}</option>`
+      ).join('');
+    });
+  }
+
+  function saveCustomCategory() {
+    const customInput = sanitiseText(document.getElementById('cat-input-emoji').value, 8);
+    const emoji = customInput || selectedEmoji;
+    const name  = sanitiseText(document.getElementById('cat-input-name').value, 40);
+    if (!emoji) { shake('emoji-grid'); return; }
+    if (!name)  { shake('cat-input-name'); return; }
+    const id = 'custom_' + Date.now();
+    const newCat = { id, emoji, label: name };
+    settings.customCats.push(newCat);
+    CATEGORIES.push(newCat);
+    saveSettings();
+    selectedEmoji = '';
+    document.getElementById('cat-input-emoji').value = '';
+    document.getElementById('cat-input-name').value  = '';
+    closeModal('modal-add-cat');
+    buildCatPicker();
+    renderSettings();
+    showToast(`✓ ${esc(emoji)} ${esc(name)} added`);
+  }
+
+  function removeCustomCat(i) {
+    const removed = settings.customCats.splice(i, 1)[0];
+    const idx = CATEGORIES.findIndex(c => c.id === removed.id);
+    if (idx > -1) CATEGORIES.splice(idx, 1);
+    saveSettings(); buildCatPicker(); renderSettings();
+    showToast(t('categoryRemoved'));
+  }
+
+  // ── SETTINGS SWIPE ──
+  // settings rows reuse the same swipe mechanic as transactions
+  function attachSettingsSwipe(el, onDelete) {
+    if (el.classList.contains('no-swipe')) return;
+    let startX = 0, currentX = 0, swiping = false;
+    const THRESHOLD = 60;
+
+    function onStart(x) { startX = x; swiping = true; el.style.transition = 'none'; }
+    function onMove(x) {
+      if (!swiping) return;
+      currentX = Math.min(0, Math.max(-90, x - startX));
+      el.style.transform = `translateX(${currentX}px)`;
+    }
+    function onEnd() {
+      if (!swiping) return; swiping = false;
+      el.style.transition = 'transform 0.2s ease';
+      if (currentX < -THRESHOLD) {
+        el.style.transform = 'translateX(-80px)';
+        el.classList.add('swiped');
+        const bg = el.closest('.settings-swipe-wrap').querySelector('.settings-delete-bg');
+        if (bg) { bg.style.pointerEvents = 'all'; bg.onclick = () => onDelete(); }
+      } else {
+        el.style.transform = 'translateX(0)';
+        el.classList.remove('swiped');
+      }
+      currentX = 0;
+    }
+    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
+    el.addEventListener('touchmove',  e => onMove(e.touches[0].clientX),  { passive: true });
+    el.addEventListener('touchend',   () => onEnd());
+    el.addEventListener('mousedown',  e => onStart(e.clientX));
+    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX); });
+    el.addEventListener('mouseup',    () => onEnd());
+    el.addEventListener('mouseleave', () => onEnd());
+  }
+
+  // ── EMOJI PICKER ──
+  const EMOJI_OPTIONS = [
+    // Housing & bills
+    '🏠','🏡','🏢','🔑','🛋️','🛁','💡','🔌','📡','🌊',
+    // Food & drink
+    '🛒','🍔','🍕','🍣','☕','🍷','🍺','🥗','🥐','🍜',
+    // Transport
+    '🚗','🚌','🚇','✈️','🚲','⛽','🅿️','🚕','🛳️','🚁',
+    // Health & fitness
+    '💊','🏥','🦷','👓','🏋️','🧘','🏊','🩺','💉','🧬',
+    // Shopping & lifestyle
+    '👕','👟','💄','💍','🛍️','📦','🎁','🪴','🐶','🐱',
+    // Entertainment & hobbies
+    '🎬','🎮','🎵','📚','🎨','🎯','⚽','🎸','🃏','🎲',
+    // Finance & work
+    '💰','💳','🏦','📈','💼','🖥️','📱','🖨️','📋','✂️',
+  ];
+
+  let selectedEmoji = '';
+
+  function renderEmojiGrid() {
+    const grid = document.getElementById('emoji-grid');
+    if (!grid) return;
+    grid.innerHTML = EMOJI_OPTIONS.map(e => `
+      <div class="emoji-opt ${e === selectedEmoji ? 'selected' : ''}"
+           onclick="selectEmoji('${e}')">${e}</div>`).join('');
+  }
+
+  function selectEmoji(e) {
+    selectedEmoji = e;
+    document.getElementById('cat-input-emoji').value = '';
+    renderEmojiGrid();
+  }
+
+  function onCustomEmoji(val) {
+    if (val.trim()) {
+      selectedEmoji = val.trim();
+      // deselect grid
+      document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'));
+    }
+  }
+
+  // ── FAB ──
+  let fabOpen = false;
+  function toggleFab() { fabOpen ? closeFab() : openFab(); }
+  function openFab()  { fabOpen = true;  document.getElementById('fab-wrap').classList.add('open'); }
+  function closeFab() { fabOpen = false; document.getElementById('fab-wrap').classList.remove('open'); }
+
+  function openAddExpense() {
+    closeFab();
+    document.getElementById('input-date').value = todayStr();
+    buildCatPicker();
+    openModal('modal-add');
+    document.getElementById('input-amount').focus();
+  }
+
+  function openAddIncome() {
+    closeFab();
+    buildIncSourcePicker(null);
+    const sel = document.getElementById('inc-account');
+    sel.innerHTML = settings.accounts.map(a =>
+      `<option value="${esc(a)}">${esc(a)}</option>`).join('');
+    document.getElementById('inc-date').value   = todayStr();
+    document.getElementById('inc-amount').value = '';
+    document.getElementById('inc-note').value   = '';
+    openModal('modal-add-income');
+    document.getElementById('inc-amount').focus();
+  }
+
+  // ── INCOME SOURCES ──
+  let selectedSource = null;
+
+  function buildIncSourcePicker(selectedId) {
+    selectedSource = selectedId;
+    const picker = document.getElementById('inc-source-picker');
+    if (!picker) return;
+    picker.innerHTML = INCOME_SOURCES.map(s => `
+      <button class="cat-btn ${s.id === selectedId ? 'selected' : ''}"
+        onclick="selectSource('${esc(s.id)}',this)" type="button">
+        <span class="cat-emoji">${esc(s.emoji)}</span>
+        <span class="cat-name">${esc(s.label)}</span>
+      </button>`).join('');
+  }
+
+  function selectSource(id, btn) {
+    selectedSource = id;
+    document.querySelectorAll('#inc-source-picker .cat-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function addIncome() {
+    const amount  = parseFloat(document.getElementById('inc-amount').value);
+    const account = sanitiseText(document.getElementById('inc-account').value, 50);
+    const date    = document.getElementById('inc-date').value;
+    const note    = sanitiseText(document.getElementById('inc-note').value, 200);
+
+    if (!amount || amount <= 0 || amount > 999999999) { shake('inc-amount');        return; }
+    if (!selectedSource)                              { shake('inc-source-picker'); return; }
+    if (!date || !date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('inc-date');          return; }
+
+    income.unshift({ id: Date.now(), amount, source: selectedSource, account, date, note });
+    save();
+
+    document.getElementById('inc-amount').value = '';
+    document.getElementById('inc-note').value   = '';
+    document.getElementById('inc-date').value   = todayStr();
+    document.querySelectorAll('#inc-source-picker .cat-btn').forEach(b => b.classList.remove('selected'));
+    selectedSource = null;
+
+    closeModal('modal-add-income');
+    if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
+    showToast('✓ Income added');
+  }
+
+  function monthInc(m, y) {
+    return income.filter(i => {
+      const d = parseLocalDate(i.date);
+      return d.getMonth() === m && d.getFullYear() === y;
+    });
+  }
+
+  // ── EDIT TRANSACTION ──
+  let editingTxId = null;
+  let editSelectedCat = null;
+
+  function openEditTransaction(id) {
+    const tx = transactions.find(t => t.id === id);
+    if (!tx) return;
+
+    editingTxId   = id;
+    editSelectedCat = tx.category;
+
+    // pre-fill fields
+    document.getElementById('edit-amount').value = tx.amount;
+    document.getElementById('edit-date').value   = tx.date;
+    document.getElementById('edit-note').value   = tx.note || '';
+
+    // build category picker
+    buildEditCatPicker(tx.category);
+
+    // populate account selector
+    const sel = document.getElementById('edit-account');
+    sel.innerHTML = settings.accounts.map(a =>
+      `<option value="${esc(a)}" ${a === tx.account ? 'selected' : ''}>${esc(a)}</option>`
+    ).join('');
+
+    openModal('modal-edit-tx');
+    document.getElementById('edit-amount').focus();
+  }
+
+  function buildEditCatPicker(selectedId) {
+    const picker = document.getElementById('edit-cat-picker');
+    if (!picker) return;
+    const allCats = [...CATEGORIES, ...settings.customCats.filter(c =>
+      !CATEGORIES.find(b => b.id === c.id)
+    )];
+    picker.innerHTML = allCats.map(c => `
+      <button class="cat-btn ${c.id === selectedId ? 'selected' : ''}"
+        onclick="selectEditCat('${esc(c.id)}',this)" type="button">
+        <span class="cat-emoji">${esc(c.emoji)}</span>
+        <span class="cat-name">${esc(catLabel(c))}</span>
+      </button>`).join('');
+  }
+
+  function selectEditCat(id, btn) {
+    editSelectedCat = id;
+    document.querySelectorAll('#edit-cat-picker .cat-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function saveEditTransaction() {
+    const amount  = parseFloat(document.getElementById('edit-amount').value);
+    const account = sanitiseText(document.getElementById('edit-account').value, 50);
+    const date    = document.getElementById('edit-date').value;
+    const note    = sanitiseText(document.getElementById('edit-note').value, 200);
+
+    if (!amount || amount <= 0 || amount > 999999999) { shake('edit-amount'); return; }
+    if (!editSelectedCat)  { shake('edit-cat-picker'); return; }
+    if (!date || !date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('edit-date'); return; }
+
+    const idx = transactions.findIndex(t => t.id === editingTxId);
+    if (idx === -1) { closeModal('modal-edit-tx'); return; }
+
+    // preserve id and fromRecurring flag
+    transactions[idx] = {
+      ...transactions[idx],
+      amount,
+      category: editSelectedCat,
+      account,
+      date,
+      note,
+    };
+
+    save();
+    closeModal('modal-edit-tx');
+
+    // refresh whichever page is active
+    if (document.getElementById('page-transactions').classList.contains('active')) renderTransactions();
+    if (document.getElementById('page-overview').classList.contains('active'))     renderOverview();
+
+    showToast('✓ Expense updated');
+  }
+
+  function deleteFromEdit() {
+    if (!editingTxId) return;
+    closeModal('modal-edit-tx');
+    // small delay so modal closes first then trash
+    setTimeout(() => trashTransaction(editingTxId), 250);
+  }
+  // Data format version — bump this if the format changes in future
+  const DATA_VERSION = 1;
+
+  function exportData() {
+    const payload = {
+      version:      DATA_VERSION,
+      exportedAt:   new Date().toISOString(),
+      appName:      'Kassior',
+      transactions,
+      income,
+      recurring,
+      paidStatus,
+      overrides,
+      trash,
+      settings,
+    };
+
+    const json     = JSON.stringify(payload, null, 2);
+    const blob     = new Blob([json], { type: 'application/json' });
+    const url      = URL.createObjectURL(blob);
+    const filename = `kassior-backup-${todayStr()}.json`;
+
+    // trigger download
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(`✓ Exported ${filename}`);
+  }
+
+  let pendingImport = null;
+
+  function readImportFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.value = '';
+
+    // file size guard — reject anything over 5MB (a personal finance backup should be <100KB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('⚠ File too large to be a valid backup');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+
+        // ── validation ──
+        // must be a plain object
+        if (!data || typeof data !== 'object' || Array.isArray(data)) {
+          showToast(t('invalidBackup')); return;
+        }
+        // must have a transactions array
+        if (!Array.isArray(data.transactions)) {
+          showToast(t('invalidBackup')); return;
+        }
+        // transactions must be objects with expected shape
+        const validTx = data.transactions.every(tx =>
+          tx && typeof tx === 'object' &&
+          typeof tx.amount === 'number' &&
+          typeof tx.date   === 'string' &&
+          tx.date.match(/^\d{4}-\d{2}-\d{2}$/)
+        );
+        if (!validTx && data.transactions.length > 0) {
+          showToast(t('invalidBackup')); return;
+        }
+        // cap import size — prevent memory exhaustion
+        if (data.transactions.length > 50000) {
+          showToast('⚠ Backup contains too many records'); return;
+        }
+
+        pendingImport = data;
+
+        // safe number display — coerce to integer, never trust raw data
+        const txCount  = Number(data.transactions.length)   || 0;
+        const recCount = Number((data.recurring || []).length) || 0;
+        const months   = new Set(
+          data.transactions.map(tx => typeof tx.date === 'string' ? tx.date.slice(0,7) : '')
+        ).size;
+
+        const exportedDate = data.exportedAt
+          ? new Date(data.exportedAt).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})
+          : 'unknown date';
+
+        // safe — only numbers and a sanitised date string go into innerHTML
+        document.getElementById('import-preview').innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--accent-text)">${txCount}</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">Transactions</div>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--accent-text)">${recCount}</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">Bills</div>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--accent-text)">${months}</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">Months</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:12px;text-align:center">
+            Exported ${esc(exportedDate)}
+          </div>`;
+
+        openModal('modal-import-confirm');
+      } catch {
+        showToast(t('cantRead'));
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function confirmImport() {
+    if (!pendingImport) return;
+    const d = pendingImport;
+
+    // restore all data
+    transactions = d.transactions  || [];
+    income       = d.income        || [];
+    recurring    = d.recurring     || [];
+    paidStatus   = d.paidStatus    || {};
+    overrides    = d.overrides     || {};
+    trash        = d.trash         || [];
+
+    // restore settings carefully — merge so new fields aren't lost
+    if (d.settings) {
+      settings.currency   = d.settings.currency   || settings.currency;
+      settings.accounts   = d.settings.accounts   || settings.accounts;
+      settings.customCats = d.settings.customCats || [];
+    }
+
+    save(); saveSettings();
+    rebuildCategories(); buildCatPicker(); updateAccountSelectors();
+
+    pendingImport = null;
+    closeModal('modal-import-confirm');
+
+    // return to overview with fresh data
+    renderOverview();
+    renderSettings();
+    showPage('overview', document.querySelector('nav button'));
+    showToast(t('dataRestored'));
+  }
+
+  function renderDataStats() {
+    const el = document.getElementById('data-stats');
+    if (!el) return;
+    const months = new Set(transactions.map(t => t.date ? t.date.slice(0,7) : '')).size;
+    el.innerHTML = `
+      <div class="stat-item">
+        <div class="stat-val">${transactions.length}</div>
+        <div class="stat-label">Transactions</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">${recurring.filter(r => !r.archived).length}</div>
+        <div class="stat-label">Bills</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">${months}</div>
+        <div class="stat-label">Months</div>
+      </div>`;
+  }
+
+  // ── MONTH PICKER ──
+  let pickerYear    = new Date().getFullYear();
+  let pickerContext = 'overview'; // which page opened the picker
+
+  const MONTHS_SHORT_EN = ['Jan','Feb','Mar','Apr','May','Jun',
+                        'Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function openMonthPicker(context) {
+    pickerContext = context;
+    // seed picker year to the currently viewed year
+    if (context === 'overview')  pickerYear = currentYear;
+    if (context === 'history')   pickerYear = txYear;
+    if (context === 'charts')    pickerYear = chartYear;
+    renderMonthPicker();
+    openModal('modal-month-picker');
+  }
+
+  function changePickerYear(d) {
+    pickerYear += d;
+    renderMonthPicker();
+  }
+
+  function renderMonthPicker() {
+    document.getElementById('picker-year-label').textContent = pickerYear;
+
+    const now = new Date();
+    const nowM = now.getMonth(), nowY = now.getFullYear();
+
+    // which month is currently selected for this context
+    let selMonth, selYear;
+    if (pickerContext === 'overview') { selMonth = currentMonth; selYear = currentYear; }
+    if (pickerContext === 'history')  { selMonth = txMonth;      selYear = txYear; }
+    if (pickerContext === 'charts')   { selMonth = chartMonth;   selYear = chartYear; }
+
+    // months that have transaction data — show a dot
+    const dataMonths = new Set(
+      transactions.map(t => t.date ? t.date.slice(0, 7) : '')
+    );
+
+    const grid = document.getElementById('month-picker-grid');
+    grid.innerHTML = getMonthsShort().map((name, i) => {
+      const key        = `${pickerYear}-${String(i+1).padStart(2,'0')}`;
+      const isSelected = i === selMonth && pickerYear === selYear;
+      const isCurrent  = i === nowM && pickerYear === nowY;
+      const hasData    = dataMonths.has(key);
+      const isFuture   = pickerYear > nowY || (pickerYear === nowY && i > nowM);
+      return `<div class="month-cell
+          ${isSelected  ? 'selected'     : ''}
+          ${isCurrent && !isSelected ? 'current-month' : ''}
+          ${hasData && !isSelected ? 'has-data' : ''}
+          ${isFuture ? 'future-month' : ''}"
+          onclick="pickMonth(${i})"
+          style="${isFuture ? 'opacity:0.35;pointer-events:none' : ''}"
+        >${name}</div>`;
+    }).join('');
+  }
+
+  function pickMonth(month) {
+    if (pickerContext === 'overview') {
+      currentMonth = month; currentYear = pickerYear; renderOverview();
+    }
+    if (pickerContext === 'history') {
+      txMonth = month; txYear = pickerYear; renderTransactions();
+    }
+    if (pickerContext === 'charts') {
+      chartMonth = month; chartYear = pickerYear; renderCharts();
+    }
+    closeModal('modal-month-picker');
+  }
+
+  // ── THEME ──
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const isDark = theme === 'dark';
+    // update meta theme-color for browser chrome
+    document.getElementById('theme-color-meta').content = isDark ? '#111110' : '#f5f0eb';
+    // update settings UI if visible
+    const sub  = document.getElementById('theme-sub');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (sub)  sub.textContent  = isDark ? 'Dark'  : 'Light';
+    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    // update scrollbar colour token (Firefox)
+    document.body.style.scrollbarColor = isDark
+      ? 'var(--border) transparent'
+      : 'var(--border) transparent';
+    // persist
+    settings.theme = theme;
+    saveSettings();
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // ── UTILS ──
+  function fmt(n) {
+    const cur = (settings && settings.currency) ? settings.currency : 'CHF'; return cur + ' ' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+  }
+  // ── DATE HELPERS ──
+  // Uses local time, not UTC — prevents off-by-one-day bug after midnight
+  function todayStr() {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm   = String(d.getMonth() + 1).padStart(2, '0');
+    const dd   = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  // Parses "YYYY-MM-DD" as local date, not UTC
+  function parseLocalDate(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function shake(id) {
+    const el = document.getElementById(id);
+    el.style.animation = 'none'; el.offsetHeight;
+    el.style.animation = 'shake 0.3s ease';
+  }
+
+  // ── INIT ──
+  // apply saved theme before anything renders — prevents flash
+  applyTheme(settings.theme || 'light');
+  // set language — saved preference, or detect from device
+  currentLang = settings.language || detectLanguage();
+  document.getElementById('input-date').value = todayStr();
+  rebuildCategories();
+  buildCatPicker();
+  updateAccountSelectors();
+  // apply saved currency to labels on load
+  saveCurrency(settings.currency);
+  renderOverview();
+  renderRecurring();
+  renderCharts();
+  showPage('overview', document.querySelector('nav button'));
+</script>
+</body>
+</html>
