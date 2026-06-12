@@ -302,8 +302,124 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-text));
       transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
     }
+    .cat-bar-fill.over { background: linear-gradient(90deg, var(--danger), #e06050); }
+    .cat-bar-fill.warn { background: linear-gradient(90deg, var(--warn),   #d09040); }
 
-    /* ── ACCOUNT PILLS ── */
+    /* budget pill */
+    .budget-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+    .budget-pill { font-size: 11px; font-weight: 600; padding: 1px 8px; border-radius: 99px; }
+    .budget-pill.ok   { background: var(--success-dim); color: var(--success); }
+    .budget-pill.warn { background: var(--warn-dim);    color: var(--warn); }
+    .budget-pill.over { background: var(--danger-dim);  color: var(--danger); }
+    .budget-limit-lbl { font-size: 11px; color: var(--muted); }
+
+    /* budget input in settings */
+    .budget-input-wrap { display: flex; align-items: center; gap: 6px; }
+    .budget-input {
+      width: 88px; padding: 5px 10px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--text); font-family: var(--font-display);
+      font-size: 13px; font-weight: 600; text-align: right;
+    }
+    .budget-input:focus { outline: none; border-color: var(--accent); }
+    .budget-cur { font-size: 12px; color: var(--muted); }
+
+    /* bill type selector */
+    .bill-type-row {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+    }
+    .bill-type-btn {
+      padding: 9px 6px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--text-dim); font-family: var(--font);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; text-align: center;
+    }
+    .bill-type-btn.active {
+      border-color: var(--accent); background: var(--accent-dim);
+      color: var(--accent-text);
+    }
+
+    /* ── YEARLY OVERVIEW ── */
+    .year-month-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--border-sub);
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .year-month-row:last-child { border-bottom: none; }
+    .year-month-row:hover { opacity: 0.8; }
+    .year-month-name { font-size: 14px; font-weight: 600; color: var(--text); width: 52px; flex-shrink: 0; }
+    .year-month-bar-wrap { flex: 1; margin: 0 10px; }
+    .year-month-bar-bg { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .year-month-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-text)); transition: width 0.4s ease; }
+    .year-month-amt { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text); min-width: 64px; text-align: right; }
+    .year-totals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .year-total-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+    .year-total-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 4px; }
+    .year-total-val { font-family: var(--font-display); font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
+
+    /* ── SAVINGS GOALS ── */
+    #savings-goals-section { margin-bottom: 24px; }
+    .goal-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .goal-card:hover { border-color: var(--accent); }
+    .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .goal-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .goal-emoji { font-size: 20px; }
+    .goal-amounts { text-align: right; }
+    .goal-saved { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--success); }
+    .goal-target { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .goal-bar-bg { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+    .goal-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--success), #6abf84); transition: width 0.5s ease; }
+    .goal-bar-fill.complete { background: linear-gradient(90deg, var(--success), #4abf6a); }
+    .goal-footer { display: flex; justify-content: space-between; align-items: center; }
+    .goal-pct { font-size: 12px; font-weight: 700; color: var(--success); }
+    .goal-deadline { font-size: 11px; color: var(--muted); }
+    .goal-complete-badge {
+      font-size: 11px; font-weight: 700; background: var(--success-dim);
+      color: var(--success); padding: 2px 8px; border-radius: 99px;
+    }
+
+    /* search */
+    .search-input-wrap {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      transition: border-color 0.15s;
+    }
+    .search-input-wrap:focus-within { border-color: var(--accent); }
+    #search-input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text); font-family: var(--font); font-size: 14px;
+    }
+    #search-input::placeholder { color: var(--muted); }
+    .search-date-badge {
+      font-size: 10px; font-weight: 600; color: var(--muted);
+      background: var(--surface2); border-radius: 4px;
+      padding: 1px 5px; margin-left: 4px; flex-shrink: 0;
+    }
+    .search-highlight { background: var(--accent-dim); color: var(--accent-text); border-radius: 2px; padding: 0 1px; }
+    #bill-reminders { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .reminder-banner {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: var(--radius-sm);
+      border: 1px solid; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .reminder-banner.overdue  { background: var(--danger-dim);  border-color: var(--danger);  }
+    .reminder-banner.due-soon { background: var(--warn-dim);    border-color: var(--warn);    }
+    .reminder-banner.expiring { background: var(--accent-dim);  border-color: var(--accent);  }
+    .reminder-icon { font-size: 18px; flex-shrink: 0; }
+    .reminder-text { flex: 1; }
+    .reminder-title { font-size: 13px; font-weight: 700; }
+    .reminder-title.overdue  { color: var(--danger); }
+    .reminder-title.due-soon { color: var(--warn); }
+    .reminder-title.expiring { color: var(--accent-text); }
+    .reminder-sub   { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .reminder-amt   { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-dim); flex-shrink: 0; }
     .account-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
     .account-pill {
       background: var(--surface); border: 1px solid var(--border);
@@ -375,6 +491,21 @@
     }
     .form-row input:focus, .form-row select:focus { border-color: var(--accent); }
     .form-row textarea { resize: none; height: 58px; }
+
+    /* custom end date picker */
+    .end-date-wrap {
+      display: grid; grid-template-columns: 80px 1fr 90px; gap: 8px;
+    }
+    .end-date-part {
+      width: 100%; padding: 10px 10px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--text); font-family: var(--font); font-size: 14px;
+      cursor: pointer; appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+      padding-right: 28px;
+    }
+    .end-date-part:focus { outline: none; border-color: var(--accent); }
     .amount-input-wrap { position: relative; }
     .amount-input-wrap .currency {
       position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
@@ -943,6 +1074,12 @@
     <div class="hero-month" id="hero-month-sub"></div>
     <div class="hero-inc-exp" id="hero-inc-exp"></div>
   </div>
+  <!-- BILL REMINDERS -->
+  <div id="bill-reminders"></div>
+
+  <!-- SAVINGS GOALS -->
+  <div id="savings-goals-section"></div>
+
   <div class="section-title">By Category</div>
   <div class="cat-list" id="cat-breakdown"></div>
   <div class="section-title">By Account</div>
@@ -970,6 +1107,40 @@
   </button>
 </div>
 
+<!-- MODAL: EDIT INCOME -->
+<div class="modal-overlay" id="modal-edit-income" onclick="closeModalOnOverlay(event,'modal-edit-income')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Edit Income</h2>
+    <p class="modal-sub">Update the details below.</p>
+    <div class="form-row">
+      <label>Amount</label>
+      <input type="number" id="edit-inc-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal"
+        style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif"/>
+    </div>
+    <div class="form-row">
+      <label>Source</label>
+      <div class="cat-picker" id="edit-inc-source-picker"></div>
+    </div>
+    <div class="form-row">
+      <label>Account</label>
+      <select id="edit-inc-account"></select>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="edit-inc-date"/>
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <textarea id="edit-inc-note" placeholder="e.g. March salary, client payment…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteIncome()">Delete</button>
+      <button class="btn-primary" style="background:var(--success)" onclick="saveEditIncome()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: EDIT TRANSACTION -->
 <div class="modal-overlay" id="modal-edit-tx" onclick="closeModalOnOverlay(event,'modal-edit-tx')">
   <div class="modal">
@@ -982,6 +1153,10 @@
         style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif" />
     </div>
     <div class="form-row">
+      <label>What for?</label>
+      <textarea id="edit-note" placeholder="e.g. Migros, dentist, Netflix…"></textarea>
+    </div>
+    <div class="form-row">
       <label>Category</label>
       <div class="cat-picker" id="edit-cat-picker"></div>
     </div>
@@ -992,10 +1167,6 @@
     <div class="form-row">
       <label>Date</label>
       <input type="date" id="edit-date" />
-    </div>
-    <div class="form-row">
-      <label>Note (optional)</label>
-      <textarea id="edit-note" placeholder="e.g. Migros, Netflix renewal…"></textarea>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteFromEdit()">Delete</button>
@@ -1049,6 +1220,10 @@
       <input type="number" id="input-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif" />
     </div>
     <div class="form-row">
+      <label>What for?</label>
+      <textarea id="input-note" placeholder="e.g. Migros, dentist, Netflix…"></textarea>
+    </div>
+    <div class="form-row">
       <label>Category</label>
       <div class="cat-picker" id="cat-picker"></div>
     </div>
@@ -1063,10 +1238,6 @@
     <div class="form-row">
       <label>Date</label>
       <input type="date" id="input-date" />
-    </div>
-    <div class="form-row">
-      <label>Note (optional)</label>
-      <textarea id="input-note" placeholder="e.g. Migros, Netflix renewal…"></textarea>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-add')">Cancel</button>
@@ -1083,6 +1254,11 @@
       <p id="tx-count">0 entries</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+      <button id="search-btn" class="gear-btn" onclick="toggleSearch()" title="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
       <button id="trash-btn" onclick="openModal('modal-trash')" class="gear-btn" title="Trash" style="position:relative">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
@@ -1096,7 +1272,20 @@
       </button>
     </div>
   </div>
-  <div class="month-nav">
+
+  <!-- Search bar — hidden by default -->
+  <div id="search-bar" style="display:none;margin-bottom:16px">
+    <div class="search-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="search-input" type="text" placeholder="Search notes, categories, amounts…"
+        oninput="renderSearch()" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button onclick="clearSearch()" id="search-clear" style="display:none;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;font-size:16px">✕</button>
+    </div>
+  </div>
+
+  <div class="month-nav" id="month-nav-row">
     <button onclick="changeTxMonth(-1)">‹</button>
     <span id="tx-month-label" onclick="openMonthPicker('history')" class="month-label-tap"></span>
     <button onclick="changeTxMonth(1)">›</button>
@@ -1125,7 +1314,7 @@
   </div>
   <div class="section-header">
     <div class="section-title">Bills This Month</div>
-    <button class="btn-secondary" onclick="openModal('modal-add-rec')">+ Add Bill</button>
+    <button class="btn-primary" onclick="openModal('modal-add-rec')" style="width:auto;padding:8px 16px">+ Add Bill</button>
   </div>
   <div class="rec-list" id="rec-list"></div>
 </div>
@@ -1143,26 +1332,29 @@
       </svg>
     </button>
   </div>
-  <div class="month-nav">
-    <button onclick="changeChartMonth(-1)">‹</button>
-    <span id="chart-month-label" onclick="openMonthPicker('charts')" class="month-label-tap"></span>
-    <button onclick="changeChartMonth(1)">›</button>
+
+  <!-- View toggle: Month / Year -->
+  <div class="bill-type-row" style="margin-bottom:20px">
+    <button class="bill-type-btn active" id="insights-tab-month" onclick="setInsightsView('month')">📅 Monthly</button>
+    <button class="bill-type-btn"        id="insights-tab-year"  onclick="setInsightsView('year')">📊 Yearly</button>
   </div>
 
-  <!-- SMART INSIGHTS ROW -->
-  <div id="smart-insights"></div>
-
-  <!-- MONTH COMPARISON -->
-  <div class="chart-card" style="margin-top:16px">
-    <div class="chart-card-title">vs Last Month</div>
-    <div id="month-compare"></div>
-  </div>
-
-  <!-- DAY OF WEEK -->
-  <div class="chart-card" style="margin-top:16px">
-    <div class="chart-card-title">By Day of Week</div>
-    <div id="dow-chart"></div>
-  </div>
+  <!-- MONTHLY VIEW -->
+  <div id="insights-monthly-view">
+    <div class="month-nav">
+      <button onclick="changeChartMonth(-1)">‹</button>
+      <span id="chart-month-label" onclick="openMonthPicker('charts')" class="month-label-tap"></span>
+      <button onclick="changeChartMonth(1)">›</button>
+    </div>
+    <div id="smart-insights"></div>
+    <div class="chart-card" style="margin-top:16px">
+      <div class="chart-card-title">vs Last Month</div>
+      <div id="month-compare"></div>
+    </div>
+    <div class="chart-card" style="margin-top:16px">
+      <div class="chart-card-title">By Day of Week</div>
+      <div id="dow-chart"></div>
+    </div>
 
   <!-- DONUT -->
   <div class="chart-card" style="margin-top:16px">
@@ -1183,6 +1375,18 @@
     <canvas id="area-canvas" width="400" height="180"></canvas>
     <div class="area-labels" id="area-labels"></div>
   </div>
+  </div><!-- end monthly view -->
+
+  <!-- YEARLY VIEW -->
+  <div id="insights-yearly-view" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <button onclick="changeYearView(-1)" class="picker-year-btn">‹</button>
+      <span id="yearly-view-label" style="font-size:17px;font-weight:800;color:var(--accent-text);letter-spacing:-0.4px"></span>
+      <button onclick="changeYearView(1)"  class="picker-year-btn">›</button>
+    </div>
+    <div id="yearly-overview"></div>
+  </div>
+
 </div>
 
 <!-- NAV -->
@@ -1290,6 +1494,29 @@
     <div class="settings-card" id="accounts-list"></div>
   </div>
 
+  <!-- SAVINGS GOALS -->
+  <div class="settings-section">
+    <div class="section-header">
+      <div class="section-title">Savings Goals</div>
+      <button class="btn-primary" onclick="openAddGoal()" style="width:auto;padding:8px 16px">+ Add Goal</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6">
+      Track what you're saving toward. Add money to a goal manually or from your income.
+    </p>
+    <div id="goals-settings-list"></div>
+  </div>
+
+  <!-- BUDGETS -->
+  <div class="settings-section">
+    <div class="section-header">
+      <div class="section-title">Monthly Budgets</div>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.6">
+      Set a monthly spending limit per category. Leave blank for no limit.
+    </p>
+    <div class="settings-card" id="budgets-list"></div>
+  </div>
+
   <!-- CATEGORIES -->
   <div class="settings-section">
     <div class="section-header">
@@ -1314,7 +1541,7 @@
         </svg>
         <div>
           <div class="data-btn-label">Export</div>
-          <div class="data-btn-sub">Save a backup file</div>
+          <div class="data-btn-sub">Full backup · JSON</div>
         </div>
       </button>
       <button class="data-btn import-btn" onclick="document.getElementById('import-file-input').click()">
@@ -1328,8 +1555,34 @@
           <div class="data-btn-sub">Restore from a backup</div>
         </div>
       </button>
+      <button class="data-btn" onclick="exportCSV()" style="grid-column:1/-1">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <div>
+          <div class="data-btn-label">Export as CSV</div>
+          <div class="data-btn-sub">Open in Excel, Numbers, or Google Sheets</div>
+        </div>
+      </button>
+      <button class="data-btn" onclick="document.getElementById('import-csv-input').click()" style="grid-column:1/-1;border-color:var(--border-sub)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="12" y1="18" x2="12" y2="12"/>
+          <polyline points="9 15 12 12 15 15"/>
+        </svg>
+        <div>
+          <div class="data-btn-label">Import from CSV</div>
+          <div class="data-btn-sub">Re-import a Kassior CSV export</div>
+        </div>
+      </button>
     </div>
     <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="readImportFile(this)" />
+    <input type="file" id="import-csv-input"  accept=".csv"  style="display:none" onchange="readCSVFile(this)" />
     <div class="data-stats" id="data-stats"></div>
   </div>
 
@@ -1346,24 +1599,58 @@
 
 </div>
 
-<!-- MODAL: ADD / EDIT RECURRING BILL -->
+<!-- MODAL: ADD / EDIT BILL -->
 <div class="modal-overlay" id="modal-add-rec" onclick="closeModalOnOverlay(event,'modal-add-rec')">
   <div class="modal">
     <span class="modal-handle"></span>
-    <h2 id="rec-modal-title">Add Recurring Bill</h2>
-    <p class="modal-sub" id="rec-modal-sub">Define a subscription or regular bill once.</p>
+    <h2 id="rec-modal-title">Add Bill</h2>
+    <p class="modal-sub" id="rec-modal-sub">Track a regular or upcoming payment.</p>
+
+    <!-- Bill type selector -->
+    <div class="form-row">
+      <label>Type</label>
+      <div class="bill-type-row">
+        <button class="bill-type-btn active" id="btype-monthly"  onclick="setBillType('monthly')">🔁 Monthly</button>
+        <button class="bill-type-btn"        id="btype-yearly"   onclick="setBillType('yearly')">📅 Yearly</button>
+        <button class="bill-type-btn"        id="btype-onetime"  onclick="setBillType('onetime')">1️⃣ One-time</button>
+      </div>
+    </div>
+    <input type="hidden" id="rec-input-type" value="monthly"/>
+
     <div class="form-row">
       <label>Name</label>
-      <input type="text" id="rec-input-name" placeholder="e.g. Netflix, Rent, Gym…" />
+      <input type="text" id="rec-input-name" placeholder="e.g. Netflix, Rent, Insurance…"/>
     </div>
     <div class="form-row">
       <label id="rec-amount-label">Amount</label>
-      <input type="number" id="rec-input-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" />
+      <input type="number" id="rec-input-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal"/>
     </div>
-    <div class="form-row">
+
+    <!-- Monthly: due day -->
+    <div class="form-row" id="field-due-day">
       <label>Due Day of Month</label>
-      <input type="number" id="rec-input-day" placeholder="e.g. 1, 15, 28" min="1" max="31" inputmode="numeric" />
+      <input type="number" id="rec-input-day" placeholder="e.g. 1, 15, 28" min="1" max="31" inputmode="numeric"/>
     </div>
+
+    <!-- Yearly: due day + month -->
+    <div class="form-row" id="field-due-date" style="display:none">
+      <label>Due Date (each year)</label>
+      <div class="end-date-wrap" style="grid-template-columns:80px 1fr">
+        <select id="rec-yearly-day"   class="end-date-part"></select>
+        <select id="rec-yearly-month" class="end-date-part"></select>
+      </div>
+    </div>
+
+    <!-- One-time: exact date -->
+    <div class="form-row" id="field-onetime-date" style="display:none">
+      <label>Due Date</label>
+      <div class="end-date-wrap">
+        <select id="rec-ot-day"   class="end-date-part"></select>
+        <select id="rec-ot-month" class="end-date-part"></select>
+        <select id="rec-ot-year"  class="end-date-part"></select>
+      </div>
+    </div>
+
     <div class="form-row">
       <label>Category</label>
       <select id="rec-input-cat">
@@ -1375,6 +1662,17 @@
         <option value="other">💰 Other</option>
       </select>
     </div>
+
+    <!-- End date — only for recurring -->
+    <div class="form-row" id="field-end-date">
+      <label>End Date <span style="font-size:11px;color:var(--muted);font-weight:400">(optional)</span></label>
+      <div class="end-date-wrap">
+        <select id="rec-end-day"   class="end-date-part"></select>
+        <select id="rec-end-month" class="end-date-part"></select>
+        <select id="rec-end-year"  class="end-date-part"></select>
+      </div>
+    </div>
+
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-add-rec')">Cancel</button>
       <button class="btn-primary" id="rec-save-btn" onclick="saveRecurring()">Save Bill</button>
@@ -1470,6 +1768,75 @@
     <div class="currency-list" id="currency-list"></div>
     <div style="margin-top:14px">
       <button class="btn-secondary" style="width:100%" onclick="closeModal('modal-currency')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD / EDIT GOAL -->
+<div class="modal-overlay" id="modal-add-goal" onclick="closeModalOnOverlay(event,'modal-add-goal')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2 id="goal-modal-title">New Savings Goal</h2>
+    <p class="modal-sub">Set a target and track your progress.</p>
+    <div class="form-row">
+      <label>Goal Name</label>
+      <input type="text" id="goal-input-name" placeholder="e.g. Albania trip, Emergency fund…"/>
+    </div>
+    <div class="form-row">
+      <label>Target Amount</label>
+      <input type="number" id="goal-input-target" placeholder="0.00" step="0.01" min="0" inputmode="decimal"
+        style="font-size:24px;font-weight:800;letter-spacing:-0.5px;height:56px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif"/>
+    </div>
+    <div class="form-row">
+      <label>Emoji <span style="font-size:11px;color:var(--muted);font-weight:400">(optional)</span></label>
+      <input type="text" id="goal-input-emoji" placeholder="🎯" maxlength="4" style="width:72px;font-size:22px;text-align:center"/>
+    </div>
+    <div class="form-row">
+      <label>Target Date <span style="font-size:11px;color:var(--muted);font-weight:400">(optional)</span></label>
+      <div class="end-date-wrap">
+        <select id="goal-end-day"   class="end-date-part"></select>
+        <select id="goal-end-month" class="end-date-part"></select>
+        <select id="goal-end-year"  class="end-date-part"></select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-goal')">Cancel</button>
+      <button class="btn-primary" id="goal-save-btn" onclick="saveGoal()">Save Goal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CONTRIBUTE TO GOAL -->
+<div class="modal-overlay" id="modal-contribute-goal" onclick="closeModalOnOverlay(event,'modal-contribute-goal')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2 id="contribute-modal-title">Add to Goal</h2>
+    <p class="modal-sub" id="contribute-modal-sub"></p>
+    <div class="form-row">
+      <label>Amount</label>
+      <input type="number" id="contribute-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal"
+        style="font-size:28px;font-weight:800;letter-spacing:-0.5px;height:62px;padding:0 16px;font-family:'DM Sans',system-ui,sans-serif"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-contribute-goal')">Cancel</button>
+      <button class="btn-primary" style="background:var(--success)" onclick="contributeToGoal()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CSV IMPORT CONFIRM -->
+<div class="modal-overlay" id="modal-csv-confirm" onclick="closeModalOnOverlay(event,'modal-csv-confirm')">
+  <div class="modal">
+    <span class="modal-handle"></span>
+    <h2>Import from CSV?</h2>
+    <p class="modal-sub">New entries will be merged with your existing data. Duplicates are skipped.</p>
+    <div id="csv-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:14px 16px;margin-bottom:4px"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:4px">
+      💡 Only Kassior CSV exports can be imported this way.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-csv-confirm')">Cancel</button>
+      <button class="btn-primary" onclick="confirmCSVImport()">Import</button>
     </div>
   </div>
 </div>
@@ -2150,6 +2517,7 @@
   function save() {
     localStorage.setItem('wdig_tx',    JSON.stringify(transactions));
     localStorage.setItem('wdig_inc',   JSON.stringify(income));
+    localStorage.setItem('wdig_goals', JSON.stringify(goals));
     localStorage.setItem('wdig_rec',   JSON.stringify(recurring));
     localStorage.setItem('wdig_paid',  JSON.stringify(paidStatus));
     localStorage.setItem('wdig_ovr',   JSON.stringify(overrides));
@@ -2163,6 +2531,13 @@
     if (id === 'modal-currency')      renderCurrencyList();
     if (id === 'modal-add-cat')       { selectedEmoji = ''; renderEmojiGrid(); }
     if (id === 'modal-language')      renderLanguagePicker();
+    if (id === 'modal-add-goal') {
+      populateGoalDateDropdowns();
+    }
+    if (id === 'modal-add-rec') {
+      populateBillDropdowns();
+      setBillType(document.getElementById('rec-input-type').value || 'monthly');
+    }
     if (id === 'modal-add') {
       document.getElementById('input-date').value = todayStr();
       document.getElementById('input-amount').focus();
@@ -2187,11 +2562,28 @@
       document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
+    // hide FAB on pages where it doesn't make sense
+    const fab = document.getElementById('fab-wrap');
+    if (fab) fab.style.display = ['recurring','charts','settings'].includes(name) ? 'none' : 'flex';
+    // also close it if open
+    closeFab();
     if (name === 'overview')     renderOverview();
     if (name === 'transactions') renderTransactions();
     if (name === 'recurring')    renderRecurring();
     if (name === 'charts')       renderCharts();
     if (name === 'settings')     renderSettings();
+    // close search when leaving history
+    if (name !== 'transactions' && searchActive) {
+      searchActive = false;
+      const bar = document.getElementById('search-bar');
+      const mn  = document.getElementById('month-nav-row');
+      const fr  = document.getElementById('filter-row');
+      const si  = document.getElementById('search-input');
+      if (bar) bar.style.display = 'none';
+      if (mn)  mn.style.display  = '';
+      if (fr)  fr.style.display  = '';
+      if (si)  si.value = '';
+    }
   }
 
   // ── MONTH HELPERS ──
@@ -2214,6 +2606,534 @@
     });
   }
   function paidKey(recId, m, y) { return `${recId}_${y}_${m}`; }
+
+  // ── INSIGHTS VIEW TOGGLE ──
+  let insightsView = 'month';
+  let yearViewYear = new Date().getFullYear();
+
+  function setInsightsView(view) {
+    insightsView = view;
+    document.getElementById('insights-tab-month').classList.toggle('active', view === 'month');
+    document.getElementById('insights-tab-year').classList.toggle('active',  view === 'year');
+    document.getElementById('insights-monthly-view').style.display = view === 'month' ? '' : 'none';
+    document.getElementById('insights-yearly-view').style.display  = view === 'year'  ? '' : 'none';
+    if (view === 'year') renderYearlyOverview();
+  }
+
+  function changeYearView(d) {
+    yearViewYear += d;
+    renderYearlyOverview();
+  }
+
+  function renderYearlyOverview() {
+    const el = document.getElementById('yearly-overview');
+    if (!el) return;
+    document.getElementById('yearly-view-label').textContent = yearViewYear;
+
+    const MONTHS_SHORT = getMonthsShort();
+
+    // aggregate per month
+    const monthData = Array.from({length:12}, (_, m) => {
+      const txs  = transactions.filter(t => {
+        const d = parseLocalDate(t.date);
+        return d.getFullYear() === yearViewYear && d.getMonth() === m;
+      });
+      const incs = income.filter(i => {
+        const d = parseLocalDate(i.date);
+        return d.getFullYear() === yearViewYear && d.getMonth() === m;
+      });
+      return {
+        m,
+        expense: txs.reduce((s,t) => s+t.amount, 0),
+        income:  incs.reduce((s,i) => s+i.amount, 0),
+        count:   txs.length + incs.length
+      };
+    });
+
+    const totalExp = monthData.reduce((s,d) => s+d.expense, 0);
+    const totalInc = monthData.reduce((s,d) => s+d.income,  0);
+    const maxExp   = Math.max(...monthData.map(d => d.expense), 1);
+    const hasData  = monthData.some(d => d.expense > 0 || d.income > 0);
+
+    if (!hasData) {
+      el.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">📊</div>
+          <h3>No data for ${yearViewYear}</h3>
+          <p>Start logging expenses to see your yearly overview.</p>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="year-totals">
+        <div class="year-total-card">
+          <div class="year-total-label">Spent</div>
+          <div class="year-total-val" style="color:var(--accent-text)">${fmt(totalExp)}</div>
+        </div>
+        <div class="year-total-card">
+          <div class="year-total-label">Income</div>
+          <div class="year-total-val" style="color:var(--success)">${fmt(totalInc)}</div>
+        </div>
+        <div class="year-total-card">
+          <div class="year-total-label">Net</div>
+          <div class="year-total-val" style="color:${totalInc-totalExp>=0?'var(--success)':'var(--danger)'}">${fmt(Math.abs(totalInc-totalExp))}</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        ${monthData.map(d => {
+          const barW  = d.expense > 0 ? Math.round(d.expense / maxExp * 100) : 0;
+          const isNow = d.m === new Date().getMonth() && yearViewYear === new Date().getFullYear();
+          return `
+            <div class="year-month-row" onclick="jumpToMonth(${d.m})">
+              <div class="year-month-name" style="${isNow?'color:var(--accent-text)':''}">${MONTHS_SHORT[d.m]}</div>
+              <div class="year-month-bar-wrap">
+                <div class="year-month-bar-bg">
+                  <div class="year-month-bar-fill" style="width:${barW}%"></div>
+                </div>
+              </div>
+              <div class="year-month-amt ${d.expense===0?'year-month-empty':''}">
+                ${d.expense > 0 ? fmt(d.expense) : '—'}
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function jumpToMonth(m) {
+    // jump to that month in the monthly insights view
+    chartMonth = m;
+    chartYear  = yearViewYear;
+    setInsightsView('month');
+    renderCharts();
+  }
+
+  // ── SAVINGS GOALS ──
+  let goals = loadJSON('wdig_goals', []);
+
+  let editingGoalId = null;
+  let contributingGoalId = null;
+
+  function openAddGoal() {
+    editingGoalId = null;
+    document.getElementById('goal-modal-title').textContent = 'New Savings Goal';
+    document.getElementById('goal-save-btn').textContent    = 'Save Goal';
+    document.getElementById('goal-input-name').value   = '';
+    document.getElementById('goal-input-target').value = '';
+    document.getElementById('goal-input-emoji').value  = '';
+    document.getElementById('goal-end-day').value      = '';
+    document.getElementById('goal-end-month').value    = '';
+    document.getElementById('goal-end-year').value     = '';
+    populateGoalDateDropdowns();
+    openModal('modal-add-goal');
+    document.getElementById('goal-input-name').focus();
+  }
+
+  function openEditGoal(id) {
+    const g = goals.find(x => x.id === id);
+    if (!g) return;
+    editingGoalId = id;
+    document.getElementById('goal-modal-title').textContent = 'Edit Goal';
+    document.getElementById('goal-save-btn').textContent    = 'Save Changes';
+    document.getElementById('goal-input-name').value   = g.name;
+    document.getElementById('goal-input-target').value = g.target;
+    document.getElementById('goal-input-emoji').value  = g.emoji || '';
+    populateGoalDateDropdowns();
+    if (g.deadline) {
+      const [dy, dm, dd] = g.deadline.split('-');
+      document.getElementById('goal-end-day').value   = dd || '';
+      document.getElementById('goal-end-month').value = dm || '';
+      document.getElementById('goal-end-year').value  = dy || '';
+    }
+    openModal('modal-add-goal');
+  }
+
+  function populateGoalDateDropdowns() {
+    const MONTHS_FULL = ['January','February','March','April','May','June',
+                         'July','August','September','October','November','December'];
+    const thisYear = new Date().getFullYear();
+    const ed = document.getElementById('goal-end-day');
+    const em = document.getElementById('goal-end-month');
+    const ey = document.getElementById('goal-end-year');
+    if (ed && !ed.options.length) {
+      ed.innerHTML = '<option value="">Day</option>' +
+        Array.from({length:31},(_,i)=>`<option value="${String(i+1).padStart(2,'0')}">${i+1}</option>`).join('');
+    }
+    if (em && !em.options.length) {
+      em.innerHTML = '<option value="">Month</option>' +
+        MONTHS_FULL.map((mn,i)=>`<option value="${String(i+1).padStart(2,'0')}">${mn}</option>`).join('');
+    }
+    if (ey && !ey.options.length) {
+      ey.innerHTML = '<option value="">Year</option>' +
+        Array.from({length:10},(_,i)=>`<option value="${thisYear+i}">${thisYear+i}</option>`).join('');
+    }
+  }
+
+  function saveGoal() {
+    const name   = sanitiseText(document.getElementById('goal-input-name').value, 60);
+    const target = parseFloat(document.getElementById('goal-input-target').value);
+    const emoji  = sanitiseText(document.getElementById('goal-input-emoji').value, 4) || '🎯';
+    const dd = document.getElementById('goal-end-day').value;
+    const dm = document.getElementById('goal-end-month').value;
+    const dy = document.getElementById('goal-end-year').value;
+    const deadline = (dd && dm && dy) ? `${dy}-${dm}-${dd}` : null;
+
+    if (!name)                         { shake('goal-input-name');   return; }
+    if (!target || target <= 0)        { shake('goal-input-target'); return; }
+
+    if (editingGoalId) {
+      const g = goals.find(x => x.id === editingGoalId);
+      if (g) { g.name = name; g.target = target; g.emoji = emoji; g.deadline = deadline; }
+    } else {
+      goals.push({ id: Date.now().toString(), name, target, emoji, deadline, saved: 0, createdAt: todayStr() });
+    }
+
+    save();
+    closeModal('modal-add-goal');
+    renderGoals();
+    renderSettings();
+    showToast(editingGoalId ? '✓ Goal updated' : '✓ Goal added');
+    editingGoalId = null;
+  }
+
+  function openContribute(id) {
+    const g = goals.find(x => x.id === id);
+    if (!g) return;
+    contributingGoalId = id;
+    document.getElementById('contribute-modal-title').textContent = `Add to ${g.name}`;
+    document.getElementById('contribute-modal-sub').textContent   =
+      `${fmt(g.saved)} saved of ${fmt(g.target)}`;
+    document.getElementById('contribute-amount').value = '';
+    openModal('modal-contribute-goal');
+    document.getElementById('contribute-amount').focus();
+  }
+
+  function contributeToGoal() {
+    const amount = parseFloat(document.getElementById('contribute-amount').value);
+    if (!amount || amount <= 0) { shake('contribute-amount'); return; }
+    const g = goals.find(x => x.id === contributingGoalId);
+    if (!g) return;
+    g.saved = Math.min((g.saved || 0) + amount, g.target);
+    save();
+    closeModal('modal-contribute-goal');
+    renderGoals();
+    if (g.saved >= g.target) showToast('🎉 Goal reached!');
+    else showToast(`✓ ${fmt(amount)} added to ${g.name}`);
+  }
+
+  function deleteGoal(id) {
+    goals = goals.filter(g => g.id !== id);
+    save();
+    renderGoals();
+    renderSettings();
+    showToast('Goal removed');
+  }
+
+  function renderGoals() {
+    // render on overview
+    const overviewEl = document.getElementById('savings-goals-section');
+    // render in settings
+    const settingsEl = document.getElementById('goals-settings-list');
+
+    const activeGoals = goals.filter(g => (g.saved || 0) < g.target);
+    const doneGoals   = goals.filter(g => (g.saved || 0) >= g.target);
+
+    if (overviewEl) {
+      if (!goals.length) { overviewEl.innerHTML = ''; return; }
+      overviewEl.innerHTML = `
+        <div class="section-title" style="margin-bottom:12px">Savings Goals</div>
+        ${[...activeGoals, ...doneGoals].map(g => goalCard(g, false)).join('')}`;
+    }
+
+    if (settingsEl) {
+      if (!goals.length) {
+        settingsEl.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:8px 0">No goals yet. Tap + Add Goal to start.</div>`;
+        return;
+      }
+      settingsEl.innerHTML = goals.map(g => goalCard(g, true)).join('');
+    }
+  }
+
+  function goalCard(g, showDelete) {
+    const saved   = g.saved || 0;
+    const pct     = Math.min(Math.round(saved / g.target * 100), 100);
+    const done    = saved >= g.target;
+    const remaining = g.target - saved;
+
+    let deadlineLabel = '';
+    if (g.deadline && !done) {
+      const dt       = parseLocalDate(g.deadline);
+      const todayDt  = new Date();
+      const daysLeft = Math.ceil((dt - todayDt) / 86400000);
+      const formatted = `${dt.getDate()} ${getMonths()[dt.getMonth()].slice(0,3)} ${dt.getFullYear()}`;
+      if      (daysLeft < 0)   deadlineLabel = `<span style="color:var(--danger);font-size:11px">⚠ Deadline passed</span>`;
+      else if (daysLeft <= 30) deadlineLabel = `<span style="color:var(--warn);font-size:11px">${daysLeft}d left</span>`;
+      else                     deadlineLabel = `<span style="font-size:11px;color:var(--muted)">By ${formatted}</span>`;
+    }
+
+    return `
+      <div class="goal-card" onclick="${showDelete ? `openEditGoal('${g.id}')` : `openContribute('${g.id}')`}">
+        <div class="goal-top">
+          <div class="goal-name">
+            <span class="goal-emoji">${esc(g.emoji || '🎯')}</span>
+            ${esc(g.name)}
+          </div>
+          <div class="goal-amounts">
+            <div class="goal-saved">${fmt(saved)}</div>
+            <div class="goal-target">of ${fmt(g.target)}</div>
+          </div>
+        </div>
+        <div class="goal-bar-bg">
+          <div class="goal-bar-fill ${done?'complete':''}" style="width:${pct}%"></div>
+        </div>
+        <div class="goal-footer">
+          <span class="goal-pct">${pct}%${done ? '' : ` · ${fmt(remaining)} to go`}</span>
+          ${done
+            ? '<span class="goal-complete-badge">✓ Complete</span>'
+            : deadlineLabel}
+          ${showDelete ? `<button onclick="event.stopPropagation();deleteGoal('${g.id}')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px;padding:2px 6px">Remove</button>` : ''}
+        </div>
+      </div>`;
+  }
+
+  // ── SEARCH ──
+  let searchActive = false;
+
+  function toggleSearch() {
+    searchActive = !searchActive;
+    const bar      = document.getElementById('search-bar');
+    const monthNav = document.getElementById('month-nav-row');
+    const filterRow = document.getElementById('filter-row');
+    const btn      = document.getElementById('search-btn');
+
+    bar.style.display      = searchActive ? ''     : 'none';
+    monthNav.style.display = searchActive ? 'none' : '';
+    filterRow.style.display = searchActive ? 'none' : '';
+    btn.style.color        = searchActive ? 'var(--accent-text)' : '';
+
+    if (searchActive) {
+      document.getElementById('search-input').focus();
+    } else {
+      document.getElementById('search-input').value = '';
+      document.getElementById('search-clear').style.display = 'none';
+      renderTransactions();
+    }
+  }
+
+  function clearSearch() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-clear').style.display = 'none';
+    document.getElementById('search-input').focus();
+    renderSearch();
+  }
+
+  function renderSearch() {
+    const raw   = document.getElementById('search-input').value;
+    const query = raw.trim().toLowerCase();
+    const clear = document.getElementById('search-clear');
+    if (clear) clear.style.display = query ? '' : 'none';
+
+    const listEl = document.getElementById('tx-list');
+    const countEl = document.getElementById('tx-count');
+
+    if (!query) {
+      listEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🔍</div>
+          <h3>Start typing to search</h3>
+          <p>Search across all your expenses and income.</p>
+        </div>`;
+      if (countEl) countEl.textContent = '';
+      return;
+    }
+
+    // search all transactions and income across all months
+    const txMatches = transactions.filter(t => {
+      const cat = CATEGORIES.find(c => c.id === t.category);
+      return (
+        (t.note     && t.note.toLowerCase().includes(query)) ||
+        (t.account  && t.account.toLowerCase().includes(query)) ||
+        (cat        && catLabel(cat).toLowerCase().includes(query)) ||
+        String(t.amount).includes(query) ||
+        (t.date     && t.date.includes(query))
+      );
+    });
+
+    const incMatches = income.filter(i => {
+      const src = INCOME_SOURCES.find(s => s.id === i.source);
+      return (
+        (i.note    && i.note.toLowerCase().includes(query)) ||
+        (i.account && i.account.toLowerCase().includes(query)) ||
+        (src       && src.label.toLowerCase().includes(query)) ||
+        String(i.amount).includes(query) ||
+        (i.date    && i.date.includes(query))
+      );
+    });
+
+    // combine and sort by date desc
+    const rows = [
+      ...txMatches.map(t => ({ type:'expense', data:t })),
+      ...incMatches.map(i => ({ type:'income',  data:i }))
+    ].sort((a,b) => {
+      const da = parseLocalDate(a.data.date), db = parseLocalDate(b.data.date);
+      return db - da || b.data.id - a.data.id;
+    });
+
+    if (countEl) countEl.textContent = `${rows.length} result${rows.length===1?'':'s'}`;
+
+    if (!rows.length) {
+      listEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🔍</div>
+          <h3>No results</h3>
+          <p>Nothing found for "${esc(query)}"</p>
+        </div>`;
+      return;
+    }
+
+    // highlight matching text
+    function hi(text, q) {
+      if (!text || !q) return esc(text || '');
+      const idx = text.toLowerCase().indexOf(q);
+      if (idx === -1) return esc(text);
+      return esc(text.slice(0, idx))
+        + `<mark class="search-highlight">${esc(text.slice(idx, idx+q.length))}</mark>`
+        + esc(text.slice(idx + q.length));
+    }
+
+    listEl.innerHTML = rows.map(row => {
+      const { type, data } = row;
+      const dateStr  = parseLocalDate(data.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+      if (type === 'income') {
+        const src  = INCOME_SOURCES.find(s => s.id === data.source) || { emoji:'💰', label: data.source };
+        const meta = [data.account, data.note].filter(Boolean).map(v => hi(v, query)).join(' · ');
+        return `
+          <div class="tx-item" onclick="openEditIncome(${data.id})" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px">
+            <div class="tx-emoji-wrap" style="background:var(--success-dim)">${esc(src.emoji)}</div>
+            <div class="tx-info">
+              <div class="tx-cat" style="color:var(--success)">${hi(src.label, query)}</div>
+              <div class="tx-meta">${meta}</div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amount" style="color:var(--success)">+${fmt(data.amount)}</div>
+              <div class="tx-date">${dateStr}</div>
+            </div>
+          </div>`;
+      }
+
+      const t   = data;
+      const cat = CATEGORIES.find(c => c.id === t.category) || { emoji:'💰', label: t.category };
+      const meta = [t.account, t.note].filter(Boolean).map(v => hi(v, query)).join(' · ');
+      return `
+        <div class="tx-item" onclick="openEditTransaction(${t.id})" style="cursor:pointer">
+          <div class="tx-emoji-wrap">${esc(cat.emoji)}</div>
+          <div class="tx-info">
+            <div class="tx-cat">${hi(catLabel(cat), query)}</div>
+            <div class="tx-meta">${meta}</div>
+          </div>
+          <div class="tx-right">
+            <div class="tx-amount">-${fmt(t.amount)}</div>
+            <div class="tx-date">${dateStr}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── BILL REMINDERS ──
+  function renderBillReminders() {
+    const el = document.getElementById('bill-reminders');
+    if (!el) return;
+
+    const now  = new Date();
+    const m    = now.getMonth();
+    const y    = now.getFullYear();
+    const today = now.getDate();
+    const nowYM = `${y}-${String(m+1).padStart(2,'0')}`;
+
+    const active = recurring.filter(r => !r.archived);
+    const banners = [];
+
+    active.forEach(r => {
+      const key    = paidKey(r.id, m, y);
+      const isPaid = !!paidStatus[key];
+      if (isPaid) return;
+
+      const daysUntilDue = r.day - today;
+
+      // overdue — past due day this month
+      if (daysUntilDue < 0) {
+        banners.push({
+          type: 'overdue',
+          icon: '🔴',
+          title: `${r.name} is overdue`,
+          sub: `Was due on day ${r.day} · ${fmt(r.amount)}`,
+          amt: fmt(r.amount),
+          id: r.id,
+          priority: 0
+        });
+      // due today or tomorrow
+      } else if (daysUntilDue <= 1) {
+        banners.push({
+          type: 'due-soon',
+          icon: '🟡',
+          title: daysUntilDue === 0 ? `${r.name} is due today` : `${r.name} is due tomorrow`,
+          sub: `${fmt(r.amount)} · tap Bills to log it`,
+          amt: fmt(r.amount),
+          id: r.id,
+          priority: 1
+        });
+      // due within 3 days
+      } else if (daysUntilDue <= 3) {
+        banners.push({
+          type: 'due-soon',
+          icon: '🟡',
+          title: `${r.name} due in ${daysUntilDue} days`,
+          sub: `${fmt(r.amount)} · due day ${r.day}`,
+          amt: fmt(r.amount),
+          id: r.id,
+          priority: 2
+        });
+      }
+
+      // expiring within 30 days
+      if (r.endDate) {
+        const endDt    = parseLocalDate(r.endDate);
+        const todayDt  = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const daysLeft = Math.ceil((endDt - todayDt) / 86400000);
+        const endFormatted = `${endDt.getDate()} ${getMonths()[endDt.getMonth()].slice(0,3)} ${endDt.getFullYear()}`;
+        if (daysLeft >= 0 && daysLeft <= 30) {
+          banners.push({
+            type: 'expiring',
+            icon: '📅',
+            title: daysLeft === 0
+              ? `${r.name} ends today`
+              : daysLeft <= 7
+              ? `${r.name} ends in ${daysLeft} day${daysLeft===1?'':'s'}`
+              : `${r.name} ending soon`,
+            sub: `Contract ends ${endFormatted}`,
+            amt: null,
+            id: r.id,
+            priority: 3
+          });
+        }
+      }
+    });
+
+    // sort by priority, limit to 3
+    banners.sort((a,b) => a.priority - b.priority);
+    const shown = banners.slice(0, 3);
+
+    el.innerHTML = shown.map(b => `
+      <div class="reminder-banner ${b.type}" onclick="showPage('recurring', document.querySelector('#nav-recurring'))">
+        <div class="reminder-icon">${b.icon}</div>
+        <div class="reminder-text">
+          <div class="reminder-title ${b.type}">${esc(b.title)}</div>
+          <div class="reminder-sub">${esc(b.sub)}</div>
+        </div>
+        ${b.amt ? `<div class="reminder-amt">${esc(b.amt)}</div>` : ''}
+      </div>`).join('');
+  }
 
   // ── OVERVIEW ──
   function renderOverview() {
@@ -2267,15 +3187,41 @@
     void catEl.offsetWidth; // force reflow
     catEl.classList.add('fade-in');
     CATEGORIES.filter(c => byCat[c.id] > 0).sort((a,b) => byCat[b.id]-byCat[a.id]).forEach(c => {
-      const pct    = (byCat[c.id] / maxCat * 100).toFixed(1);
-      const share  = totalExp > 0 ? Math.round(byCat[c.id] / totalExp * 100) : 0;
+      const spent   = byCat[c.id];
+      const budget  = (settings.budgets || {})[c.id];
+      const share   = totalExp > 0 ? Math.round(spent / totalExp * 100) : 0;
+
+      let barPct, barClass, budgetRow = '';
+
+      if (budget) {
+        // budget mode — bar width is % of budget used, capped at 100%
+        barPct   = Math.min(spent / budget * 100, 100).toFixed(1);
+        const remaining = budget - spent;
+        const usedPct   = Math.round(spent / budget * 100);
+        barClass = usedPct >= 100 ? 'over' : usedPct >= 80 ? 'warn' : '';
+        const pillClass = usedPct >= 100 ? 'over' : usedPct >= 80 ? 'warn' : 'ok';
+        const pillText  = usedPct >= 100
+          ? `Over by ${fmt(Math.abs(remaining))}`
+          : `${fmt(remaining)} left`;
+        budgetRow = `
+          <div class="budget-row">
+            <span class="budget-pill ${pillClass}">${pillText}</span>
+            <span class="budget-limit-lbl">${fmt(spent)} / ${fmt(budget)}</span>
+          </div>`;
+      } else {
+        // no budget — bar width relative to biggest category
+        barPct   = (spent / maxCat * 100).toFixed(1);
+        barClass = '';
+      }
+
       catEl.innerHTML += `
         <div class="cat-row">
           <div class="cat-row-top">
             <div class="cat-name">${esc(c.emoji)} ${esc(catLabel(c))} <span class="cat-pct">${share}%</span></div>
-            <div class="cat-amount">${fmt(byCat[c.id])}</div>
+            <div class="cat-amount">${fmt(spent)}</div>
           </div>
-          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill ${barClass}" style="width:${barPct}%"></div></div>
+          ${budgetRow}
         </div>`;
     });
     if (!txs.length) catEl.innerHTML = `
@@ -2293,6 +3239,15 @@
       accEl.innerHTML += `<div class="account-pill">${esc(acc)}<span class="pill-amt">${fmt(amt)}</span></div>`;
     });
     if (!Object.keys(byAcc).length) accEl.innerHTML = `<div style="color:var(--muted);font-size:13px">No data yet</div>`;
+
+    // bill reminders — only show for current month
+    if (currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear()) {
+      renderBillReminders();
+    } else {
+      const remEl = document.getElementById('bill-reminders');
+      if (remEl) remEl.innerHTML = '';
+    }
+    renderGoals();
   }
 
   // ── ADD EXPENSE ──
@@ -2335,32 +3290,79 @@
   function renderTransactions() {
     document.getElementById('tx-month-label').textContent = `${getMonths()[txMonth]} ${txYear}`;
     let txs = monthTx(txMonth, txYear);
+    const incTxs = monthInc(txMonth, txYear);
 
-    const cats = ['all', ...new Set(txs.map(t => t.category))];
+    const cats = ['all', 'income', ...new Set(txs.map(t => t.category))];
     document.getElementById('filter-row').innerHTML = cats.map(c => {
+      if (c === 'all')    return `<div class="filter-pill ${txFilter==='all'?'active':''}" onclick="setFilter('all')">All</div>`;
+      if (c === 'income') return `<div class="filter-pill ${txFilter==='income'?'active':''}" onclick="setFilter('income')" style="${txFilter==='income'?'':''}">💚 Income</div>`;
       const cat = CATEGORIES.find(x => x.id === c);
-      const lbl = c === 'all' ? 'All' : `${cat?.emoji} ${cat?.label}`;
+      const lbl = `${cat?.emoji || '💰'} ${cat ? catLabel(cat) : c}`;
       return `<div class="filter-pill ${txFilter===c?'active':''}" onclick="setFilter('${c}')">${lbl}</div>`;
     }).join('');
-
-    if (txFilter !== 'all') txs = txs.filter(t => t.category === txFilter);
-    document.getElementById('tx-count').textContent = `${txs.length} entr${txs.length===1?'y':'ies'}`;
 
     const listEl = document.getElementById('tx-list');
     listEl.classList.remove('fade-in');
     void listEl.offsetWidth;
     listEl.classList.add('fade-in');
-    if (!txs.length) { listEl.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🗂️</div>
-        <h3>No expenses here</h3>
-        <p>Nothing logged for this month yet.</p>
-      </div>`; return; }
 
-    listEl.innerHTML = txs.map(t => {
-      const cat     = CATEGORIES.find(c => c.id === t.category) || { emoji:'💰', label: t.category };
-      const dateStr = parseLocalDate(t.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-      const meta    = [t.account, t.note].filter(Boolean).map(esc).join(' · ');
+    // build combined list
+    let rows = [];
+
+    if (txFilter !== 'income') {
+      let filtered = txFilter === 'all' ? txs : txs.filter(t => t.category === txFilter);
+      filtered.forEach(t => rows.push({ type: 'expense', data: t }));
+    }
+    if (txFilter === 'all' || txFilter === 'income') {
+      incTxs.forEach(i => rows.push({ type: 'income', data: i }));
+    }
+
+    // sort by date descending
+    rows.sort((a, b) => {
+      const da = parseLocalDate(a.data.date), db = parseLocalDate(b.data.date);
+      return db - da || b.data.id - a.data.id;
+    });
+
+    document.getElementById('tx-count').textContent =
+      `${rows.length} entr${rows.length===1?'y':'ies'}`;
+
+    if (!rows.length) {
+      listEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🗂️</div>
+          <h3>No entries here</h3>
+          <p>Nothing logged for this month yet.</p>
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML = rows.map(row => {
+      const { type, data } = row;
+      const dateStr = parseLocalDate(data.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+
+      if (type === 'income') {
+        const src  = INCOME_SOURCES.find(s => s.id === data.source) || { emoji:'💰', label: data.source };
+        const meta = [data.account, data.note].filter(Boolean).map(esc).join(' · ');
+        return `
+          <div class="tx-swipe-wrap" data-inc-id="${data.id}">
+            <div class="tx-delete-bg" style="background:var(--danger)">🗑</div>
+            <div class="tx-item" data-inc-id="${data.id}" onclick="openEditIncome(${data.id})" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px">
+              <div class="tx-emoji-wrap" style="background:var(--success-dim)">${esc(src.emoji)}</div>
+              <div class="tx-info">
+                <div class="tx-cat" style="color:var(--success)">${esc(src.label)}</div>
+                <div class="tx-meta">${meta}</div>
+              </div>
+              <div class="tx-right">
+                <div class="tx-amount" style="color:var(--success)">+${fmt(data.amount)}</div>
+                <div class="tx-date">${dateStr}</div>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      const t      = data;
+      const cat    = CATEGORIES.find(c => c.id === t.category) || { emoji:'💰', label: t.category };
+      const meta   = [t.account, t.note].filter(Boolean).map(esc).join(' · ');
       const recClass = t.fromRecurring ? 'from-recurring' : '';
       return `
         <div class="tx-swipe-wrap" data-id="${t.id}">
@@ -2379,14 +3381,20 @@
         </div>`;
     }).join('');
 
-    // attach swipe listeners
-    listEl.querySelectorAll('.tx-item').forEach(el => attachSwipe(el));
+    // attach swipe to expenses
+    listEl.querySelectorAll('.tx-item[data-id]').forEach(el => {
+      attachSwipe(el, () => trashTransaction(parseInt(el.dataset.id)));
+    });
+    // attach swipe to income rows
+    listEl.querySelectorAll('.tx-item[data-inc-id]').forEach(el => {
+      attachSwipe(el, () => deleteIncomeById(parseInt(el.dataset.incId)));
+    });
     updateTrashBadge();
   }
   function setFilter(cat) { txFilter = cat; renderTransactions(); }
 
   // ── SWIPE TO DELETE ──
-  function attachSwipe(el) {
+  function attachSwipe(el, onDelete) {
     let startX = 0, currentX = 0, swiping = false, didSwipe = false;
     const THRESHOLD = 60;
 
@@ -2394,7 +3402,7 @@
     function onMove(x) {
       if (!swiping) return;
       const dx = x - startX;
-      if (Math.abs(dx) > 6) didSwipe = true; // mark as swipe intent
+      if (Math.abs(dx) > 6) didSwipe = true;
       currentX = Math.min(0, Math.max(-90, dx));
       el.style.transform = `translateX(${currentX}px)`;
     }
@@ -2404,8 +3412,14 @@
       if (currentX < -THRESHOLD) {
         el.style.transform = 'translateX(-80px)';
         el.classList.add('swiped');
-        el.closest('.tx-swipe-wrap').querySelector('.tx-delete-bg').style.pointerEvents = 'all';
-        el.closest('.tx-swipe-wrap').querySelector('.tx-delete-bg').onclick = () => trashTransaction(parseInt(el.dataset.id));
+        const bg = el.closest('.tx-swipe-wrap').querySelector('.tx-delete-bg');
+        if (bg) {
+          bg.style.pointerEvents = 'all';
+          bg.onclick = () => {
+            if (onDelete) onDelete();
+            else trashTransaction(parseInt(el.dataset.id));
+          };
+        }
       } else {
         el.style.transform = 'translateX(0)';
         el.classList.remove('swiped');
@@ -2413,16 +3427,13 @@
       currentX = 0;
     }
 
-    // block the onclick if the user actually swiped
     el.addEventListener('click', e => {
       if (didSwipe) { e.stopImmediatePropagation(); didSwipe = false; }
     }, true);
 
-    // touch
     el.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
     el.addEventListener('touchmove',  e => onMove(e.touches[0].clientX),  { passive: true });
     el.addEventListener('touchend',   () => onEnd());
-    // mouse (desktop)
     el.addEventListener('mousedown',  e => onStart(e.clientX));
     el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX); });
     el.addEventListener('mouseup',    () => onEnd());
@@ -2486,12 +3497,36 @@
 
   // ── RECURRING: RENDER ──
   function getRecStatus(rec) {
-    const now = new Date();
-    const key = paidKey(rec.id, now.getMonth(), now.getFullYear());
-    if (paidStatus[key]) return 'paid';
+    const now   = new Date();
     const today = now.getDate();
-    if (today > rec.day) return 'overdue';
-    if (rec.day - today <= 5) return 'due-soon';
+    const m     = now.getMonth();
+    const y     = now.getFullYear();
+    const key   = paidKey(rec.id, m, y);
+    if (paidStatus[key]) return 'paid';
+
+    if (rec.type === 'onetime') {
+      if (!rec.dueDate) return 'upcoming';
+      const due      = parseLocalDate(rec.dueDate);
+      const todayDt  = new Date(y, m, today);
+      const daysLeft = Math.ceil((due - todayDt) / 86400000);
+      if (daysLeft < 0)  return 'overdue';
+      if (daysLeft <= 3) return 'due-soon';
+      return 'upcoming';
+    }
+
+    if (rec.type === 'yearly') {
+      // check if due this month
+      if (rec.yearlyMonth === m + 1) {
+        if (today > rec.yearlyDay)       return 'overdue';
+        if (rec.yearlyDay - today <= 5)  return 'due-soon';
+        return 'upcoming';
+      }
+      return 'upcoming';
+    }
+
+    // monthly (default)
+    if (today > rec.day)           return 'overdue';
+    if (rec.day - today <= 5)      return 'due-soon';
     return 'upcoming';
   }
 
@@ -2499,13 +3534,24 @@
     const now    = new Date();
     const m      = now.getMonth();
     const y      = now.getFullYear();
+    // auto-archive bills whose end date has passed
+    const todayStr2 = todayStr();
+    recurring.forEach(r => {
+      if (r.endDate && r.endDate < todayStr2 && !r.archived) {
+        r.archived = true;
+      }
+    });
+
     const active = recurring.filter(r => !r.archived);
+    const monthlyTotal = active.filter(r => !r.type || r.type === 'monthly').reduce((s,r) => s + r.amount, 0);
     const total  = active.reduce((s,r) => s + r.amount, 0);
     const paid   = active.filter(r => paidStatus[paidKey(r.id,m,y)]).length;
-    const unpaid = active.length - paid;
+    const unpaid = active.filter(r => !paidStatus[paidKey(r.id,m,y)]).length;
 
     document.getElementById('rec-subtitle').textContent =
-      active.length ? `${getMonths()[m]} · CHF ${total.toFixed(2)} committed monthly` : 'Your subscriptions & regular bills';
+      active.length
+        ? `${getMonths()[m]} · ${monthlyTotal > 0 ? fmt(monthlyTotal) + '/mo' : ''} · ${active.length} bill${active.length===1?'':'s'}`
+        : 'Your subscriptions & regular bills';
     document.getElementById('rec-total').textContent        = `CHF ${total.toFixed(0)}`;
     document.getElementById('rec-paid-count').textContent   = paid;
     document.getElementById('rec-unpaid-count').textContent = unpaid;
@@ -2532,29 +3578,70 @@
       return;
     }
 
-    const sorted = [...active].sort((a,b) => a.day - b.day);
+    const sorted = [...active].sort((a,b) => {
+      // sort: overdue first, then due-soon, then by due day
+      const order = { overdue: 0, 'due-soon': 1, upcoming: 2, paid: 3 };
+      return (order[getRecStatus(a)] || 2) - (order[getRecStatus(b)] || 2);
+    });
+
     listEl.innerHTML = sorted.map(r => {
-      const status = getRecStatus(r);
-      const cat    = CATEGORIES.find(c => c.id === r.category) || { emoji:'💰', label:'Other' };
-      const ovKey  = paidKey(r.id, m, y);
-      const eff    = overrides[ovKey] || {};
-      const dispAmt = eff.amount || r.amount;
+      const status   = getRecStatus(r);
+      const cat      = CATEGORIES.find(c => c.id === r.category) || { emoji:'💰', label:'Other' };
+      const ovKey    = paidKey(r.id, m, y);
+      const eff      = overrides[ovKey] || {};
+      const dispAmt  = eff.amount || r.amount;
       const statusLabel = { paid:'Paid', overdue:'Overdue', 'due-soon':'Due soon', upcoming:'' }[status];
+
+      // type badge and due info
+      let typeBadge = '', dueInfo = '';
+      if (r.type === 'onetime') {
+        typeBadge = `<span style="font-size:9px;font-weight:700;background:var(--surface2);color:var(--muted);padding:1px 6px;border-radius:99px;margin-left:4px">One-time</span>`;
+        if (r.dueDate) {
+          const due = parseLocalDate(r.dueDate);
+          dueInfo = `Due ${due.getDate()} ${getMonths()[due.getMonth()].slice(0,3)} ${due.getFullYear()}`;
+        }
+      } else if (r.type === 'yearly') {
+        typeBadge = `<span style="font-size:9px;font-weight:700;background:var(--surface2);color:var(--muted);padding:1px 6px;border-radius:99px;margin-left:4px">Yearly</span>`;
+        dueInfo = r.yearlyDay && r.yearlyMonth
+          ? `Due ${r.yearlyDay} ${getMonths()[r.yearlyMonth-1].slice(0,3)} each year`
+          : 'Yearly';
+      } else {
+        dueInfo = `Due day ${r.day} each month`;
+      }
+
+      // end date label
+      let endLabel = '';
+      if (r.endDate && r.type !== 'onetime') {
+        const endDt    = parseLocalDate(r.endDate);
+        const todayDt2 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const daysLeft = Math.ceil((endDt - todayDt2) / 86400000);
+        const formatted = `${endDt.getDate()} ${getMonths()[endDt.getMonth()].slice(0,3)} ${endDt.getFullYear()}`;
+        if      (daysLeft <= 0)  endLabel = `<span style="color:var(--danger);font-size:10px;font-weight:700"> · ⚠ Expired</span>`;
+        else if (daysLeft <= 7)  endLabel = `<span style="color:var(--warn);font-size:10px;font-weight:700"> · ⚠ Ends in ${daysLeft}d</span>`;
+        else if (daysLeft <= 30) endLabel = `<span style="color:var(--accent-text);font-size:10px"> · Ends ${formatted}</span>`;
+        else                     endLabel = `<span style="font-size:10px;color:var(--muted)"> · Until ${formatted}</span>`;
+      }
+
+      // hide ⋯ menu for one-time bills (no edit scopes needed)
+      const menuBtn = r.type === 'onetime'
+        ? `<button class="rec-menu-btn" onclick="openBillActions('${r.id}')" title="Options">⋯</button>`
+        : `<button class="rec-menu-btn" onclick="openBillActions('${r.id}')" title="Options">⋯</button>`;
+
       return `
         <div class="rec-item ${status}">
           <button class="rec-check" onclick="initMarkPaid('${r.id}')" title="${status==='paid'?'Mark unpaid':'Mark as paid'}">
             ${status==='paid'?'✓':''}
           </button>
           <div class="rec-info">
-            <div class="rec-name">${esc(cat.emoji)} ${esc(r.name)}</div>
-            <div class="rec-meta">${esc(catLabel(cat))} · due day ${r.day}</div>
+            <div class="rec-name">${esc(cat.emoji)} ${esc(r.name)}${typeBadge}</div>
+            <div class="rec-meta">${esc(dueInfo)}${endLabel}</div>
             ${statusLabel ? `<span class="rec-status">${statusLabel}</span>` : ''}
           </div>
           <div class="rec-right">
             <div class="rec-amount">${fmt(dispAmt)}</div>
-            <div class="rec-per">/ month</div>
+            <div class="rec-per">${r.type === 'yearly' ? '/ year' : r.type === 'onetime' ? 'once' : '/ mo'}</div>
           </div>
-          <button class="rec-menu-btn" onclick="openBillActions('${r.id}')" title="Options">⋯</button>
+          ${menuBtn}
         </div>`;
     }).join('');
   }
@@ -2668,10 +3755,39 @@
     document.getElementById('rec-modal-title').textContent = titles[scope];
     document.getElementById('rec-modal-sub').textContent   = subs[scope];
     document.getElementById('rec-save-btn').textContent    = 'Save Changes';
-    document.getElementById('rec-input-name').value        = rec.name;
-    document.getElementById('rec-input-amount').value      = rec.amount;
-    document.getElementById('rec-input-day').value         = rec.day;
-    document.getElementById('rec-input-cat').value         = rec.category;
+    document.getElementById('rec-input-name').value   = rec.name;
+    document.getElementById('rec-input-amount').value = rec.amount;
+    document.getElementById('rec-input-cat').value    = rec.category;
+
+    // set bill type and relevant fields
+    const type = rec.type || 'monthly';
+    setBillType(type);
+
+    if (type === 'monthly') {
+      document.getElementById('rec-input-day').value = rec.day || '';
+    } else if (type === 'yearly') {
+      document.getElementById('rec-yearly-day').value   = rec.yearlyDay   || '';
+      document.getElementById('rec-yearly-month').value = rec.yearlyMonth || '';
+    } else if (type === 'onetime') {
+      if (rec.dueDate) {
+        const [oy, om, od] = rec.dueDate.split('-');
+        document.getElementById('rec-ot-day').value   = od || '';
+        document.getElementById('rec-ot-month').value = om || '';
+        document.getElementById('rec-ot-year').value  = oy || '';
+      }
+    }
+
+    // populate end date dropdowns
+    if (rec.endDate && type !== 'onetime') {
+      const [ey, em, ed] = rec.endDate.split('-');
+      document.getElementById('rec-end-day').value   = ed || '';
+      document.getElementById('rec-end-month').value = em || '';
+      document.getElementById('rec-end-year').value  = ey || '';
+    } else {
+      document.getElementById('rec-end-day').value   = '';
+      document.getElementById('rec-end-month').value = '';
+      document.getElementById('rec-end-year').value  = '';
+    }
     openModal('modal-add-rec');
   }
 
@@ -2684,48 +3800,168 @@
   }
 
   // ── ADD / SAVE RECURRING ──
+  // ── BILL MODAL DROPDOWNS ──
+  // These must be built via JS — template literals don't work in static HTML
+  function populateBillDropdowns() {
+    const MONTHS_FULL = ['January','February','March','April','May','June',
+                         'July','August','September','October','November','December'];
+    const thisYear = new Date().getFullYear();
+
+    function dayOptions(padded) {
+      return '<option value="">Day</option>' +
+        Array.from({length:31},(_,i) => {
+          const v = padded ? String(i+1).padStart(2,'0') : i+1;
+          return `<option value="${v}">${i+1}</option>`;
+        }).join('');
+    }
+    function monthOptions(numericVal) {
+      return '<option value="">Month</option>' +
+        MONTHS_FULL.map((mn,i) => {
+          const v = numericVal ? i+1 : String(i+1).padStart(2,'0');
+          return `<option value="${v}">${mn}</option>`;
+        }).join('');
+    }
+    function yearOptions(count, padded) {
+      return '<option value="">Year</option>' +
+        Array.from({length:count},(_,i) =>
+          `<option value="${thisYear+i}">${thisYear+i}</option>`
+        ).join('');
+    }
+
+    // yearly pickers — numeric values
+    const ryd = document.getElementById('rec-yearly-day');
+    const rym = document.getElementById('rec-yearly-month');
+    if (ryd && !ryd.options.length) { ryd.innerHTML = dayOptions(false); }
+    if (rym && !rym.options.length) { rym.innerHTML = monthOptions(true); }
+
+    // one-time pickers — padded values for YYYY-MM-DD
+    const otd = document.getElementById('rec-ot-day');
+    const otm = document.getElementById('rec-ot-month');
+    const oty = document.getElementById('rec-ot-year');
+    if (otd && !otd.options.length) { otd.innerHTML = dayOptions(true); }
+    if (otm && !otm.options.length) { otm.innerHTML = monthOptions(false); }
+    if (oty && !oty.options.length) { oty.innerHTML = yearOptions(5); }
+
+    // end date pickers — padded values for YYYY-MM-DD
+    const ed = document.getElementById('rec-end-day');
+    const em = document.getElementById('rec-end-month');
+    const ey = document.getElementById('rec-end-year');
+    if (ed && !ed.options.length) { ed.innerHTML = dayOptions(true); }
+    if (em && !em.options.length) { em.innerHTML = monthOptions(false); }
+    if (ey && !ey.options.length) { ey.innerHTML = yearOptions(10); }
+  }
+
+  // ── BILL TYPE TOGGLE ──
+  function setBillType(type) {
+    document.getElementById('rec-input-type').value = type;
+    ['monthly','yearly','onetime'].forEach(t => {
+      document.getElementById(`btype-${t}`).classList.toggle('active', t === type);
+    });
+    // show/hide relevant fields
+    document.getElementById('field-due-day').style.display      = type === 'monthly'  ? '' : 'none';
+    document.getElementById('field-due-date').style.display     = type === 'yearly'   ? '' : 'none';
+    document.getElementById('field-onetime-date').style.display = type === 'onetime'  ? '' : 'none';
+    document.getElementById('field-end-date').style.display     = type === 'onetime'  ? 'none' : '';
+    // update save button label
+    document.getElementById('rec-save-btn').textContent =
+      type === 'onetime' ? 'Add to Bills' : 'Save Bill';
+  }
+
   function saveRecurring() {
+    const type   = document.getElementById('rec-input-type').value;
     const name   = sanitiseText(document.getElementById('rec-input-name').value, 80);
     const amount = parseFloat(document.getElementById('rec-input-amount').value);
-    const day    = parseInt(document.getElementById('rec-input-day').value);
     const cat    = document.getElementById('rec-input-cat').value;
 
-    if (!name)                            { shake('rec-input-name');   return; }
+    if (!name)                                        { shake('rec-input-name');   return; }
     if (!amount || amount <= 0 || amount > 999999999) { shake('rec-input-amount'); return; }
-    if (!day || day < 1 || day > 31)      { shake('rec-input-day');    return; }
 
     const now = new Date();
     const m   = now.getMonth();
     const y   = now.getFullYear();
 
-    if (activeRecId && editScope) {
-      // EDIT MODE
-      const rec = recurring.find(r => r.id === activeRecId);
-      if (rec) {
-        if (editScope === 'all' || editScope === 'future') {
-          rec.name = name; rec.amount = amount; rec.day = day; rec.category = cat;
-        }
-        if (editScope === 'this') {
-          // store override for this month only
-          overrides[paidKey(activeRecId, m, y)] = { amount, note: name };
-        }
+    // end date (monthly/yearly only)
+    const endDay   = document.getElementById('rec-end-day').value;
+    const endMonth = document.getElementById('rec-end-month').value;
+    const endYear  = document.getElementById('rec-end-year').value;
+    const endDate  = (endDay && endMonth && endYear && type !== 'onetime')
+      ? `${endYear}-${endMonth}-${endDay}` : null;
+
+    if (type === 'onetime') {
+      // one-time bill — get the due date
+      const otD = document.getElementById('rec-ot-day').value;
+      const otM = document.getElementById('rec-ot-month').value;
+      const otY = document.getElementById('rec-ot-year').value;
+      if (!otD || !otM || !otY) { shake('field-onetime-date'); return; }
+      const dueDate = `${otY}-${otM}-${otD}`;
+
+      if (activeRecId && editScope) {
+        const rec = recurring.find(r => r.id === activeRecId);
+        if (rec) { rec.name = name; rec.amount = amount; rec.category = cat; rec.dueDate = dueDate; }
+        showToast(t('billUpdated'));
+      } else {
+        recurring.push({ id: Date.now().toString(), type: 'onetime', name, amount, category: cat, dueDate, archived: false });
+        showToast(t('billAdded'));
       }
-      showToast(t('billUpdated'));
+
+    } else if (type === 'yearly') {
+      // yearly bill — get due day and month
+      const yd = parseInt(document.getElementById('rec-yearly-day').value);
+      const ym = parseInt(document.getElementById('rec-yearly-month').value);
+      if (!yd || !ym) { shake('field-due-date'); return; }
+
+      if (activeRecId && editScope) {
+        const rec = recurring.find(r => r.id === activeRecId);
+        if (rec && (editScope === 'all' || editScope === 'future')) {
+          rec.name = name; rec.amount = amount; rec.category = cat;
+          rec.yearlyDay = yd; rec.yearlyMonth = ym; rec.endDate = endDate;
+        }
+        showToast(t('billUpdated'));
+      } else {
+        recurring.push({ id: Date.now().toString(), type: 'yearly', name, amount, category: cat, yearlyDay: yd, yearlyMonth: ym, endDate });
+        showToast(t('billAdded'));
+      }
+
     } else {
-      // ADD MODE
-      recurring.push({ id: Date.now().toString(), name, amount, day, category: cat });
-      showToast(t('billAdded'));
+      // monthly bill (default)
+      const day = parseInt(document.getElementById('rec-input-day').value);
+      if (!day || day < 1 || day > 31) { shake('rec-input-day'); return; }
+
+      if (activeRecId && editScope) {
+        const rec = recurring.find(r => r.id === activeRecId);
+        if (rec) {
+          if (editScope === 'all' || editScope === 'future') {
+            rec.name = name; rec.amount = amount; rec.day = day;
+            rec.category = cat; rec.endDate = endDate;
+          }
+          if (editScope === 'this') {
+            overrides[paidKey(activeRecId, m, y)] = { amount, note: name };
+          }
+        }
+        showToast(t('billUpdated'));
+      } else {
+        recurring.push({ id: Date.now().toString(), type: 'monthly', name, amount, day, category: cat, endDate });
+        showToast(t('billAdded'));
+      }
     }
 
     save();
-    // reset modal state
+    // reset modal
     activeRecId = null; editScope = null;
-    document.getElementById('rec-modal-title').textContent = 'Add Recurring Bill';
-    document.getElementById('rec-modal-sub').textContent   = 'Define a subscription or regular bill once.';
-    document.getElementById('rec-save-btn').textContent    = 'Save Bill';
+    document.getElementById('rec-modal-title').textContent = 'Add Bill';
+    document.getElementById('rec-modal-sub').textContent   = 'Track a regular or upcoming payment.';
     document.getElementById('rec-input-name').value        = '';
     document.getElementById('rec-input-amount').value      = '';
     document.getElementById('rec-input-day').value         = '';
+    document.getElementById('rec-end-day').value           = '';
+    document.getElementById('rec-end-month').value         = '';
+    document.getElementById('rec-end-year').value          = '';
+    document.getElementById('rec-ot-day').value            = '';
+    document.getElementById('rec-ot-month').value          = '';
+    document.getElementById('rec-ot-year').value           = '';
+    document.getElementById('rec-yearly-day').value        = '';
+    document.getElementById('rec-yearly-month').value      = '';
+    setBillType('monthly');
     closeModal('modal-add-rec');
     renderRecurring();
   }
@@ -3175,6 +4411,7 @@
   settings.currency   = settings.currency   || 'CHF';
   settings.accounts   = settings.accounts   || ['Bank 1', 'Bank 2', 'Cash'];
   settings.customCats = settings.customCats || [];
+  settings.budgets    = settings.budgets    || {};
 
   // merge custom cats into CATEGORIES on load
   function rebuildCategories() {
@@ -3215,8 +4452,7 @@
     if (sub)  sub.textContent  = isDark ? 'Dark'  : 'Light';
     if (icon) icon.textContent = isDark ? '☀️' : '🌙';
     renderDataStats();
-
-    // accounts — swipeable, no X button
+    renderGoals();
     const accEl = document.getElementById('accounts-list');
     if (accEl) {
       accEl.innerHTML = settings.accounts.map((acc, i) => `
@@ -3241,6 +4477,30 @@
     }
 
     // categories — built-in (no swipe) + custom (swipeable)
+    // budgets list
+    const budgetsEl = document.getElementById('budgets-list');
+    if (budgetsEl) {
+      budgetsEl.innerHTML = CATEGORIES.map(c => {
+        const current = (settings.budgets || {})[c.id] || '';
+        return `
+          <div class="settings-row">
+            <div class="settings-row-emoji">${esc(c.emoji)}</div>
+            <div class="settings-row-info">
+              <div class="settings-row-label">${esc(catLabel(c))}</div>
+            </div>
+            <div class="budget-input-wrap">
+              <span class="budget-cur">${settings.currency}</span>
+              <input class="budget-input" type="number" min="0" step="1"
+                placeholder="—"
+                value="${current}"
+                onchange="saveBudget('${esc(c.id)}', this.value)"
+                oninput="saveBudget('${esc(c.id)}', this.value)"
+              />
+            </div>
+          </div>`;
+      }).join('');
+    }
+
     const catEl = document.getElementById('categories-list');
     if (catEl) {
       const builtIn = CATEGORIES.slice(0, 8).map(c => `
@@ -3269,6 +4529,19 @@
         removeCustomCat(parseInt(el.dataset.catIdx));
       }));
     }
+  }
+
+  function saveBudget(catId, val) {
+    if (!settings.budgets) settings.budgets = {};
+    const num = parseFloat(val);
+    if (!val || isNaN(num) || num <= 0) {
+      delete settings.budgets[catId];
+    } else {
+      settings.budgets[catId] = num;
+    }
+    saveSettings();
+    // refresh overview if visible so bars update live
+    if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
   }
 
   function addAccount() {
@@ -3497,6 +4770,80 @@
     });
   }
 
+  // ── EDIT INCOME ──
+  let editingIncId = null;
+  let editIncSelectedSource = null;
+
+  function openEditIncome(id) {
+    const inc = income.find(i => i.id === id);
+    if (!inc) return;
+    editingIncId = id;
+    editIncSelectedSource = inc.source;
+
+    document.getElementById('edit-inc-amount').value = inc.amount;
+    document.getElementById('edit-inc-date').value   = inc.date;
+    document.getElementById('edit-inc-note').value   = inc.note || '';
+
+    // build source picker
+    const picker = document.getElementById('edit-inc-source-picker');
+    picker.innerHTML = INCOME_SOURCES.map(s => `
+      <button class="cat-btn ${s.id === inc.source ? 'selected' : ''}"
+        onclick="selectEditIncSource('${esc(s.id)}',this)" type="button">
+        <span class="cat-emoji">${esc(s.emoji)}</span>
+        <span class="cat-name">${esc(s.label)}</span>
+      </button>`).join('');
+
+    // account selector
+    const sel = document.getElementById('edit-inc-account');
+    sel.innerHTML = settings.accounts.map(a =>
+      `<option value="${esc(a)}" ${a === inc.account ? 'selected' : ''}>${esc(a)}</option>`
+    ).join('');
+
+    openModal('modal-edit-income');
+    document.getElementById('edit-inc-amount').focus();
+  }
+
+  function selectEditIncSource(id, btn) {
+    editIncSelectedSource = id;
+    document.querySelectorAll('#edit-inc-source-picker .cat-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function saveEditIncome() {
+    const amount  = parseFloat(document.getElementById('edit-inc-amount').value);
+    const account = sanitiseText(document.getElementById('edit-inc-account').value, 50);
+    const date    = document.getElementById('edit-inc-date').value;
+    const note    = sanitiseText(document.getElementById('edit-inc-note').value, 200);
+
+    if (!amount || amount <= 0 || amount > 999999999) { shake('edit-inc-amount');        return; }
+    if (!editIncSelectedSource)                       { shake('edit-inc-source-picker'); return; }
+    if (!date || !date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('edit-inc-date');          return; }
+
+    const idx = income.findIndex(i => i.id === editingIncId);
+    if (idx === -1) { closeModal('modal-edit-income'); return; }
+
+    income[idx] = { ...income[idx], amount, source: editIncSelectedSource, account, date, note };
+    save();
+    closeModal('modal-edit-income');
+    if (document.getElementById('page-transactions').classList.contains('active')) renderTransactions();
+    if (document.getElementById('page-overview').classList.contains('active'))     renderOverview();
+    showToast('✓ Income updated');
+  }
+
+  function deleteIncomeById(id) {
+    income = income.filter(i => i.id !== id);
+    save();
+    renderTransactions();
+    if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
+    showToast('🗑 Income removed');
+  }
+
+  function deleteIncome() {
+    if (!editingIncId) return;
+    deleteIncomeById(editingIncId);
+    closeModal('modal-edit-income');
+  }
+
   // ── EDIT TRANSACTION ──
   let editingTxId = null;
   let editSelectedCat = null;
@@ -3595,6 +4942,7 @@
       appName:      'Kassior',
       transactions,
       income,
+      goals,
       recurring,
       paidStatus,
       overrides,
@@ -3617,7 +4965,179 @@
     showToast(`✓ Exported ${filename}`);
   }
 
-  let pendingImport = null;
+  function exportCSV() {
+    // helper — wrap value in quotes and escape any quotes inside
+    const cell = v => `"${String(v === null || v === undefined ? '' : v).replace(/"/g, '""')}"`;
+
+    const rows = [];
+
+    // header
+    rows.push(['Date','Type','Category / Source','Amount','Account','Note'].map(cell).join(','));
+
+    // expenses
+    transactions.forEach(t => {
+      const cat = CATEGORIES.find(c => c.id === t.category);
+      rows.push([
+        t.date,
+        'Expense',
+        cat ? catLabel(cat) : t.category,
+        '-' + t.amount.toFixed(2),
+        t.account || '',
+        t.note    || ''
+      ].map(cell).join(','));
+    });
+
+    // income
+    income.forEach(i => {
+      const src = INCOME_SOURCES.find(s => s.id === i.source);
+      rows.push([
+        i.date,
+        'Income',
+        src ? src.label : i.source,
+        '+' + i.amount.toFixed(2),
+        i.account || '',
+        i.note    || ''
+      ].map(cell).join(','));
+    });
+
+    // sort by date descending
+    const header = rows.shift();
+    rows.sort((a, b) => {
+      const da = a.split(',')[0].replace(/"/g,'');
+      const db = b.split(',')[0].replace(/"/g,'');
+      return db.localeCompare(da);
+    });
+    rows.unshift(header);
+
+    const csv      = rows.join('\r\n');
+    const blob     = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+    const url      = URL.createObjectURL(blob);
+    const filename = `kassior-${todayStr()}.csv`;
+
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(`✓ Exported ${filename}`);
+  }
+
+  // ── CSV IMPORT ──
+  let pendingCSV = null;
+
+  function readCSVFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.value = '';
+
+    if (file.size > 10 * 1024 * 1024) { showToast('⚠ File too large'); return; }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const text = e.target.result
+          .replace(/^\uFEFF/, '')
+          .replace(/\r\n/g, '\n')
+          .replace(/\r/g, '\n');
+
+        const lines = text.split('\n').filter(l => l.trim());
+        if (lines.length < 2) { showToast('⚠ CSV appears empty'); return; }
+
+        const header   = parseCSVRow(lines[0]);
+        const expected = ['Date','Type','Category / Source','Amount','Account','Note'];
+        const valid    = expected.every((col, i) => header[i] && header[i].trim() === col);
+        if (!valid) { showToast('⚠ Not a Kassior CSV — wrong columns'); return; }
+
+        const rows = lines.slice(1).map(l => parseCSVRow(l)).filter(r => r.length >= 4);
+        let expenseCount = 0, incomeCount = 0, skipped = 0;
+        const newTx = [], newInc = [];
+
+        const txFP  = new Set(transactions.map(t => `${t.date}|${t.amount}|${t.category}`));
+        const incFP = new Set(income.map(i => `${i.date}|${i.amount}|${i.source}`));
+
+        rows.forEach(r => {
+          const date   = (r[0]||'').trim();
+          const type   = (r[1]||'').trim();
+          const catSrc = (r[2]||'').trim();
+          const amount = parseFloat((r[3]||'').replace(/[+"]/g,''));
+          const acct   = (r[4]||'').trim();
+          const note   = sanitiseText(r[5]||'', 200);
+
+          if (!date.match(/^\d{4}-\d{2}-\d{2}$/) || !amount || amount <= 0) { skipped++; return; }
+
+          if (type === 'Expense') {
+            const cat = CATEGORIES.find(c => catLabel(c) === catSrc) || CATEGORIES.find(c => c.id === 'other');
+            const fp  = `${date}|${amount}|${cat.id}`;
+            if (txFP.has(fp)) { skipped++; return; }
+            newTx.push({ id: Date.now() + newTx.length, amount, category: cat.id, account: acct, date, note });
+            expenseCount++;
+          } else if (type === 'Income') {
+            const src = INCOME_SOURCES.find(s => s.label === catSrc) || { id: 'other_inc' };
+            const fp  = `${date}|${amount}|${src.id}`;
+            if (incFP.has(fp)) { skipped++; return; }
+            newInc.push({ id: Date.now() + newInc.length + 10000, amount, source: src.id, account: acct, date, note });
+            incomeCount++;
+          } else { skipped++; }
+        });
+
+        pendingCSV = { newTx, newInc };
+
+        document.getElementById('csv-preview').innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--accent-text)">${expenseCount}</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">Expenses</div>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--success)">${incomeCount}</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">Income</div>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:800;color:var(--text-dim)">${skipped}</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-top:2px">Skipped</div>
+            </div>
+          </div>
+          ${skipped > 0 ? '<div style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center">Skipped = duplicates or unreadable rows</div>' : ''}`;
+
+        openModal('modal-csv-confirm');
+      } catch(err) {
+        showToast('⚠ Could not read CSV file');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function parseCSVRow(line) {
+    const result = [];
+    let current = '', inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+        else inQuotes = !inQuotes;
+      } else if (ch === ',' && !inQuotes) {
+        result.push(current); current = '';
+      } else {
+        current += ch;
+      }
+    }
+    result.push(current);
+    return result;
+  }
+
+  function confirmCSVImport() {
+    if (!pendingCSV) return;
+    const { newTx, newInc } = pendingCSV;
+    transactions = [...transactions, ...newTx];
+    income       = [...income,       ...newInc];
+    save();
+    pendingCSV = null;
+    closeModal('modal-csv-confirm');
+    renderOverview();
+    renderTransactions();
+    showToast(`✓ Imported ${newTx.length + newInc.length} entries`);
+  }
 
   function readImportFile(input) {
     const file = input.files[0];
@@ -3707,6 +5227,7 @@
     // restore all data
     transactions = d.transactions  || [];
     income       = d.income        || [];
+    goals        = d.goals         || [];
     recurring    = d.recurring     || [];
     paidStatus   = d.paidStatus    || {};
     overrides    = d.overrides     || {};
@@ -3889,6 +5410,7 @@
   renderOverview();
   renderRecurring();
   renderCharts();
+  renderGoals();
   showPage('overview', document.querySelector('nav button'));
 </script>
 </body>
