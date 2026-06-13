@@ -186,9 +186,8 @@
         right: 40px !important;
       }
 
-      /* wider hero card */
-      .hero-total { min-height: 180px; }
-      .hero-total .hero-amount { font-size: 64px !important; }
+      /* hero card on tablet */
+      .hero-total { border-radius: 24px; }
 
       /* two column grid for overview cards */
       .overview-grid {
@@ -345,78 +344,67 @@
 
     /* ── HERO TOTAL (overview) ── */
     .hero-total {
-      margin-bottom: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 22px;
+      margin: 0 0 16px;
+      background: #1a1410;
+      border-radius: 24px;
+      padding: 24px 24px 20px;
       position: relative; overflow: hidden;
-      padding: 28px 24px 32px;
       min-height: 168px;
     }
 
-    /* ── LEFT CIRCLE — dark, recessed, bottom-left ── */
-    /* feels like depth behind the card */
+    /* dark circle top-left */
     .hero-total::before {
       content: ''; position: absolute;
-      bottom: -72px; left: -72px;
-      width: 200px; height: 200px;
+      top: -60px; left: -60px;
+      width: 160px; height: 160px;
       border-radius: 50%;
-      background: var(--bg);
+      background: rgba(0,0,0,0.3);
       pointer-events: none; z-index: 1;
     }
 
-    /* ── RIGHT CIRCLE — warm, raised, top-right ── */
-    /* feels like a warm light source, gives the card life */
+    /* warm circle bottom-right */
     .hero-total .hero-circle-right {
       position: absolute;
-      top: -40px; right: -40px;
-      width: 170px; height: 170px;
+      bottom: -50px; right: -50px;
+      width: 180px; height: 180px;
       border-radius: 50%;
-      /* warmer and lighter than the card surface */
-      background: radial-gradient(circle at 40% 40%,
-        color-mix(in srgb, var(--accent) 22%, var(--surface2)) 0%,
-        color-mix(in srgb, var(--accent) 10%, var(--surface)) 60%,
-        var(--surface) 100%
-      );
+      background: radial-gradient(circle at 40% 40%, rgba(192,104,64,0.35), rgba(192,104,64,0.05));
       pointer-events: none; z-index: 1;
     }
 
-    /* text and dot always above circles */
     .hero-total .hero-label,
     .hero-total .hero-amount,
     .hero-total .hero-month { position: relative; z-index: 2; }
 
     .hero-total .hero-label {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1px; color: var(--muted); margin-bottom: 12px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: #7a6858; margin-bottom: 10px;
     }
     .hero-total .hero-amount {
       font-size: 52px; font-weight: 800; letter-spacing: -2.5px;
-      color: var(--accent-text); line-height: 1;
+      color: #e89868; line-height: 1;
       font-family: var(--font-display);
     }
     .hero-total .hero-amount .hero-currency {
-      font-size: 20px; font-weight: 600; color: var(--accent);
-      vertical-align: super; margin-right: 3px; letter-spacing: -0.5px;
+      font-size: 18px; font-weight: 600; color: #c06840;
+      vertical-align: super; margin-right: 3px;
     }
     .hero-total .hero-month {
-      font-size: 12px; color: var(--text-dim); margin-top: 10px;
+      font-size: 12px; color: #504840; margin-top: 8px;
     }
     .hero-inc-exp {
-      display: flex; gap: 16px; margin-top: 14px;
+      display: flex; gap: 14px; margin-top: 14px;
       position: relative; z-index: 2;
     }
     .hero-inc-exp .inc-pill, .hero-inc-exp .exp-pill {
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 5px;
       font-size: 12px; font-weight: 600;
     }
-    .hero-inc-exp .inc-pill { color: var(--success); }
-    .hero-inc-exp .exp-pill { color: var(--danger); }
-    .hero-inc-exp .pill-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-    }
-    .inc-pill .pill-dot { background: var(--success); }
-    .exp-pill .pill-dot { background: var(--danger); }
+    .hero-inc-exp .inc-pill { color: #4a9a68; }
+    .hero-inc-exp .exp-pill { color: #c05040; }
+    .hero-inc-exp .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .inc-pill .pill-dot { background: #4a9a68; }
+    .exp-pill .pill-dot { background: #c05040; }
 
     /* ── SECTION ── */
     .section-title {
@@ -431,20 +419,18 @@
     /* ── CAT BARS ── */
     .cat-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
     .cat-row { display: flex; flex-direction: column; gap: 7px; }
-    .cat-row-top { display: flex; justify-content: space-between; align-items: baseline; }
-    .cat-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; color: var(--text); }
-    .cat-name .cat-pct { font-size: 11px; color: var(--muted); font-weight: 400; }
-    .cat-amount { font-size: 14px; font-weight: 600; color: var(--text); font-family: var(--font-display); }
-    .cat-bar-bg {
-      height: 3px; background: var(--border); border-radius: 99px; overflow: hidden;
-    }
+    .cat-row-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .cat-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; color: var(--text); overflow: hidden; }
+    .cat-name .cat-pct { font-size: 11px; color: var(--muted); font-weight: 400; flex-shrink: 0; }
+    .cat-amount { font-size: 14px; font-weight: 700; color: var(--text); font-family: var(--font-display); flex-shrink: 0; margin-left: 8px; }
+    .cat-bar-bg { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
     .cat-bar-fill {
       height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-text));
-      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+      background: linear-gradient(90deg, #c06840, #e89868);
+      transition: width 0.65s cubic-bezier(0.32,0.72,0,1) !important;
     }
     .cat-bar-fill.over { background: linear-gradient(90deg, var(--danger), #e06050); }
-    .cat-bar-fill.warn { background: linear-gradient(90deg, var(--warn),   #d09040); }
+    .cat-bar-fill.warn { background: linear-gradient(90deg, var(--warn), #d09040); }
 
     /* budget pill */
     .budget-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
@@ -648,7 +634,57 @@
     .year-total-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 4px; }
     .year-total-val { font-family: var(--font-display); font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
 
-    /* ── CONTEXTUAL HINTS ── */
+    /* ── SPENDING PACE ── */
+    .pace-track {
+      height: 3px; background: rgba(255,255,255,0.1);
+      border-radius: 99px; position: relative; overflow: visible;
+    }
+    .pace-fill {
+      height: 100%; border-radius: 99px;
+      background: #c06840; transition: width 0.6s cubic-bezier(0.32,0.72,0,1);
+    }
+    .pace-dot {
+      position: absolute; top: 50%;
+      transform: translateY(-50%) translateX(5px);
+      width: 11px; height: 11px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 1.5px solid rgba(255,255,255,0.3);
+    }
+    .pace-labels {
+      display: flex; justify-content: space-between; margin-top: 6px;
+    }
+    .pace-lbl { font-size: 10px; color: #504840; }
+    .pace-insight {
+      font-size: 11px; color: #7a6858;
+      margin-top: 8px; line-height: 1.4;
+    }
+    .pace-insight strong { color: #e89868; font-weight: 700; }
+
+    /* ── SMART CARDS ── */
+    .smart-cards-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 16px;
+    }
+    .smart-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 14px;
+      animation: cardIn 0.3s cubic-bezier(0.32,0.72,0,1) both;
+    }
+    .smart-card-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px;
+    }
+    .smart-card-value {
+      font-family: var(--font-display); font-size: 18px; font-weight: 800;
+      letter-spacing: -0.5px; color: var(--text); line-height: 1;
+      margin-bottom: 3px;
+    }
+    .smart-card-sub { font-size: 11px; color: var(--muted); }
+    .smart-card.positive .smart-card-value { color: var(--success); }
+    .smart-card.negative .smart-card-value { color: var(--danger); }
+    .smart-card.accent-card { border-color: #c06840; background: #fdf4ee; }
+    .smart-card.accent-card .smart-card-value { color: #a05030; }
+    [data-theme="dark"] .smart-card.accent-card { background: var(--accent-dim); }
     .hint-banner {
       display: flex; align-items: flex-start; gap: 12px;
       background: var(--accent-dim); border: 1px solid var(--accent);
@@ -729,7 +765,16 @@
     .settings-row:active { background: var(--surface2); }
 
     /* nav active dot */
-    nav button { transition: color 0.18s ease; }
+    nav button::after {
+      content: '';
+      display: block;
+      width: 0; height: 3px;
+      border-radius: 99px;
+      background: var(--accent);
+      margin: 3px auto 0;
+      transition: width 0.25s cubic-bezier(0.32,0.72,0,1);
+    }
+    nav button.active::after { width: 18px; }
 
     /* filter pills */
     .filter-pill {
@@ -755,7 +800,7 @@
     }
     .goal-card:hover { border-color: var(--accent); }
     .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .goal-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .goal-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
     .goal-emoji { font-size: 20px; }
     .goal-amounts { text-align: right; }
     .goal-saved { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--success); }
@@ -790,24 +835,33 @@
       padding: 1px 5px; margin-left: 4px; flex-shrink: 0;
     }
     .search-highlight { background: var(--accent-dim); color: var(--accent-text); border-radius: 2px; padding: 0 1px; }
-    #bill-reminders { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+    #bill-reminders { margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
     .reminder-banner {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border-radius: 14px;
       border: 1px solid; cursor: pointer;
-      transition: opacity 0.15s;
     }
     .reminder-banner.overdue  { background: var(--danger-dim);  border-color: var(--danger);  }
-    .reminder-banner.due-soon { background: var(--warn-dim);    border-color: var(--warn);    }
-    .reminder-banner.expiring { background: var(--accent-dim);  border-color: var(--accent);  }
-    .reminder-icon { font-size: 18px; flex-shrink: 0; }
+    .reminder-banner.due-soon { background: #fdf3e0;             border-color: #b07020;        }
+    .reminder-banner.expiring { background: var(--accent-dim);   border-color: var(--accent);  }
+    .reminder-icon {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .reminder-banner.overdue  .reminder-icon { background: rgba(192,64,64,0.15); }
+    .reminder-banner.due-soon .reminder-icon { background: rgba(176,112,32,0.15); }
+    .reminder-banner.expiring .reminder-icon { background: rgba(192,104,64,0.15); }
     .reminder-text { flex: 1; }
     .reminder-title { font-size: 13px; font-weight: 700; }
     .reminder-title.overdue  { color: var(--danger); }
-    .reminder-title.due-soon { color: var(--warn); }
+    .reminder-title.due-soon { color: #b07020; }
     .reminder-title.expiring { color: var(--accent-text); }
-    .reminder-sub   { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-    .reminder-amt   { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-dim); flex-shrink: 0; }
+    .reminder-sub   { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+    .reminder-amt   { font-family: var(--font-display); font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    .reminder-banner.due-soon .reminder-amt { color: #b07020; }
+    .reminder-banner.overdue  .reminder-amt { color: var(--danger); }
+    .reminder-banner.expiring .reminder-amt { color: var(--accent-text); }
     .account-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
     .account-pill {
       background: var(--surface); border: 1px solid var(--border);
@@ -1442,10 +1496,10 @@
 <div id="page-overview" class="page active">
   <div class="page-header page-header-row">
     <div>
-      <h1>Kassior</h1>
-      <p id="overview-subtitle">This month so far</p>
+      <p id="overview-greeting" style="font-size:13px;color:var(--muted);font-weight:500;margin-bottom:2px"></p>
+      <h1>Overview</h1>
     </div>
-    <button class="gear-btn" onclick="showPage('settings', document.querySelector('#page-settings'))" title="Settings">
+    <button class="gear-btn" onclick="showPage('settings', document.querySelector('#page-settings'))" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -1465,7 +1519,24 @@
     </div>
     <div class="hero-month" id="hero-month-sub"></div>
     <div class="hero-inc-exp" id="hero-inc-exp"></div>
+    <!-- SPENDING PACE -->
+    <div id="hero-pace" style="display:none;margin-top:16px;position:relative;z-index:2">
+      <div class="pace-track">
+        <div class="pace-fill" id="pace-fill"></div>
+        <div class="pace-dot" id="pace-dot"></div>
+      </div>
+      <div class="pace-labels">
+        <span class="pace-lbl" id="pace-start"></span>
+        <span class="pace-lbl" id="pace-today"></span>
+        <span class="pace-lbl" id="pace-end"></span>
+      </div>
+      <div class="pace-insight" id="pace-insight"></div>
+    </div>
   </div>
+
+  <!-- SMART CARDS -->
+  <div id="smart-cards-row"></div>
+
   <!-- HINT: OVERVIEW -->
   <div id="hint-overview"></div>
 
@@ -2046,6 +2117,20 @@
         <div class="ob-dot"></div>
         <div class="ob-dot active"></div>
       </div>
+      <!-- name input -->
+      <div style="width:100%;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:600;color:var(--text-dim);margin-bottom:8px;text-align:center">
+          What should we call you? <span style="color:var(--muted);font-weight:400">(optional)</span>
+        </div>
+        <input type="text" id="ob-name-input"
+          placeholder="Your name or nickname"
+          maxlength="30"
+          autocomplete="off"
+          style="width:100%;padding:11px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;text-align:center;transition:border-color 0.15s"
+          onfocus="this.style.borderColor='var(--accent)'"
+          onblur="this.style.borderColor='var(--border)'"
+        />
+      </div>
       <button class="ob-btn ob-btn-primary" id="ob-start-btn" onclick="obFinish()">
         Start using Kassior →
       </button>
@@ -2200,6 +2285,18 @@
       <div class="section-title">About Kassior</div>
     </div>
     <div class="settings-card">
+      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;width:100%">
+          <div class="settings-row-emoji">👤</div>
+          <div class="settings-row-info">
+            <div class="settings-row-label">Your name</div>
+            <div class="settings-row-sub">Used in your greeting</div>
+          </div>
+        </div>
+        <input type="text" id="settings-name-input" placeholder="e.g. Vili"
+          style="width:100%;padding:9px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px"
+          oninput="saveUserName(this.value)" maxlength="30"/>
+      </div>
       <div class="settings-row" onclick="replayOnboarding()" style="cursor:pointer">
         <div class="settings-row-emoji">👋</div>
         <div class="settings-row-info">
@@ -3835,8 +3932,19 @@
   // ── OVERVIEW ──
   function renderOverview() {
     document.getElementById('month-label').textContent = `${getMonths()[currentMonth]} ${currentYear}`;
-    const isNow = currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
-    document.getElementById('overview-subtitle').textContent = isNow ? t('tagline') : `${getMonths()[currentMonth]} ${currentYear}`;
+    const now    = new Date();
+    const isNow  = currentMonth === now.getMonth() && currentYear === now.getFullYear();
+
+    // greeting
+    const greetEl = document.getElementById('overview-greeting');
+    if (greetEl && isNow) {
+      const hour = now.getHours();
+      const name = settings.userName ? `, ${settings.userName}` : '';
+      const tod  = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+      greetEl.textContent = `${tod}${name} 👋`;
+    } else if (greetEl) {
+      greetEl.textContent = `${getMonths()[currentMonth]} ${currentYear}`;
+    }
 
     const txs        = monthTx(currentMonth, currentYear);
     const incTxs     = monthInc(currentMonth, currentYear);
@@ -3845,30 +3953,28 @@
     const balance    = totalInc - totalExp;
     const hasIncome  = totalInc > 0;
 
-    // hero — show balance if income exists, else show expenses
     const heroNum  = hasIncome ? balance : totalExp;
-    const heroSign = hasIncome && balance < 0 ? '-' : '';
     document.getElementById('hero-label').textContent = hasIncome ? 'Balance' : 'Total Spent';
-    // animate hero number count-up
+
+    // animate hero number
     const heroNumEl = document.getElementById('hero-num');
     const targetNum = Math.abs(heroNum);
     const duration  = 500;
     const start     = performance.now();
     const startVal  = parseFloat(heroNumEl.textContent.replace(/[^0-9.]/g,'')) || 0;
-    function animateNum(now) {
-      const elapsed = now - start;
+    function animateNum(ts) {
+      const elapsed  = ts - start;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
-      const current = startVal + (targetNum - startVal) * eased;
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      const current  = startVal + (targetNum - startVal) * eased;
       heroNumEl.textContent = current.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
       if (progress < 1) requestAnimationFrame(animateNum);
     }
     requestAnimationFrame(animateNum);
     heroNumEl.style.color = hasIncome
-      ? (balance >= 0 ? 'var(--accent-text)' : 'var(--danger)')
-      : 'var(--accent-text)';
+      ? (balance >= 0 ? '#e89868' : '#c05040')
+      : '#e89868';
 
-    // sub line
     document.getElementById('hero-month-sub').textContent =
       `${txs.length} ${txs.length !== 1 ? t('transactions') : t('transaction')} · ${getMonths()[currentMonth]}`;
 
@@ -3876,16 +3982,76 @@
     const incExpEl = document.getElementById('hero-inc-exp');
     if (hasIncome) {
       incExpEl.innerHTML = `
-        <div class="inc-pill">
-          <div class="pill-dot"></div>
-          +${fmt(totalInc)}
-        </div>
-        <div class="exp-pill">
-          <div class="pill-dot"></div>
-          -${fmt(totalExp)}
-        </div>`;
+        <div class="inc-pill"><div class="pill-dot"></div>+${fmt(totalInc)}</div>
+        <div class="exp-pill"><div class="pill-dot"></div>−${fmt(totalExp)}</div>`;
     } else {
       incExpEl.innerHTML = '';
+    }
+
+    // ── SPENDING PACE BAR (current month only) ──
+    const paceEl = document.getElementById('hero-pace');
+    if (isNow && totalExp > 0) {
+      const daysInMonth  = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const dayOfMonth   = now.getDate();
+      const pct          = Math.round(dayOfMonth / daysInMonth * 100);
+      const dailyAvg     = totalExp / dayOfMonth;
+      const projected    = Math.round(dailyAvg * daysInMonth);
+      const monthName    = getMonths()[currentMonth].slice(0,3);
+
+      document.getElementById('pace-fill').style.width  = `${pct}%`;
+      document.getElementById('pace-dot').style.left    = `${pct}%`;
+      document.getElementById('pace-start').textContent = `1 ${monthName}`;
+      document.getElementById('pace-today').textContent = `Today · day ${dayOfMonth}`;
+      document.getElementById('pace-end').textContent   = `${daysInMonth} ${monthName}`;
+      document.getElementById('pace-insight').innerHTML =
+        `At this pace, ${monthName} total will be ~<strong>${fmt(projected)}</strong>`;
+      paceEl.style.display = '';
+    } else {
+      if (paceEl) paceEl.style.display = 'none';
+    }
+
+    // ── SMART CARDS (current month only, needs data) ──
+    const smartRow = document.getElementById('smart-cards-row');
+    if (smartRow) {
+      if (isNow && txs.length >= 3) {
+        const dayOfMonth2 = now.getDate();
+        const dailyAvg2   = totalExp / dayOfMonth2;
+
+        // vs last month
+        const lastM   = currentMonth === 0 ? 11 : currentMonth - 1;
+        const lastY   = currentMonth === 0 ? currentYear - 1 : currentYear;
+        const lastTxs = monthTx(lastM, lastY);
+        const lastExp = lastTxs.reduce((s,t) => s + t.amount, 0);
+        let vsCard = '';
+        if (lastExp > 0) {
+          const diff    = totalExp - lastExp;
+          const diffPct = Math.round(Math.abs(diff) / lastExp * 100);
+          const better  = diff < 0;
+          vsCard = `
+            <div class="smart-card ${better ? 'positive' : 'negative'}">
+              <div class="smart-card-label">vs Last month</div>
+              <div class="smart-card-value">${better ? '−' : '+'}${diffPct}%</div>
+              <div class="smart-card-sub">${fmt(Math.abs(diff))} ${better ? 'less' : 'more'}</div>
+            </div>`;
+        }
+
+        smartRow.innerHTML = `
+          <div class="smart-cards-row">
+            <div class="smart-card accent-card">
+              <div class="smart-card-label">Daily avg</div>
+              <div class="smart-card-value">${fmt(dailyAvg2)}</div>
+              <div class="smart-card-sub">${settings.currency} per day</div>
+            </div>
+            ${vsCard || `
+            <div class="smart-card">
+              <div class="smart-card-label">Days left</div>
+              <div class="smart-card-value">${new Date(currentYear, currentMonth+1,0).getDate() - dayOfMonth2}</div>
+              <div class="smart-card-sub">in ${getMonths()[currentMonth].slice(0,3)}</div>
+            </div>`}
+          </div>`;
+      } else {
+        smartRow.innerHTML = '';
+      }
     }
 
     const catEl = document.getElementById('cat-breakdown');
@@ -5173,6 +5339,9 @@
     renderDataStats();
     renderGoals();
     updateThemeButtons();
+    // populate name input
+    const nameInput = document.getElementById('settings-name-input');
+    if (nameInput) nameInput.value = settings.userName || '';
     const accEl = document.getElementById('accounts-list');
     if (accEl) {
       accEl.innerHTML = settings.accounts.map((acc, i) => `
@@ -5251,6 +5420,15 @@
     }
   }
 
+  function saveUserName(val) {
+    settings.userName = sanitiseText(val, 30);
+    saveSettings();
+    const greetEl = document.getElementById('overview-greeting');
+    if (greetEl && document.getElementById('page-overview').classList.contains('active')) {
+      renderOverview();
+    }
+  }
+
   function saveBudget(catId, val) {
     if (!settings.budgets) settings.budgets = {};
     const num = parseFloat(val);
@@ -5260,7 +5438,6 @@
       settings.budgets[catId] = num;
     }
     saveSettings();
-    // refresh overview if visible so bars update live
     if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
   }
 
@@ -6270,8 +6447,16 @@
 
   function obFinish() {
     localStorage.setItem('wdig_onboarded', '1');
-    // save goal preference
-    if (obSelectedGoal) localStorage.setItem('wdig_goal', obSelectedGoal);
+    // save name from onboarding
+    const nameInput = document.getElementById('ob-name-input');
+    if (nameInput && nameInput.value.trim()) {
+      settings.userName = sanitiseText(nameInput.value.trim(), 30);
+      saveSettings();
+    }
+    if (obSelectedGoal) {
+      settings.userGoal = obSelectedGoal;
+      saveSettings();
+    }
     const ob = document.getElementById('onboarding');
     ob.style.transition = 'opacity 0.4s ease';
     ob.style.opacity = '0';
