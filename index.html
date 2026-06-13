@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -64,6 +64,16 @@
       --radius:      14px;
       --radius-sm:   10px;
       --radius-xs:   7px;
+
+      /* hero colours — light theme uses surface */
+      --hero-bg:           #ffffff;
+      --hero-label:        #b0a090;
+      --hero-num:          #a05030;
+      --hero-currency:     #c06840;
+      --hero-sub:          #b0a090;
+      --hero-circle-warm:  radial-gradient(circle at 40% 40%, rgba(192,104,64,0.2), rgba(192,104,64,0.04));
+      --hero-circle-dark:  rgba(0,0,0,0.04);
+      --hero-border:       1px solid #e0d8d0;
     }
 
     /* ── DARK THEME ── */
@@ -89,9 +99,134 @@
       --text:        #f0ece6;
       --text-dim:    #9a8e82;
       --muted:       #7a6e64;
+
+      --hero-bg:           #1a1410;
+      --hero-label:        #7a6858;
+      --hero-num:          #e89868;
+      --hero-currency:     #c06840;
+      --hero-sub:          #504840;
+      --hero-circle-warm:  radial-gradient(circle at 40% 40%, rgba(192,104,64,0.35), rgba(192,104,64,0.05));
+      --hero-circle-dark:  rgba(0,0,0,0.3);
+      --hero-border:       none;
     }
 
+    /* ── MIX THEME ── */
+    /* Cream page, mid-dark cards, light header/nav, dark-mode text inside dark sections */
+    [data-theme="mix"] {
+      --bg:          #f0ebe4;
+      --surface:     #2a2520;
+      --surface2:    #332e28;
+      --border:      #403830;
+      --border-sub:  #383028;
+
+      --accent:      #d07848;
+      --accent-dim:  #2a1e12;
+      --accent-text: #e89868;
+      --accent-glow: rgba(208,120,72,0.18);
+
+      --danger:      #c05040;
+      --danger-dim:  #2a1410;
+      --success:     #4a9a68;
+      --success-dim: #102014;
+      --warn:        #b08030;
+      --warn-dim:    #241808;
+
+      --text:        #f0ece6;
+      --text-dim:    #9a8e82;
+      --muted:       #7a6e64;
+
+      --hero-bg:           #1a1410;
+      --hero-label:        #7a6858;
+      --hero-num:          #e89868;
+      --hero-currency:     #c06840;
+      --hero-sub:          #504840;
+      --hero-circle-warm:  radial-gradient(circle at 40% 40%, rgba(192,104,64,0.35), rgba(192,104,64,0.05));
+      --hero-circle-dark:  rgba(0,0,0,0.3);
+      --hero-border:       none;
+    }
+
+    /* Mix: page-level elements on CREAM background need dark text explicitly */
+    /* Everything inside dark cards inherits from --text (#f0ece6) correctly */
+    [data-theme="mix"] .page-header h1    { color: var(--accent-text); }
+    [data-theme="mix"] .page-header p     { color: #7a6858; }
+    [data-theme="mix"] #overview-greeting { color: #7a6858; }
+    [data-theme="mix"] .section-title     { color: #7a6858; }
+    [data-theme="mix"] .month-label       { color: #c06840; }
+    [data-theme="mix"] .cat-row-top .cat-name { color: #1a1410; }
+    [data-theme="mix"] .cat-row-top .cat-amount { color: #1a1410; }
+    [data-theme="mix"] .cat-pct           { color: #9a8878; }
+    [data-theme="mix"] .account-pill      { color: #1a1410; }
+
+    /* Mix: nav stays cream */
+    [data-theme="mix"] nav               { background: #f0ebe4; border-top-color: #d8d0c8; }
+    [data-theme="mix"] nav button        { color: #9a8878; }
+    [data-theme="mix"] nav button.active { color: #c06840; }
+
+    /* Mix: top buttons stay light (gear, month nav) */
+    [data-theme="mix"] .gear-btn         { background: #ede8e2; border-color: #d8d0c8; color: #7a6858; }
+    [data-theme="mix"] .month-nav button { background: #ede8e2; border-color: #d8d0c8; color: #7a6858; }
+
+    /* Mix: filter pills stay light */
+    [data-theme="mix"] .filter-pill        { background: #ede8e2; border-color: #d8d0c8; color: #7a6858; }
+    [data-theme="mix"] .filter-pill.active { background: #f5e8de; border-color: #c06840; color: #a05030; }
+
+    /* Mix: modals dark */
+    [data-theme="mix"] .modal            { background: #2a2520; border-color: #403830; }
+    [data-theme="mix"] .modal h2         { color: #e89868; }
+    [data-theme="mix"] .modal .modal-sub { color: #9a8e82; }
+    [data-theme="mix"] .form-row label   { color: #9a8e82; }
+    [data-theme="mix"] .modal input:not([type="range"]),
+    [data-theme="mix"] .modal select,
+    [data-theme="mix"] .modal textarea   { border-color: #403830; color: #f0ece6; }
+
+    /* Mix: bill-type + insights toggle buttons dark */
+    [data-theme="mix"] .bill-type-btn        { background: #332e28; border-color: #403830; color: #9a8e82; }
+    [data-theme="mix"] .bill-type-btn.active { background: #2a1e12; border-color: #d07848; color: #e89868; }
+
+    /* Mix: cat buttons dark */
+    [data-theme="mix"] .cat-btn            { background: #332e28; border-color: #403830; }
+    [data-theme="mix"] .cat-btn .cat-label { color: #9a8e82; }
+    [data-theme="mix"] .cat-btn.selected   { background: #2a1e12; border-color: #d07848; }
+
+    [data-theme="mix"] .empty h3 { color: #1a1410; }
+    [data-theme="mix"] .empty p  { color: #7a6858; }
+
+    /* Mix: ob-goal buttons dark */
+    [data-theme="mix"] .ob-goal-btn          { background: #2a2520; border-color: #403830; }
+    [data-theme="mix"] .ob-goal-label        { color: #f0ece6; }
+    [data-theme="mix"] .ob-goal-sub          { color: #7a6e64; }
+    [data-theme="mix"] .ob-goal-btn.selected { background: #2a1e12; border-color: #d07848; }
+
+    /* Mix: smart card accent */
+    [data-theme="mix"] .smart-card.accent-card                   { background: #2a1e12; border-color: #d07848; }
+    [data-theme="mix"] .smart-card.accent-card .smart-card-value { color: #e89868; }
+    [data-theme="mix"] .smart-card.positive .smart-card-value    { color: #4a9a68; }
+    [data-theme="mix"] .smart-card.negative .smart-card-value    { color: #c05040; }
+
+    /* Mix: rec-card val colours */
+    [data-theme="mix"] .rec-card .val.accent  { color: #e89868; }
+    [data-theme="mix"] .rec-card .val.success { color: #4a9a68; }
+    [data-theme="mix"] .rec-card .val.danger  { color: #c05040; }
+
+    /* Mix: reminder banners */
+    [data-theme="mix"] .reminder-banner.due-soon { background: #241808; border-color: #b08030; }
+    [data-theme="mix"] .reminder-banner.overdue  { background: #2a1410; border-color: #c05040; }
+    [data-theme="mix"] .reminder-banner.expiring { background: #2a1e12; border-color: #d07848; }
+    [data-theme="mix"] .reminder-title.due-soon  { color: #b08030; }
+    [data-theme="mix"] .reminder-title.overdue   { color: #c05040; }
+    [data-theme="mix"] .reminder-title.expiring  { color: #e89868; }
+    [data-theme="mix"] .reminder-sub             { color: #9a8e82; }
+    [data-theme="mix"] .reminder-amt             { color: #f0ece6; }
+
+    /* Mix: hint banner */
+    [data-theme="mix"] .hint-banner { background: #2a1e12; border-color: #d07848; }
+    [data-theme="mix"] .hint-title  { color: #e89868; }
+    [data-theme="mix"] .hint-sub    { color: #9a8e82; }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; }
+    ::-webkit-scrollbar { display: none; }
+    * { scrollbar-width: none; -ms-overflow-style: none; }
 
     /* custom scrollbar — thin, warm, on-brand */
     ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -345,30 +480,29 @@
     /* ── HERO TOTAL (overview) ── */
     .hero-total {
       margin: 0 0 16px;
-      background: #1a1410;
+      background: var(--hero-bg);
+      border: var(--hero-border);
       border-radius: 24px;
       padding: 24px 24px 20px;
       position: relative; overflow: hidden;
       min-height: 168px;
     }
 
-    /* dark circle top-left */
     .hero-total::before {
       content: ''; position: absolute;
       top: -60px; left: -60px;
       width: 160px; height: 160px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.3);
+      background: var(--hero-circle-dark);
       pointer-events: none; z-index: 1;
     }
 
-    /* warm circle bottom-right */
     .hero-total .hero-circle-right {
       position: absolute;
       bottom: -50px; right: -50px;
       width: 180px; height: 180px;
       border-radius: 50%;
-      background: radial-gradient(circle at 40% 40%, rgba(192,104,64,0.35), rgba(192,104,64,0.05));
+      background: var(--hero-circle-warm);
       pointer-events: none; z-index: 1;
     }
 
@@ -378,19 +512,19 @@
 
     .hero-total .hero-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1.2px; color: #7a6858; margin-bottom: 10px;
+      letter-spacing: 1.2px; color: var(--hero-label); margin-bottom: 10px;
     }
     .hero-total .hero-amount {
       font-size: 52px; font-weight: 800; letter-spacing: -2.5px;
-      color: #e89868; line-height: 1;
+      color: var(--hero-num); line-height: 1;
       font-family: var(--font-display);
     }
     .hero-total .hero-amount .hero-currency {
-      font-size: 18px; font-weight: 600; color: #c06840;
+      font-size: 18px; font-weight: 600; color: var(--hero-currency);
       vertical-align: super; margin-right: 3px;
     }
     .hero-total .hero-month {
-      font-size: 12px; color: #504840; margin-top: 8px;
+      font-size: 12px; color: var(--hero-sub); margin-top: 8px;
     }
     .hero-inc-exp {
       display: flex; gap: 14px; margin-top: 14px;
@@ -444,7 +578,7 @@
     .budget-input-wrap { display: flex; align-items: center; gap: 6px; }
     .budget-input {
       width: 88px; padding: 5px 10px; border-radius: var(--radius-xs);
-      border: 1px solid var(--border); background: var(--bg);
+      border: 1px solid var(--border); background: var(--surface2);
       color: var(--text); font-family: var(--font-display);
       font-size: 13px; font-weight: 600; text-align: right;
     }
@@ -456,10 +590,10 @@
       display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
     }
     .bill-type-btn {
-      padding: 9px 6px; border-radius: var(--radius-xs);
-      border: 1px solid var(--border); background: var(--bg);
+      padding: 12px 6px; border-radius: var(--radius-xs);
+      border: 1px solid var(--border); background: var(--surface);
       color: var(--text-dim); font-family: var(--font);
-      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-size: 13px; font-weight: 600; cursor: pointer;
       transition: all 0.15s; text-align: center;
     }
     .bill-type-btn.active {
@@ -636,9 +770,11 @@
 
     /* ── SPENDING PACE ── */
     .pace-track {
-      height: 3px; background: rgba(255,255,255,0.1);
+      height: 3px; background: var(--border);
       border-radius: 99px; position: relative; overflow: visible;
     }
+    [data-theme="dark"] .pace-track,
+    [data-theme="mix"]  .pace-track { background: rgba(255,255,255,0.1); }
     .pace-fill {
       height: 100%; border-radius: 99px;
       background: #c06840; transition: width 0.6s cubic-bezier(0.32,0.72,0,1);
@@ -647,18 +783,23 @@
       position: absolute; top: 50%;
       transform: translateY(-50%) translateX(5px);
       width: 11px; height: 11px; border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--border);
+    }
+    [data-theme="dark"] .pace-dot,
+    [data-theme="mix"]  .pace-dot {
       background: rgba(255,255,255,0.2);
       border: 1.5px solid rgba(255,255,255,0.3);
     }
     .pace-labels {
       display: flex; justify-content: space-between; margin-top: 6px;
     }
-    .pace-lbl { font-size: 10px; color: #504840; }
+    .pace-lbl { font-size: 10px; color: var(--muted); }
     .pace-insight {
-      font-size: 11px; color: #7a6858;
+      font-size: 11px; color: var(--text-dim);
       margin-top: 8px; line-height: 1.4;
     }
-    .pace-insight strong { color: #e89868; font-weight: 700; }
+    .pace-insight strong { color: var(--hero-num); font-weight: 700; }
 
     /* ── SMART CARDS ── */
     .smart-cards-row {
@@ -684,7 +825,7 @@
     .smart-card.negative .smart-card-value { color: var(--danger); }
     .smart-card.accent-card { border-color: #c06840; background: #fdf4ee; }
     .smart-card.accent-card .smart-card-value { color: #a05030; }
-    [data-theme="dark"] .smart-card.accent-card { background: var(--accent-dim); }
+    /* smart card accent — dark theme uses accent-dim already via var */
     .hint-banner {
       display: flex; align-items: flex-start; gap: 12px;
       background: var(--accent-dim); border: 1px solid var(--accent);
@@ -924,7 +1065,7 @@
       color: var(--muted); margin-bottom: 8px;
     }
     .form-row input, .form-row select, .form-row textarea {
-      width: 100%; background: var(--bg);
+      width: 100%; background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: var(--radius-xs); color: var(--text);
       font-family: var(--font); font-size: 15px; padding: 11px 13px;
@@ -940,7 +1081,7 @@
     }
     .end-date-part {
       width: 100%; padding: 10px 10px; border-radius: var(--radius-xs);
-      border: 1px solid var(--border); background: var(--bg);
+      border: 1px solid var(--border); background: var(--surface2);
       color: var(--text); font-family: var(--font); font-size: 14px;
       cursor: pointer; appearance: none; -webkit-appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
@@ -974,7 +1115,7 @@
 
     /* ── BUTTONS ── */
     .btn-primary {
-      width: 100%; background: var(--accent); color: var(--text);
+      width: 100%; background: var(--accent); color: #ffffff;
       border: none; border-radius: var(--radius-xs); padding: 15px;
       font-family: var(--font); font-size: 15px; font-weight: 700;
       cursor: pointer; transition: opacity 0.15s; letter-spacing: -0.1px;
@@ -2212,10 +2353,11 @@
             <div class="settings-row-sub" id="theme-sub">System</div>
           </div>
         </div>
-        <div class="bill-type-row" style="width:100%">
+        <div class="bill-type-row" style="width:100%;grid-template-columns:repeat(2,1fr)">
           <button class="bill-type-btn" id="theme-btn-system" onclick="setThemePreference('system')">System</button>
           <button class="bill-type-btn" id="theme-btn-light"  onclick="setThemePreference('light')">Light</button>
           <button class="bill-type-btn" id="theme-btn-dark"   onclick="setThemePreference('dark')">Dark</button>
+          <button class="bill-type-btn" id="theme-btn-mix"    onclick="setThemePreference('mix')">Mix</button>
         </div>
       </div>
     </div>
@@ -2294,7 +2436,7 @@
           </div>
         </div>
         <input type="text" id="settings-name-input" placeholder="e.g. Vili"
-          style="width:100%;padding:9px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px"
+          style="width:100%;padding:9px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:14px"
           oninput="saveUserName(this.value)" maxlength="30"/>
       </div>
       <div class="settings-row" onclick="replayOnboarding()" style="cursor:pointer">
@@ -4001,8 +4143,8 @@
     }
     requestAnimationFrame(animateNum);
     heroNumEl.style.color = hasIncome
-      ? (balance >= 0 ? '#e89868' : '#c05040')
-      : '#e89868';
+      ? (balance >= 0 ? 'var(--hero-num)' : 'var(--danger)')
+      : 'var(--hero-num)';
 
     document.getElementById('hero-month-sub').textContent =
       `${txs.length} ${txs.length !== 1 ? t('transactions') : t('transaction')} · ${getMonths()[currentMonth]}`;
@@ -6159,15 +6301,27 @@
     overrides    = d.overrides     || {};
     trash        = d.trash         || [];
 
-    // restore settings carefully — merge so new fields aren't lost
-    if (d.settings) {
-      settings.currency   = d.settings.currency   || settings.currency;
-      settings.accounts   = d.settings.accounts   || settings.accounts;
-      settings.customCats = d.settings.customCats || [];
+    // restore settings — full merge so nothing is lost
+    if (d.settings && typeof d.settings === 'object') {
+      const s = d.settings;
+      if (s.currency)         settings.currency         = s.currency;
+      if (s.accounts)         settings.accounts         = s.accounts;
+      if (s.customCats)       settings.customCats       = s.customCats;
+      if (s.budgets)          settings.budgets          = s.budgets;
+      if (s.userName)         settings.userName         = s.userName;
+      if (s.themePreference)  settings.themePreference  = s.themePreference;
+      if (s.userGoal)         settings.userGoal         = s.userGoal;
+      if (s.language)         settings.language         = s.language;
+      if (s.theme)            settings.theme            = s.theme;
     }
 
     save(); saveSettings();
     rebuildCategories(); buildCatPicker(); updateAccountSelectors();
+    // re-apply restored theme immediately
+    if (settings.themePreference && settings.themePreference !== 'system') {
+      applyTheme(settings.themePreference);
+    }
+    updateThemeButtons();
 
     pendingImport = null;
     closeModal('modal-import-confirm');
@@ -6272,24 +6426,19 @@
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     const isDark = theme === 'dark';
-    // update meta theme-color for browser chrome
+    const isMix  = theme === 'mix';
+    // meta theme colour — dark bg for dark, light bg for light/mix
     document.getElementById('theme-color-meta').content = isDark ? '#111110' : '#f5f0eb';
-    // update settings UI if visible
+    // update settings label
     const sub  = document.getElementById('theme-sub');
     const icon = document.getElementById('theme-toggle-icon');
-    if (sub)  sub.textContent  = isDark ? 'Dark'  : 'Light';
-    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-    // update scrollbar colour token (Firefox)
-    document.body.style.scrollbarColor = isDark
-      ? 'var(--border) transparent'
-      : 'var(--border) transparent';
-    // persist
+    if (sub)  sub.textContent  = theme.charAt(0).toUpperCase() + theme.slice(1);
+    if (icon) icon.textContent = isDark ? '☀️' : isMix ? '🌗' : '🌙';
     settings.theme = theme;
     saveSettings();
   }
 
   function setThemePreference(pref) {
-    // pref = 'system' | 'light' | 'dark'
     settings.themePreference = pref;
     saveSettings();
     if (pref === 'system') {
@@ -6304,7 +6453,7 @@
 
   function updateThemeButtons() {
     const pref = settings.themePreference || 'system';
-    ['system','light','dark'].forEach(p => {
+    ['system','light','dark','mix'].forEach(p => {
       const btn = document.getElementById(`theme-btn-${p}`);
       if (btn) btn.classList.toggle('active', p === pref);
     });
@@ -6335,10 +6484,15 @@
     const [y, m, d] = dateStr.split('-').map(Number);
     return new Date(y, m - 1, d);
   }
+  let _toastTimer = null;
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
+    if (_toastTimer) clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => {
+      t.classList.remove('show');
+      _toastTimer = null;
+    }, 2200);
   }
   function shake(id) {
     const el = document.getElementById(id);
@@ -6368,11 +6522,13 @@
     },
   };
 
+  const _hintTimers = {};
+
   function showHint(id) {
     const hint = HINTS[id];
     if (!hint) return;
-    if (localStorage.getItem(hint.key)) return; // already seen
-    const el = document.getElementById(`hint-${id}`);
+    if (localStorage.getItem(hint.key)) return;
+    const el = document.getElementById('hint-' + id);
     if (!el) return;
 
     el.innerHTML = `
@@ -6385,18 +6541,20 @@
         <button class="hint-dismiss" onclick="dismissHint('${id}')" aria-label="Dismiss">✕</button>
       </div>`;
 
-    // auto-dismiss after 8 seconds
-    setTimeout(() => dismissHint(id), 8000);
+    // auto-dismiss after 8 seconds — tracked so we can cancel
+    if (_hintTimers[id]) clearTimeout(_hintTimers[id]);
+    _hintTimers[id] = setTimeout(() => dismissHint(id), 8000);
   }
 
   function dismissHint(id) {
+    if (_hintTimers[id]) { clearTimeout(_hintTimers[id]); delete _hintTimers[id]; }
     const hint   = HINTS[id];
-    const banner = document.getElementById(`hint-banner-${id}`);
+    const banner = document.getElementById('hint-banner-' + id);
     if (!banner) return;
     localStorage.setItem(hint.key, '1');
     banner.classList.add('hiding');
     setTimeout(() => {
-      const el = document.getElementById(`hint-${id}`);
+      const el = document.getElementById('hint-' + id);
       if (el) el.innerHTML = '';
     }, 280);
   }
@@ -6419,7 +6577,16 @@
   }
 
   // ── DEMO ANIMATION ──
+  let _demoTimers = [];
+
+  function clearDemoTimers() {
+    _demoTimers.forEach(t => clearTimeout(t));
+    _demoTimers = [];
+  }
+
   function startObDemo() {
+    clearDemoTimers(); // cancel any previous loop first
+
     const numEl   = document.getElementById('ob-demo-num');
     const noteEl  = document.getElementById('ob-demo-note');
     const step2   = document.getElementById('ob-demo-step-2');
@@ -6427,8 +6594,11 @@
     const result  = document.getElementById('ob-demo-result');
     const catFood = document.getElementById('ob-demo-cat-food');
 
+    // if elements don't exist, screen was left — stop
+    if (!numEl) return;
+
     // reset
-    if (numEl)   numEl.textContent = '0';
+    numEl.textContent = '0';
     if (noteEl)  noteEl.textContent = '';
     if (step2)   step2.style.opacity = '0.3';
     if (step3)   step3.style.opacity = '0.3';
@@ -6445,7 +6615,8 @@
     }, 40);
 
     // step 2: type note
-    setTimeout(() => {
+    _demoTimers.push(setTimeout(() => {
+      if (!document.getElementById('ob-demo-note')) return;
       if (step2) step2.style.opacity = '1';
       const note = 'Migros';
       let i = 0;
@@ -6453,28 +6624,23 @@
         if (noteEl) noteEl.textContent = note.slice(0, ++i);
         if (i >= note.length) clearInterval(typer);
       }, 80);
-    }, 900);
+    }, 900));
 
     // step 3: pick category
-    setTimeout(() => {
-      if (step3) step3.style.opacity = '1';
-    }, 1600);
-    setTimeout(() => {
-      if (catFood) catFood.classList.add('selected');
-    }, 2000);
+    _demoTimers.push(setTimeout(() => { if (step3) step3.style.opacity = '1'; }, 1600));
+    _demoTimers.push(setTimeout(() => { if (catFood) catFood.classList.add('selected'); }, 2000));
 
     // result
-    setTimeout(() => {
-      if (result) {
-        result.style.display = 'flex';
-      }
-    }, 2600);
+    _demoTimers.push(setTimeout(() => { if (result) result.style.display = 'flex'; }, 2600));
 
-    // loop
-    setTimeout(() => startObDemo(), 4500);
+    // loop — only if still on screen 5
+    _demoTimers.push(setTimeout(() => {
+      if (document.getElementById('ob-demo-num')) startObDemo();
+    }, 4500));
   }
 
   function obFinish() {
+    clearDemoTimers();
     localStorage.setItem('wdig_onboarded', '1');
     // save name from onboarding
     const nameInput = document.getElementById('ob-name-input');
@@ -6528,7 +6694,7 @@
   if (_savedPref === 'system') {
     applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   } else {
-    applyTheme(_savedPref);
+    applyTheme(_savedPref); // works for light, dark, and mix
     localStorage.setItem('wdig_theme_override', '1');
   }
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
@@ -6548,7 +6714,15 @@
   renderRecurring();
   renderCharts();
   renderGoals();
-  showPage('overview', document.querySelector('nav button'));
+  // navigate to user's preferred landing page
+  const _goal = settings.userGoal;
+  if (_goal === 'bills') {
+    showPage('recurring', document.querySelectorAll('nav button')[2]);
+  } else if (_goal === 'savings') {
+    showPage('settings', document.querySelectorAll('nav button')[3]);
+  } else {
+    showPage('overview', document.querySelector('nav button'));
+  }
   checkOnboarding();
 
   // Register Service Worker for offline support
