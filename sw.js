@@ -1,7 +1,7 @@
 // Kassior Service Worker
 // Caches the app shell for true offline support
 
-const CACHE_NAME = 'kassior-v1';
+const CACHE_NAME = 'kassior-v2';
 const ASSETS = [
   './',
   './index.html',
