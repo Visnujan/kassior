@@ -3853,41 +3853,70 @@
       const isPaid = !!paidStatus[key];
       if (isPaid) return;
 
-      const daysUntilDue = r.day - today;
+      const type = r.type || 'monthly';
 
-      // overdue — past due day this month
-      if (daysUntilDue < 0) {
-        banners.push({
-          type: 'overdue',
-          icon: '🔴',
-          title: `${r.name} is overdue`,
-          sub: `Was due on day ${r.day} · ${fmt(r.amount)}`,
-          amt: fmt(r.amount),
-          id: r.id,
-          priority: 0
-        });
-      // due today or tomorrow
-      } else if (daysUntilDue <= 1) {
-        banners.push({
-          type: 'due-soon',
-          icon: '🟡',
-          title: daysUntilDue === 0 ? `${r.name} is due today` : `${r.name} is due tomorrow`,
-          sub: `${fmt(r.amount)} · tap Bills to log it`,
-          amt: fmt(r.amount),
-          id: r.id,
-          priority: 1
-        });
-      // due within 3 days
-      } else if (daysUntilDue <= 3) {
-        banners.push({
-          type: 'due-soon',
-          icon: '🟡',
-          title: `${r.name} due in ${daysUntilDue} days`,
-          sub: `${fmt(r.amount)} · due day ${r.day}`,
-          amt: fmt(r.amount),
-          id: r.id,
-          priority: 2
-        });
+      if (type === 'onetime') {
+        if (!r.dueDate) return;
+        const due      = parseLocalDate(r.dueDate);
+        const todayDt  = new Date(y, m, today);
+        const daysLeft = Math.ceil((due - todayDt) / 86400000);
+        if (daysLeft < 0) {
+          banners.push({ type:'overdue', icon:'🔴',
+            title:`${r.name} is overdue`,
+            sub:`Was due ${due.getDate()} ${getMonths()[due.getMonth()].slice(0,3)} · ${fmt(r.amount)}`,
+            amt:fmt(r.amount), id:r.id, priority:0 });
+        } else if (daysLeft <= 1) {
+          banners.push({ type:'due-soon', icon:'🟡',
+            title:daysLeft===0?`${r.name} is due today`:`${r.name} is due tomorrow`,
+            sub:`${fmt(r.amount)} · tap Bills to log it`,
+            amt:fmt(r.amount), id:r.id, priority:1 });
+        } else if (daysLeft <= 3) {
+          banners.push({ type:'due-soon', icon:'🟡',
+            title:`${r.name} due in ${daysLeft} days`,
+            sub:`${fmt(r.amount)} · due ${due.getDate()} ${getMonths()[due.getMonth()].slice(0,3)}`,
+            amt:fmt(r.amount), id:r.id, priority:2 });
+        }
+
+      } else if (type === 'yearly') {
+        // only show if due this month
+        if (r.yearlyMonth !== m + 1) return;
+        const daysUntilDue = r.yearlyDay - today;
+        if (daysUntilDue < 0) {
+          banners.push({ type:'overdue', icon:'🔴',
+            title:`${r.name} is overdue`,
+            sub:`Was due on day ${r.yearlyDay} · ${fmt(r.amount)}`,
+            amt:fmt(r.amount), id:r.id, priority:0 });
+        } else if (daysUntilDue <= 1) {
+          banners.push({ type:'due-soon', icon:'🟡',
+            title:daysUntilDue===0?`${r.name} is due today`:`${r.name} is due tomorrow`,
+            sub:`${fmt(r.amount)} · tap Bills to log it`,
+            amt:fmt(r.amount), id:r.id, priority:1 });
+        } else if (daysUntilDue <= 3) {
+          banners.push({ type:'due-soon', icon:'🟡',
+            title:`${r.name} due in ${daysUntilDue} days`,
+            sub:`${fmt(r.amount)} · due day ${r.yearlyDay}`,
+            amt:fmt(r.amount), id:r.id, priority:2 });
+        }
+
+      } else {
+        // monthly
+        const daysUntilDue = r.day - today;
+        if (daysUntilDue < 0) {
+          banners.push({ type:'overdue', icon:'🔴',
+            title:`${r.name} is overdue`,
+            sub:`Was due on day ${r.day} · ${fmt(r.amount)}`,
+            amt:fmt(r.amount), id:r.id, priority:0 });
+        } else if (daysUntilDue <= 1) {
+          banners.push({ type:'due-soon', icon:'🟡',
+            title:daysUntilDue===0?`${r.name} is due today`:`${r.name} is due tomorrow`,
+            sub:`${fmt(r.amount)} · tap Bills to log it`,
+            amt:fmt(r.amount), id:r.id, priority:1 });
+        } else if (daysUntilDue <= 3) {
+          banners.push({ type:'due-soon', icon:'🟡',
+            title:`${r.name} due in ${daysUntilDue} days`,
+            sub:`${fmt(r.amount)} · due day ${r.day}`,
+            amt:fmt(r.amount), id:r.id, priority:2 });
+        }
       }
 
       // expiring within 30 days
@@ -4013,7 +4042,7 @@
     // ── SMART CARDS (current month only, needs data) ──
     const smartRow = document.getElementById('smart-cards-row');
     if (smartRow) {
-      if (isNow && txs.length >= 3) {
+      if (isNow && txs.length >= 1) {
         const dayOfMonth2 = now.getDate();
         const dailyAvg2   = totalExp / dayOfMonth2;
 
