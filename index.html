@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content" />
   <meta name="description" content="Kassior — the privacy-first personal finance tracker. No account. No server. Your data never leaves your device. Made in Switzerland." />
   <meta name="theme-color" content="#f5f0eb" id="theme-color-meta" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -64,6 +64,15 @@
       --radius:      14px;
       --radius-sm:   10px;
       --radius-xs:   7px;
+
+      /* type scale */
+      --text-xs:   11px;
+      --text-sm:   13px;
+      --text-base: 15px;
+      --text-md:   17px;
+      --text-lg:   22px;
+      --text-xl:   32px;
+      --text-disp: 52px;
 
       /* hero colours — light theme uses surface */
       --hero-bg:           #ffffff;
@@ -520,8 +529,9 @@
       font-family: var(--font-display);
     }
     .hero-total .hero-amount .hero-currency {
-      font-size: 18px; font-weight: 600; color: var(--hero-currency);
-      vertical-align: super; margin-right: 3px;
+      font-size: 15px; font-weight: 500; color: var(--hero-currency);
+      vertical-align: super; margin-right: 8px; letter-spacing: 0.5px;
+      opacity: 0.7; font-size: 14px;
     }
     .hero-total .hero-month {
       font-size: 12px; color: var(--hero-sub); margin-top: 8px;
@@ -576,6 +586,51 @@
 
     /* budget input in settings */
     .budget-input-wrap { display: flex; align-items: center; gap: 6px; }
+    .acc-arrow-btns {
+      display: flex; flex-direction: row; gap: 4px; flex-shrink: 0;
+    }
+    .acc-arrow-btn {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-dim); transition: all 0.15s;
+    }
+    .acc-arrow-btn:hover:not(:disabled) {
+      background: var(--accent-dim); color: var(--accent-text);
+      border-color: var(--accent);
+    }
+    .acc-arrow-btn:disabled { opacity: 0.2; cursor: default; }
+    .acc-default-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--accent-text);
+      background: var(--accent-dim); border: 1px solid var(--accent);
+      border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
+    }
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted);
+      padding: 12px 14px 6px; border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+
+    .cat-toggle-btn {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+    }
+    .cat-toggle-btn.visible { color: var(--muted); }
+    .cat-toggle-btn.visible:hover { background: var(--danger-dim); color: var(--danger); border-color: var(--danger); }
+    .cat-toggle-btn.hidden  { color: var(--success); border-color: var(--success); background: var(--success-dim); }
+    .cat-toggle-btn.hidden:hover { opacity: 0.8; }
+
+    .budget-clear-btn {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--muted); flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .budget-clear-btn:hover { background: var(--danger-dim); color: var(--danger); border-color: var(--danger); }
     .budget-input {
       width: 88px; padding: 5px 10px; border-radius: var(--radius-xs);
       border: 1px solid var(--border); background: var(--surface2);
@@ -708,7 +763,12 @@
     .ob-goal-btn.selected {
       border-color: var(--accent); background: var(--accent-dim);
     }
-    .ob-goal-icon { font-size: 28px; margin-bottom: 8px; }
+    .ob-goal-icon {
+      font-size: 28px; margin-bottom: 8px;
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ob-goal-icon svg { display: block; }
     .ob-goal-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
     .ob-goal-sub   { font-size: 11px; color: var(--muted); line-height: 1.3; }
 
@@ -809,18 +869,19 @@
     .smart-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       animation: cardIn 0.3s cubic-bezier(0.32,0.72,0,1) both;
     }
     .smart-card-label {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      font-size: var(--text-xs); font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px;
     }
     .smart-card-value {
-      font-family: var(--font-display); font-size: 18px; font-weight: 800;
+      font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700;
       letter-spacing: -0.5px; color: var(--text); line-height: 1;
       margin-bottom: 3px;
     }
-    .smart-card-sub { font-size: 11px; color: var(--muted); }
+    .smart-card-sub { font-size: var(--text-sm); color: var(--muted); }
     .smart-card.positive .smart-card-value { color: var(--success); }
     .smart-card.negative .smart-card-value { color: var(--danger); }
     .smart-card.accent-card { border-color: #c06840; background: #fdf4ee; }
@@ -936,10 +997,12 @@
     #savings-goals-section { margin-bottom: 24px; }
     .goal-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
+      border-left: 3px solid var(--success);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px; margin-bottom: 10px;
       cursor: pointer; transition: border-color 0.15s;
     }
-    .goal-card:hover { border-color: var(--accent); }
+    .goal-card:hover { border-color: var(--accent); border-left-color: var(--success); }
     .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .goal-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
     .goal-emoji { font-size: 20px; }
@@ -979,8 +1042,10 @@
     #bill-reminders { margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
     .reminder-banner {
       display: flex; align-items: center; gap: 10px;
-      padding: 12px 14px; border-radius: 14px;
-      border: 1px solid; cursor: pointer;
+      padding: 12px 14px;
+      border-radius: 0 14px 14px 0;
+      border: 1px solid; border-left-width: 3px;
+      cursor: pointer;
     }
     .reminder-banner.overdue  { background: var(--danger-dim);  border-color: var(--danger);  }
     .reminder-banner.due-soon { background: #fdf3e0;             border-color: #b07020;        }
@@ -1042,10 +1107,12 @@
       border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       font-size: 18px; flex-shrink: 0;
+      color: var(--accent);
     }
+    .tx-emoji-wrap svg { display: block; }
     .tx-info { flex: 1; min-width: 0; }
-    .tx-info .tx-cat { font-size: 14px; font-weight: 600; color: var(--text); }
-    .tx-info .tx-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px;
+    .tx-info .tx-cat { font-size: var(--text-base); font-weight: 600; color: var(--text); }
+    .tx-info .tx-meta { font-size: var(--text-sm); color: var(--text-dim); margin-top: 2px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tx-right { text-align: right; flex-shrink: 0; }
     .tx-amount { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); }
@@ -1101,6 +1168,12 @@
 
     /* ── CATEGORY PICKER ── */
     .cat-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+    .cat-icon-wrap { display: inline-flex; align-items: center; vertical-align: middle; color: var(--accent); }
+    .cat-icon-wrap svg { display: block; }
+    .cat-svg-emoji { display: flex; align-items: center; justify-content: center; color: var(--accent); }
+    .cat-svg-emoji svg { display: block; }
+    .rec-name svg { display: inline; vertical-align: middle; color: var(--accent); }
+
     .cat-btn {
       background: var(--bg); border: 1px solid var(--border);
       border-radius: var(--radius-xs); padding: 11px 4px;
@@ -1222,7 +1295,8 @@
       padding: 8px 20px 40px; width: 100%; max-width: 480px;
       transform: translateY(100%);
       transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-      max-height: 90vh; overflow-y: auto;
+      max-height: 92dvh; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .modal-overlay.open .modal {
       transform: translateY(0);
@@ -1286,7 +1360,9 @@
       background: var(--surface2); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       font-size: 26px; margin-bottom: 16px;
+      color: var(--muted);
     }
+    .empty .empty-icon svg { display: block; }
     .empty h3 {
       font-size: 15px; font-weight: 700; color: var(--text);
       font-family: var(--font-display); margin-bottom: 6px;
@@ -1322,7 +1398,12 @@
       padding: 13px 16px; border-bottom: 1px solid var(--border-sub);
     }
     .settings-row:last-child { border-bottom: none; }
-    .settings-row-emoji { font-size: 18px; flex-shrink: 0; width: 28px; text-align: center; }
+    .settings-row-emoji {
+      font-size: 18px; flex-shrink: 0; width: 28px;
+      text-align: center; display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+    }
+    .settings-row-emoji svg { display: block; }
     .settings-row-info { flex: 1; min-width: 0; }
     .settings-row-label { font-size: 14px; font-weight: 600; color: var(--text); }
     .settings-row-sub   { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
@@ -1416,7 +1497,7 @@
 
     /* ── FLOATING ACTION BUTTON ── */
     #fab-wrap {
-      position: fixed; bottom: 76px; right: 20px;
+      position: fixed; bottom: 96px; right: 20px;
       display: flex; flex-direction: column; align-items: flex-end;
       gap: 10px; z-index: 99;
     }
@@ -1952,8 +2033,8 @@
 
   <!-- View toggle: Month / Year -->
   <div class="bill-type-row" style="margin-bottom:20px">
-    <button class="bill-type-btn active" id="insights-tab-month" onclick="setInsightsView('month')">📅 Monthly</button>
-    <button class="bill-type-btn"        id="insights-tab-year"  onclick="setInsightsView('year')">📊 Yearly</button>
+    <button class="bill-type-btn active" id="insights-tab-month" onclick="setInsightsView('month')">Monthly</button>
+    <button class="bill-type-btn"        id="insights-tab-year"  onclick="setInsightsView('year')">Yearly</button>
   </div>
 
   <!-- MONTHLY VIEW -->
@@ -2180,22 +2261,22 @@
       <p class="ob-body">Kassior will start with the right view for you.</p>
       <div class="ob-goal-grid" id="ob-goal-grid">
         <button class="ob-goal-btn" onclick="selectGoal('spending', this)">
-          <div class="ob-goal-icon">💸</div>
+          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
           <div class="ob-goal-label">Daily spending</div>
           <div class="ob-goal-sub">Track where money goes</div>
         </button>
         <button class="ob-goal-btn" onclick="selectGoal('bills', this)">
-          <div class="ob-goal-icon">📋</div>
+          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <div class="ob-goal-label">Bills & subs</div>
           <div class="ob-goal-sub">Never miss a payment</div>
         </button>
         <button class="ob-goal-btn" onclick="selectGoal('savings', this)">
-          <div class="ob-goal-icon">🎯</div>
+          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
           <div class="ob-goal-label">Save for something</div>
           <div class="ob-goal-sub">Goals with progress</div>
         </button>
         <button class="ob-goal-btn" onclick="selectGoal('all', this)">
-          <div class="ob-goal-icon">📊</div>
+          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
           <div class="ob-goal-label">Everything</div>
           <div class="ob-goal-sub">Full picture</div>
         </button>
@@ -2239,9 +2320,9 @@
         <div class="ob-demo-step" id="ob-demo-step-3" style="opacity:0.3">
           <div class="ob-demo-label">③ Pick a category</div>
           <div class="ob-demo-cats">
-            <div class="ob-demo-cat" id="ob-demo-cat-food">🛒 Food</div>
-            <div class="ob-demo-cat" id="ob-demo-cat-transport">🚇 Transport</div>
-            <div class="ob-demo-cat" id="ob-demo-cat-other">💰 Other</div>
+            <div class="ob-demo-cat" id="ob-demo-cat-food">Food</div>
+            <div class="ob-demo-cat" id="ob-demo-cat-transport">Transport</div>
+            <div class="ob-demo-cat" id="ob-demo-cat-other">Other</div>
           </div>
         </div>
         <div class="ob-demo-result" id="ob-demo-result" style="display:none">
@@ -2331,7 +2412,7 @@
     <div class="section-title" id="settings-lang-title">Language</div>
     <div class="settings-card">
       <div class="settings-row" style="cursor:pointer" onclick="openModal('modal-language')">
-        <div class="settings-row-emoji">🌐</div>
+        <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
         <div class="settings-row-info">
           <div class="settings-row-label" id="lang-label">Language</div>
           <div class="settings-row-sub" id="lang-current">English</div>
@@ -2347,7 +2428,7 @@
     <div class="settings-card">
       <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px">
         <div style="display:flex;align-items:center;gap:10px">
-          <div class="settings-row-emoji">🎨</div>
+          <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/></svg></div>
           <div class="settings-row-info">
             <div class="settings-row-label">Theme</div>
             <div class="settings-row-sub" id="theme-sub">System</div>
@@ -2429,7 +2510,7 @@
     <div class="settings-card">
       <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding-bottom:14px">
         <div style="display:flex;align-items:center;gap:10px;width:100%">
-          <div class="settings-row-emoji">👤</div>
+          <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           <div class="settings-row-info">
             <div class="settings-row-label">Your name</div>
             <div class="settings-row-sub">Used in your greeting</div>
@@ -2440,7 +2521,7 @@
           oninput="saveUserName(this.value)" maxlength="30"/>
       </div>
       <div class="settings-row" onclick="replayOnboarding()" style="cursor:pointer">
-        <div class="settings-row-emoji">👋</div>
+        <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
         <div class="settings-row-info">
           <div class="settings-row-label">View intro again</div>
           <div class="settings-row-sub">Replay the welcome screens</div>
@@ -2541,9 +2622,9 @@
     <div class="form-row">
       <label>Type</label>
       <div class="bill-type-row">
-        <button class="bill-type-btn active" id="btype-monthly"  onclick="setBillType('monthly')">🔁 Monthly</button>
-        <button class="bill-type-btn"        id="btype-yearly"   onclick="setBillType('yearly')">📅 Yearly</button>
-        <button class="bill-type-btn"        id="btype-onetime"  onclick="setBillType('onetime')">1️⃣ One-time</button>
+        <button class="bill-type-btn active" id="btype-monthly"  onclick="setBillType('monthly')">Monthly</button>
+        <button class="bill-type-btn"        id="btype-yearly"   onclick="setBillType('yearly')">Yearly</button>
+        <button class="bill-type-btn"        id="btype-onetime"  onclick="setBillType('onetime')">One-time</button>
       </div>
     </div>
     <input type="hidden" id="rec-input-type" value="monthly"/>
@@ -2585,12 +2666,12 @@
     <div class="form-row">
       <label>Category</label>
       <select id="rec-input-cat">
-        <option value="subscriptions">📱 Subscriptions</option>
-        <option value="utilities">💡 Utilities</option>
-        <option value="rent">🏠 Rent</option>
-        <option value="transport">🚇 Transport</option>
-        <option value="car">🚗 Car</option>
-        <option value="other">💰 Other</option>
+        <option value="subscriptions">Subscriptions</option>
+        <option value="utilities">Utilities</option>
+        <option value="rent">Rent</option>
+        <option value="transport">Transport</option>
+        <option value="car">Car</option>
+        <option value="other">Other</option>
       </select>
     </div>
 
@@ -2627,11 +2708,11 @@
         <div><strong>Edit from now on</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">Update the bill going forward — e.g. price increased</span></div>
       </button>
       <button class="action-btn" onclick="startEdit('all')">
-        <span class="action-icon">📋</span>
+        <span class="action-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></span>
         <div><strong>Edit all</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">Fix a mistake on the original bill setup</span></div>
       </button>
       <button class="action-btn danger-btn" onclick="archiveBill()">
-        <span class="action-icon">🗄️</span>
+        <span class="action-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></span>
         <div><strong>Archive bill</strong><span style="font-size:12px;color:var(--text-dim);display:block;margin-top:2px">Hide from active list — history is preserved</span></div>
       </button>
     </div>
@@ -2648,7 +2729,7 @@
     <h2>Log as Expense</h2>
     <p class="modal-sub">Confirm the details before it's added to your Overview.</p>
     <div class="confirm-bill-preview">
-      <div class="preview-emoji" id="confirm-emoji">📱</div>
+      <div class="preview-emoji" id="confirm-emoji">?</div>
       <div>
         <div class="preview-name" id="confirm-name">Bill</div>
         <div class="preview-amt" id="confirm-amt">CHF 0.00</div>
@@ -2677,11 +2758,45 @@
   </div>
 </div>
 
+<!-- MODAL: EDIT CATEGORY -->
+<div class="modal-overlay" id="modal-edit-cat" onclick="closeModalOnOverlay(event,'modal-edit-cat')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Edit Category</h2>
+    <p class="modal-sub" id="edit-cat-sub">Rename this category</p>
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" id="edit-cat-name" maxlength="30" placeholder="Category name" autocomplete="off"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteCategory()">Remove</button>
+      <button class="btn-primary" onclick="saveEditCategory()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT BUDGET -->
+<div class="modal-overlay" id="modal-edit-budget" onclick="closeModalOnOverlay(event,'modal-edit-budget')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Edit Budget</h2>
+    <p class="modal-sub" id="edit-budget-sub">Set a monthly limit</p>
+    <div class="form-row">
+      <label id="edit-budget-currency-label">Amount (CHF)</label>
+      <input type="number" id="edit-budget-amount" min="0" step="1" placeholder="0"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="color:var(--danger);border-color:var(--danger)" onclick="deleteBudget()">Remove</button>
+      <button class="btn-primary" onclick="saveEditBudget()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: TRASH -->
 <div class="modal-overlay" id="modal-trash" onclick="closeModalOnOverlay(event,'modal-trash')">
   <div class="modal">
     <span class="modal-handle"></span>
-    <h2>🗑 Trash</h2>
+    <h2>Trash</h2>
     <p class="modal-sub">Swipe-deleted transactions. Auto-clears after 30 days.</p>
     <div id="trash-list" style="display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow-y:auto"></div>
     <div style="margin-top:16px">
@@ -2720,7 +2835,7 @@
     </div>
     <div class="form-row">
       <label>Emoji <span style="font-size:11px;color:var(--muted);font-weight:400">(optional)</span></label>
-      <input type="text" id="goal-input-emoji" placeholder="🎯" maxlength="4" style="width:72px;font-size:22px;text-align:center"/>
+      <input type="text" id="goal-input-emoji" placeholder="★" maxlength="4" style="width:72px;font-size:22px;text-align:center"/>
     </div>
     <div class="form-row">
       <label>Target Date <span style="font-size:11px;color:var(--muted);font-weight:400">(optional)</span></label>
@@ -2763,7 +2878,7 @@
     <p class="modal-sub">New entries will be merged with your existing data. Duplicates are skipped.</p>
     <div id="csv-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:14px 16px;margin-bottom:4px"></div>
     <div style="font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:4px">
-      💡 Only Kassior CSV exports can be imported this way.
+      Only Kassior CSV exports can be imported this way.
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-csv-confirm')">Cancel</button>
@@ -2780,7 +2895,7 @@
     <p class="modal-sub">This will replace everything currently in the app with the data from your backup file.</p>
     <div id="import-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:14px 16px;margin-bottom:4px"></div>
     <div style="font-size:12px;color:var(--muted);margin-top:10px;margin-bottom:4px">
-      💡 Tip — export your current data first if you want to keep it.
+      Tip — export your current data first if you want to keep it.
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-import-confirm')">Cancel</button>
@@ -2898,7 +3013,7 @@
       all:            "All",
 
       // trash
-      trash:          "🗑 Trash",
+      trash:          "Trash",
       trashSub:       "Swipe-deleted transactions. Auto-clears after 30 days.",
       trashEmpty:     "Trash is clear",
       trashEmptySub:  "Deleted transactions appear here for 30 days.",
@@ -2985,7 +3100,7 @@
       restoreTitle:   "Restore from Backup?",
       restoreSub:     "This will replace everything currently in the app.",
       restoreBtn:     "Restore",
-      restoreTip:     "💡 Export your current data first if you want to keep it.",
+      restoreTip:     "Export your current data first if you want to keep it.",
 
       // currency picker
       currencyTitle:  "Base Currency",
@@ -3012,12 +3127,12 @@
 
       // toast
       expenseAdded:   "✓ Expense added",
-      removed:        "🗑 Moved to trash · Tap trash to restore",
+      removed:        "Moved to trash · Tap trash to restore",
       restored:       "↩ Restored",
       billAdded:      "✓ Bill added",
       billUpdated:    "✓ Bill updated",
-      billArchived:   "🗄 Bill archived",
-      billRemoved:    "🗑 Bill removed",
+      billArchived:   "Bill archived",
+      billRemoved:    "Bill removed",
       markedPaid:     "✓ Logged & marked paid",
       markedUnpaid:   "↩ Marked unpaid",
       categoryAdded:  "added",
@@ -3063,7 +3178,7 @@
       entries:        "Einträge",
       entry:          "Eintrag",
       all:            "Alle",
-      trash:          "🗑 Papierkorb",
+      trash:          "Papierkorb",
       trashSub:       "Gelöschte Transaktionen. Automatisch nach 30 Tagen gelöscht.",
       trashEmpty:     "Papierkorb ist leer",
       trashEmptySub:  "Gelöschte Transaktionen erscheinen hier für 30 Tage.",
@@ -3142,7 +3257,7 @@
       restoreTitle:   "Aus Backup wiederherstellen?",
       restoreSub:     "Dies ersetzt alle aktuellen Daten in der App.",
       restoreBtn:     "Wiederherstellen",
-      restoreTip:     "💡 Exportiere deine Daten zuerst, wenn du sie behalten möchtest.",
+      restoreTip:     "Exportiere deine Daten zuerst, wenn du sie behalten möchtest.",
       currencyTitle:  "Basiswährung",
       currencySub:    "Währung für die gesamte App auswählen.",
       monthPickerTitle: "Monat wählen",
@@ -3159,12 +3274,12 @@
       monthsShort: ["Jan","Feb","Mär","Apr","Mai","Jun",
                     "Jul","Aug","Sep","Okt","Nov","Dez"],
       expenseAdded:   "✓ Ausgabe hinzugefügt",
-      removed:        "🗑 In Papierkorb verschoben",
+      removed:        "In Papierkorb verschoben",
       restored:       "↩ Wiederhergestellt",
       billAdded:      "✓ Rechnung hinzugefügt",
       billUpdated:    "✓ Rechnung aktualisiert",
-      billArchived:   "🗄 Rechnung archiviert",
-      billRemoved:    "🗑 Rechnung entfernt",
+      billArchived:   "Rechnung archiviert",
+      billRemoved:    "Rechnung entfernt",
       markedPaid:     "✓ Erfasst & als bezahlt markiert",
       markedUnpaid:   "↩ Als unbezahlt markiert",
       categoryAdded:  "hinzugefügt",
@@ -3208,7 +3323,7 @@
       entries:        "உள்ளீடுகள்",
       entry:          "உள்ளீடு",
       all:            "அனைத்தும்",
-      trash:          "🗑 குப்பை",
+      trash:          "குப்பை",
       trashSub:       "30 நாட்களுக்கு பிறகு தானாக நீக்கப்படும்.",
       trashEmpty:     "குப்பை காலியாக உள்ளது",
       trashEmptySub:  "நீக்கப்பட்ட பரிவர்த்தனைகள் 30 நாட்கள் இங்கே தோன்றும்.",
@@ -3287,7 +3402,7 @@
       restoreTitle:   "காப்பிலிருந்து மீட்டெடுக்கவா?",
       restoreSub:     "இது பயன்பாட்டில் உள்ள அனைத்தையும் மாற்றும்.",
       restoreBtn:     "மீட்டெடு",
-      restoreTip:     "💡 தரவை வைத்திருக்க முதலில் ஏற்றுமதி செய்யவும்.",
+      restoreTip:     "தரவை வைத்திருக்க முதலில் ஏற்றுமதி செய்யவும்.",
       currencyTitle:  "அடிப்படை நாணயம்",
       currencySub:    "பயன்பாட்டிற்கான நாணயத்தை தேர்ந்தெடுக்கவும்.",
       monthPickerTitle: "மாதம் தேர்ந்தெடு",
@@ -3304,12 +3419,12 @@
       monthsShort: ["ஜன","பிப்","மார்","ஏப்","மே","ஜூன்",
                     "ஜூலை","ஆக","செப்","அக்","நவ","டிச"],
       expenseAdded:   "✓ செலவு சேர்க்கப்பட்டது",
-      removed:        "🗑 குப்பையில் நகர்த்தப்பட்டது",
+      removed:        "குப்பையில் நகர்த்தப்பட்டது",
       restored:       "↩ மீட்டெடுக்கப்பட்டது",
       billAdded:      "✓ பில் சேர்க்கப்பட்டது",
       billUpdated:    "✓ பில் புதுப்பிக்கப்பட்டது",
-      billArchived:   "🗄 பில் காப்பகப்படுத்தப்பட்டது",
-      billRemoved:    "🗑 பில் நீக்கப்பட்டது",
+      billArchived:   "பில் காப்பகப்படுத்தப்பட்டது",
+      billRemoved:    "பில் நீக்கப்பட்டது",
       markedPaid:     "✓ பதிவு செய்யப்பட்டது & செலுத்தியதாக குறிக்கப்பட்டது",
       markedUnpaid:   "↩ நிலுவையாக குறிக்கப்பட்டது",
       categoryAdded:  "சேர்க்கப்பட்டது",
@@ -3368,29 +3483,74 @@
   // ── CONSTANTS ──
   // Category labels pull from translations at render time via t()
   const CATEGORIES = [
-    { id: 'rent',          labelKey: 'catRent',      emoji: '🏠' },
-    { id: 'food',          labelKey: 'catFood',      emoji: '🛒' },
-    { id: 'transport',     labelKey: 'catTransport', emoji: '🚇' },
-    { id: 'car',           labelKey: 'catCar',       emoji: '🚗' },
-    { id: 'subscriptions', labelKey: 'catSubs',      emoji: '📱' },
-    { id: 'utilities',     labelKey: 'catUtilities', emoji: '💡' },
-    { id: 'shopping',      labelKey: 'catShopping',  emoji: '🛍️' },
-    { id: 'other',         labelKey: 'catOther',     emoji: '💰' },
+    { id: 'rent',          labelKey: 'catRent',      emoji: '🏠', icon: 'rent' },
+    { id: 'food',          labelKey: 'catFood',      emoji: '🛒', icon: 'food' },
+    { id: 'transport',     labelKey: 'catTransport', emoji: '🚇', icon: 'transport' },
+    { id: 'car',           labelKey: 'catCar',       emoji: '🚗', icon: 'car' },
+    { id: 'subscriptions', labelKey: 'catSubs',      emoji: '📱', icon: 'subscriptions' },
+    { id: 'utilities',     labelKey: 'catUtilities', emoji: '💡', icon: 'utilities' },
+    { id: 'shopping',      labelKey: 'catShopping',  emoji: '🛍️', icon: 'shopping' },
+    { id: 'other',         labelKey: 'catOther',     emoji: '💰', icon: 'other' },
   ];
+
+  // SVG icon paths for built-in categories — consistent stroke weight, brick colour
+  const CAT_ICONS = {
+    rent:          `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    food:          `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
+    transport:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+    car:           `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/><circle cx="9" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>`,
+    subscriptions: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+    utilities:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+    shopping:      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+    other:         `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+
+  // Returns SVG icon for built-in categories, emoji for custom ones
+  function catIcon(cat, size = 18) {
+    if (cat.icon && CAT_ICONS[cat.icon]) {
+      return CAT_ICONS[cat.icon].replace(/width="18"/g, `width="${size}"`).replace(/height="18"/g, `height="${size}"`);
+    }
+    return `<span style="font-size:${size}px;line-height:1">${esc(cat.emoji)}</span>`;
+  }
   // helper — get translated label for a category
   function catLabel(cat) {
+    // check for user-renamed built-in
+    if (cat.id && settings && settings.catNames && settings.catNames[cat.id]) {
+      return settings.catNames[cat.id];
+    }
     if (cat.labelKey) return t(cat.labelKey);
     return cat.label || cat.id;
   }
 
+  // helper — categories visible to user (not hidden)
+  function visibleCats() {
+    return CATEGORIES.filter(c => !(settings.hiddenCats || []).includes(c.id));
+  }
+
   const INCOME_SOURCES = [
-    { id: 'salary',    label: 'Salary',     emoji: '💼' },
-    { id: 'freelance', label: 'Freelance',  emoji: '💻' },
-    { id: 'gift',      label: 'Gift',       emoji: '🎁' },
-    { id: 'refund',    label: 'Refund',     emoji: '↩️' },
-    { id: 'investment',label: 'Investment', emoji: '📈' },
-    { id: 'other_inc', label: 'Other',      emoji: '💰' },
+    { id: 'salary',    label: 'Salary',     emoji: '💼', icon: 'salary'     },
+    { id: 'freelance', label: 'Freelance',  emoji: '💻', icon: 'freelance'  },
+    { id: 'gift',      label: 'Gift',       emoji: '🎁', icon: 'gift'       },
+    { id: 'refund',    label: 'Refund',     emoji: '↩️', icon: 'refund'     },
+    { id: 'investment',label: 'Investment', emoji: '📈', icon: 'investment' },
+    { id: 'other_inc', label: 'Other',      emoji: '💰', icon: 'other_inc'  },
   ];
+
+  const INCOME_ICONS = {
+    salary:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>`,
+    freelance:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+    gift:       `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>`,
+    refund:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>`,
+    investment: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>`,
+    other_inc:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+
+  function incIcon(src, size = 18) {
+    if (src && src.icon && INCOME_ICONS[src.icon]) {
+      return INCOME_ICONS[src.icon].replace(/width="18"/g, `width="${size}"`).replace(/height="18"/g, `height="${size}"`);
+    }
+    return `<span style="font-size:${size}px">${esc(src.emoji)}</span>`;
+  }
   // MONTHS pulled from current translation at render time
   function getMonths()      { return t('months'); }
   function getMonthsShort() { return t('monthsShort'); }
@@ -3589,7 +3749,7 @@
     if (!hasData) {
       el.innerHTML = `
         <div class="empty">
-          <div class="empty-icon">📊</div>
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
           <h3>No data for ${yearViewYear}</h3>
           <p>Start logging expenses to see your yearly overview.</p>
         </div>`;
@@ -3707,7 +3867,7 @@
   function saveGoal() {
     const name   = sanitiseText(document.getElementById('goal-input-name').value, 60);
     const target = parseFloat(document.getElementById('goal-input-target').value);
-    const emoji  = sanitiseText(document.getElementById('goal-input-emoji').value, 4) || '🎯';
+    const emoji  = sanitiseText(document.getElementById('goal-input-emoji').value, 4) || '★';
     const dd = document.getElementById('goal-end-day').value;
     const dm = document.getElementById('goal-end-month').value;
     const dy = document.getElementById('goal-end-year').value;
@@ -3752,7 +3912,7 @@
     save();
     closeModal('modal-contribute-goal');
     renderGoals();
-    if (g.saved >= g.target) showToast('🎉 Goal reached!');
+    if (g.saved >= g.target) showToast('Goal reached!');
     else showToast(`✓ ${fmt(amount)} added to ${g.name}`);
   }
 
@@ -3810,7 +3970,7 @@
       <div class="goal-card" onclick="${showDelete ? `openEditGoal('${g.id}')` : `openContribute('${g.id}')`}">
         <div class="goal-top">
           <div class="goal-name">
-            <span class="goal-emoji">${esc(g.emoji || '🎯')}</span>
+            <span class="goal-emoji">${esc(g.emoji || '★')}</span>
             ${esc(g.name)}
           </div>
           <div class="goal-amounts">
@@ -3874,7 +4034,7 @@
     if (!query) {
       listEl.innerHTML = `
         <div class="empty">
-          <div class="empty-icon">🔍</div>
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
           <h3>Start typing to search</h3>
           <p>Search across all your expenses and income.</p>
         </div>`;
@@ -3919,7 +4079,7 @@
     if (!rows.length) {
       listEl.innerHTML = `
         <div class="empty">
-          <div class="empty-icon">🔍</div>
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
           <h3>No results</h3>
           <p>Nothing found for "${esc(query)}"</p>
         </div>`;
@@ -3945,8 +4105,8 @@
         const src  = INCOME_SOURCES.find(s => s.id === data.source) || { emoji:'💰', label: data.source };
         const meta = [data.account, data.note].filter(Boolean).map(v => hi(v, query)).join(' · ');
         return `
-          <div class="tx-item" onclick="openEditIncome(${data.id})" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px">
-            <div class="tx-emoji-wrap" style="background:var(--success-dim)">${esc(src.emoji)}</div>
+          <div class="tx-item" onclick="openEditIncome('${data.id}')" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px">
+            <div class="tx-emoji-wrap" style="background:var(--success-dim);color:var(--success)">${incIcon(src)}</div>
             <div class="tx-info">
               <div class="tx-cat" style="color:var(--success)">${hi(src.label, query)}</div>
               <div class="tx-meta">${meta}</div>
@@ -3962,8 +4122,8 @@
       const cat = CATEGORIES.find(c => c.id === t.category) || { emoji:'💰', label: t.category };
       const meta = [t.account, t.note].filter(Boolean).map(v => hi(v, query)).join(' · ');
       return `
-        <div class="tx-item" onclick="openEditTransaction(${t.id})" style="cursor:pointer">
-          <div class="tx-emoji-wrap">${esc(cat.emoji)}</div>
+        <div class="tx-item" onclick="openEditTransaction('${t.id}')" style="cursor:pointer">
+          <div class="tx-emoji-wrap">${catIcon(cat)}</div>
           <div class="tx-info">
             <div class="tx-cat">${hi(catLabel(cat), query)}</div>
             <div class="tx-meta">${meta}</div>
@@ -4003,17 +4163,17 @@
         const todayDt  = new Date(y, m, today);
         const daysLeft = Math.ceil((due - todayDt) / 86400000);
         if (daysLeft < 0) {
-          banners.push({ type:'overdue', icon:'🔴',
+          banners.push({ type:'overdue', icon:'overdue',
             title:`${r.name} is overdue`,
             sub:`Was due ${due.getDate()} ${getMonths()[due.getMonth()].slice(0,3)} · ${fmt(r.amount)}`,
             amt:fmt(r.amount), id:r.id, priority:0 });
         } else if (daysLeft <= 1) {
-          banners.push({ type:'due-soon', icon:'🟡',
+          banners.push({ type:'due-soon', icon:'due-soon',
             title:daysLeft===0?`${r.name} is due today`:`${r.name} is due tomorrow`,
             sub:`${fmt(r.amount)} · tap Bills to log it`,
             amt:fmt(r.amount), id:r.id, priority:1 });
         } else if (daysLeft <= 3) {
-          banners.push({ type:'due-soon', icon:'🟡',
+          banners.push({ type:'due-soon', icon:'due-soon',
             title:`${r.name} due in ${daysLeft} days`,
             sub:`${fmt(r.amount)} · due ${due.getDate()} ${getMonths()[due.getMonth()].slice(0,3)}`,
             amt:fmt(r.amount), id:r.id, priority:2 });
@@ -4024,17 +4184,17 @@
         if (r.yearlyMonth !== m + 1) return;
         const daysUntilDue = r.yearlyDay - today;
         if (daysUntilDue < 0) {
-          banners.push({ type:'overdue', icon:'🔴',
+          banners.push({ type:'overdue', icon:'overdue',
             title:`${r.name} is overdue`,
             sub:`Was due on day ${r.yearlyDay} · ${fmt(r.amount)}`,
             amt:fmt(r.amount), id:r.id, priority:0 });
         } else if (daysUntilDue <= 1) {
-          banners.push({ type:'due-soon', icon:'🟡',
+          banners.push({ type:'due-soon', icon:'due-soon',
             title:daysUntilDue===0?`${r.name} is due today`:`${r.name} is due tomorrow`,
             sub:`${fmt(r.amount)} · tap Bills to log it`,
             amt:fmt(r.amount), id:r.id, priority:1 });
         } else if (daysUntilDue <= 3) {
-          banners.push({ type:'due-soon', icon:'🟡',
+          banners.push({ type:'due-soon', icon:'due-soon',
             title:`${r.name} due in ${daysUntilDue} days`,
             sub:`${fmt(r.amount)} · due day ${r.yearlyDay}`,
             amt:fmt(r.amount), id:r.id, priority:2 });
@@ -4044,17 +4204,17 @@
         // monthly
         const daysUntilDue = r.day - today;
         if (daysUntilDue < 0) {
-          banners.push({ type:'overdue', icon:'🔴',
+          banners.push({ type:'overdue', icon:'overdue',
             title:`${r.name} is overdue`,
             sub:`Was due on day ${r.day} · ${fmt(r.amount)}`,
             amt:fmt(r.amount), id:r.id, priority:0 });
         } else if (daysUntilDue <= 1) {
-          banners.push({ type:'due-soon', icon:'🟡',
+          banners.push({ type:'due-soon', icon:'due-soon',
             title:daysUntilDue===0?`${r.name} is due today`:`${r.name} is due tomorrow`,
             sub:`${fmt(r.amount)} · tap Bills to log it`,
             amt:fmt(r.amount), id:r.id, priority:1 });
         } else if (daysUntilDue <= 3) {
-          banners.push({ type:'due-soon', icon:'🟡',
+          banners.push({ type:'due-soon', icon:'due-soon',
             title:`${r.name} due in ${daysUntilDue} days`,
             sub:`${fmt(r.amount)} · due day ${r.day}`,
             amt:fmt(r.amount), id:r.id, priority:2 });
@@ -4091,7 +4251,11 @@
 
     el.innerHTML = shown.map(b => `
       <div class="reminder-banner ${b.type}" onclick="showPage('recurring', document.querySelector('#nav-recurring'))">
-        <div class="reminder-icon">${b.icon}</div>
+        <div class="reminder-icon">${
+        b.icon === 'overdue'  ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' :
+        b.icon === 'due-soon' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' :
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+      }</div>
         <div class="reminder-text">
           <div class="reminder-title ${b.type}">${esc(b.title)}</div>
           <div class="reminder-sub">${esc(b.sub)}</div>
@@ -4227,7 +4391,7 @@
 
     const catEl = document.getElementById('cat-breakdown');
     const byCat = {};
-    CATEGORIES.forEach(c => byCat[c.id] = 0);
+    visibleCats().forEach(c => byCat[c.id] = 0);
     txs.forEach(t => { if (byCat[t.category] !== undefined) byCat[t.category] += t.amount; });
     const maxCat = Math.max(...Object.values(byCat), 1);
     catEl.classList.remove('fade-in');
@@ -4237,13 +4401,13 @@
     if (!txs.length) {
       catEl.innerHTML = `
         <div class="empty">
-          <div class="empty-icon">💸</div>
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
           <h3>Nothing logged yet</h3>
           <p>Tap the + button to add your first expense and start tracking.</p>
         </div>`;
     } else {
       const catParts = [];
-      CATEGORIES.filter(c => byCat[c.id] > 0).sort((a,b) => byCat[b.id]-byCat[a.id]).forEach(c => {
+      visibleCats().filter(c => byCat[c.id] > 0).sort((a,b) => byCat[b.id]-byCat[a.id]).forEach(c => {
         const spent   = byCat[c.id];
         const budget  = (settings.budgets || {})[c.id];
         const share   = totalExp > 0 ? Math.round(spent / totalExp * 100) : 0;
@@ -4271,7 +4435,7 @@
         catParts.push(`
           <div class="cat-row">
             <div class="cat-row-top">
-              <div class="cat-name">${esc(c.emoji)} ${esc(catLabel(c))} <span class="cat-pct">${share}%</span></div>
+              <div class="cat-name"><span class="cat-icon-wrap">${catIcon(c,14)}</span> ${esc(catLabel(c))} <span class="cat-pct">${share}%</span></div>
               <div class="cat-amount">${fmt(spent)}</div>
             </div>
             <div class="cat-bar-bg"><div class="cat-bar-fill ${barClass}" style="width:${barPct}%"></div></div>
@@ -4304,9 +4468,9 @@
 
   // ── ADD EXPENSE ──
   function buildCatPicker() {
-    document.getElementById('cat-picker').innerHTML = CATEGORIES.map(c => `
+    document.getElementById('cat-picker').innerHTML = visibleCats().map(c => `
       <button class="cat-btn" onclick="selectCat('${c.id}',this)" type="button">
-        <span class="cat-icon">${esc(c.emoji)}</span>
+        <span class="cat-icon">${catIcon(c,20)}</span>
         <span class="cat-label">${esc(catLabel(c))}</span>
       </button>`).join('');
   }
@@ -4347,9 +4511,9 @@
     const cats = ['all', 'income', ...new Set(txs.map(t => t.category))];
     document.getElementById('filter-row').innerHTML = cats.map(c => {
       if (c === 'all')    return `<div class="filter-pill ${txFilter==='all'?'active':''}" onclick="setFilter('all')">All</div>`;
-      if (c === 'income') return `<div class="filter-pill ${txFilter==='income'?'active':''}" onclick="setFilter('income')" style="${txFilter==='income'?'':''}">💚 Income</div>`;
+      if (c === 'income') return `<div class="filter-pill ${txFilter==='income'?'active':''}" onclick="setFilter('income')" style="${txFilter==='income'?'':''}">Income</div>`;
       const cat = CATEGORIES.find(x => x.id === c);
-      const lbl = `${cat?.emoji || '💰'} ${cat ? catLabel(cat) : c}`;
+      const lbl = `${cat ? catLabel(cat) : c}`;
       return `<div class="filter-pill ${txFilter===c?'active':''}" onclick="setFilter('${c}')">${lbl}</div>`;
     }).join('');
 
@@ -4381,7 +4545,7 @@
     if (!rows.length) {
       listEl.innerHTML = `
         <div class="empty">
-          <div class="empty-icon">🗂️</div>
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
           <h3>No entries here</h3>
           <p>Nothing logged for this month yet.</p>
         </div>`;
@@ -4398,9 +4562,9 @@
         const meta = [data.account, data.note].filter(Boolean).map(esc).join(' · ');
         return `
           <div class="tx-swipe-wrap" data-inc-id="${data.id}">
-            <div class="tx-delete-bg" style="background:var(--danger)">🗑</div>
-            <div class="tx-item" data-inc-id="${data.id}" onclick="openEditIncome(${data.id})" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px;${delay}">
-              <div class="tx-emoji-wrap" style="background:var(--success-dim)">${esc(src.emoji)}</div>
+            <div class="tx-delete-bg" style="background:var(--danger)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
+            <div class="tx-item" data-inc-id="${data.id}" onclick="openEditIncome('${data.id}')" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px;${delay}">
+              <div class="tx-emoji-wrap" style="background:var(--success-dim);color:var(--success)">${incIcon(src)}</div>
               <div class="tx-info">
                 <div class="tx-cat" style="color:var(--success)">${esc(src.label)}</div>
                 <div class="tx-meta">${meta}</div>
@@ -4419,12 +4583,12 @@
       const recClass = t.fromRecurring ? 'from-recurring' : '';
       return `
         <div class="tx-swipe-wrap" data-id="${t.id}">
-          <div class="tx-delete-bg">🗑</div>
-          <div class="tx-item ${recClass}" data-id="${t.id}" onclick="openEditTransaction(${t.id})" style="cursor:pointer;${delay}">
-            <div class="tx-emoji-wrap">${esc(cat.emoji)}</div>
+          <div class="tx-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
+          <div class="tx-item ${recClass}" data-id="${t.id}" onclick="openEditTransaction('${t.id}')" style="cursor:pointer;${delay}">
+            <div class="tx-emoji-wrap">${catIcon(cat)}</div>
             <div class="tx-info">
               <div class="tx-cat">${esc(catLabel(cat))}</div>
-              <div class="tx-meta">${meta}${t.fromRecurring?' · 🔁':''}</div>
+              <div class="tx-meta">${meta}${t.fromRecurring?' · ↻':''}</div>
             </div>
             <div class="tx-right">
               <div class="tx-amount">-${fmt(t.amount)}</div>
@@ -4625,7 +4789,7 @@
     if (!active.length) {
       listEl.innerHTML = `
         <div class="empty">
-          <div class="empty-icon">📋</div>
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <h3>No bills yet</h3>
           <p>Add your subscriptions and regular bills — the app will track what's paid each month.</p>
         </div>`;
@@ -4688,7 +4852,7 @@
             ${status==='paid'?'✓':''}
           </button>
           <div class="rec-info">
-            <div class="rec-name">${esc(cat.emoji)} ${esc(r.name)}${typeBadge}</div>
+            <div class="rec-name">${catIcon(cat,14)} ${esc(r.name)}${typeBadge}</div>
             <div class="rec-meta">${esc(dueInfo)}${endLabel}</div>
             ${statusLabel ? `<span class="rec-status">${statusLabel}</span>` : ''}
           </div>
@@ -5176,7 +5340,7 @@
         return `
           <div class="compare-item">
             <div class="compare-top">
-              <span class="compare-cat">${esc(cat.emoji)} ${esc(catLabel(cat))}</span>
+              <span class="compare-cat">${catIcon(cat,13)} ${esc(catLabel(cat))}</span>
               <span class="ic-delta ${dir}" style="font-size:10px;padding:1px 6px">
                 ${sign} ${fmt(Math.abs(delta))}
               </span>
@@ -5299,7 +5463,7 @@
       return `
         <div class="legend-row">
           <div class="legend-dot" style="background:${CHART_COLOURS[i % CHART_COLOURS.length]}"></div>
-          <div class="legend-name">${esc(cat.emoji)} ${esc(catLabel(cat))}</div>
+          <div class="legend-name">${catIcon(cat,13)} ${esc(catLabel(cat))}</div>
           <div class="legend-amt">CHF ${amt.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,"'")}<span class="legend-pct">${pct}%</span></div>
         </div>`;
     }).join('');
@@ -5468,6 +5632,8 @@
   settings.accounts   = settings.accounts   || ['Bank 1', 'Bank 2', 'Cash'];
   settings.customCats = settings.customCats || [];
   settings.budgets    = settings.budgets    || {};
+  settings.hiddenCats = settings.hiddenCats || [];
+  settings.catNames   = settings.catNames   || {};
 
   // merge custom cats into CATEGORIES on load
   function rebuildCategories() {
@@ -5517,21 +5683,32 @@
     if (accEl) {
       accEl.innerHTML = settings.accounts.map((acc, i) => `
         <div class="settings-swipe-wrap" data-acc-idx="${i}">
-          <div class="settings-delete-bg">🗑</div>
+          <div class="settings-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
           <div class="settings-row ${settings.accounts.length <= 1 ? 'no-swipe' : ''}" data-acc-idx="${i}">
-            <div class="settings-row-emoji">🏦</div>
+            <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
             <div class="settings-row-info">
-              <input class="settings-inline-input" value="${esc(acc)}"
-                onchange="renameAccount(${i}, this.value)"
-                placeholder="Account name" />
+              <div style="display:flex;align-items:center;gap:6px">
+                <input class="settings-inline-input" value="${esc(acc)}"
+                  onchange="renameAccount(${i}, this.value)"
+                  placeholder="Account name" />
+                ${i === 0 ? `<span class="acc-default-badge">Default</span>` : ''}
+              </div>
+            </div>
+            <div class="acc-arrow-btns">
+              <button class="acc-arrow-btn" onclick="moveAccount(${i},-1)"
+                ${i === 0 ? 'disabled' : ''} aria-label="Move up">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              </button>
+              <button class="acc-arrow-btn" onclick="moveAccount(${i},1)"
+                ${i === settings.accounts.length - 1 ? 'disabled' : ''} aria-label="Move down">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
             </div>
           </div>
         </div>`).join('');
-      // attach swipe to deletable accounts
       if (settings.accounts.length > 1) {
         accEl.querySelectorAll('.settings-row:not(.no-swipe)').forEach(el => attachSettingsSwipe(el, () => {
-          const idx = parseInt(el.dataset.accIdx);
-          removeAccount(idx);
+          removeAccount(parseInt(el.dataset.accIdx));
         }));
       }
     }
@@ -5540,55 +5717,158 @@
     // budgets list
     const budgetsEl = document.getElementById('budgets-list');
     if (budgetsEl) {
-      budgetsEl.innerHTML = CATEGORIES.map(c => {
+      const deleteBg = `<div class="settings-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+      budgetsEl.innerHTML = visibleCats().map(c => {
         const current = (settings.budgets || {})[c.id] || '';
         return `
-          <div class="settings-row">
-            <div class="settings-row-emoji">${esc(c.emoji)}</div>
-            <div class="settings-row-info">
-              <div class="settings-row-label">${esc(catLabel(c))}</div>
-            </div>
-            <div class="budget-input-wrap">
-              <span class="budget-cur">${settings.currency}</span>
-              <input class="budget-input" type="number" min="0" step="1"
-                placeholder="—"
-                value="${current}"
-                onchange="saveBudget('${esc(c.id)}', this.value)"
-                oninput="saveBudget('${esc(c.id)}', this.value)"
-              />
+          <div class="settings-swipe-wrap" data-budget-id="${c.id}">
+            ${deleteBg}
+            <div class="settings-row" data-budget-id="${c.id}" onclick="openEditBudget('${c.id}')" style="cursor:pointer">
+              <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
+              <div class="settings-row-info">
+                <div class="settings-row-label">${esc(catLabel(c))}</div>
+                <div class="settings-row-sub">${current ? `${settings.currency} ${Number(current).toLocaleString()} / month` : 'No budget set'}</div>
+              </div>
+              <div class="settings-row-arrow">›</div>
             </div>
           </div>`;
       }).join('');
+      budgetsEl.querySelectorAll('.settings-row[data-budget-id]').forEach(el => {
+        attachSettingsSwipe(el, () => clearBudget(el.dataset.budgetId));
+      });
     }
 
     const catEl = document.getElementById('categories-list');
     if (catEl) {
-      const builtIn = CATEGORIES.slice(0, 8).map(c => `
-        <div class="settings-swipe-wrap">
-          <div class="settings-row no-swipe">
-            <div class="settings-row-emoji">${esc(c.emoji)}</div>
-            <div class="settings-row-info">
-              <div class="settings-row-label">${catLabel(c)}</div>
-              <div class="settings-row-sub">Built-in</div>
+      const hidden = settings.hiddenCats || [];
+      const deleteBg = `<div class="settings-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
+
+      const activeBuiltIn = CATEGORIES.slice(0, 8)
+        .filter(c => !hidden.includes(c.id))
+        .map(c => `
+          <div class="settings-swipe-wrap" data-builtin-id="${c.id}">
+            ${deleteBg}
+            <div class="settings-row" data-builtin-id="${c.id}" onclick="openEditCat('${c.id}',false)" style="cursor:pointer">
+              <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
+              <div class="settings-row-info">
+                <div class="settings-row-label">${catLabel(c)}</div>
+                <div class="settings-row-sub">Tap to rename · swipe to remove</div>
+              </div>
+              <div class="settings-row-arrow">›</div>
             </div>
-          </div>
-        </div>`).join('');
+          </div>`).join('');
+
       const custom = settings.customCats.map((c, i) => `
         <div class="settings-swipe-wrap" data-cat-idx="${i}">
-          <div class="settings-delete-bg">🗑</div>
-          <div class="settings-row" data-cat-idx="${i}">
-            <div class="settings-row-emoji">${esc(c.emoji)}</div>
+          ${deleteBg}
+          <div class="settings-row" data-cat-idx="${i}" onclick="openEditCat(${i},true)" style="cursor:pointer">
+            <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
             <div class="settings-row-info">
               <div class="settings-row-label">${esc(catLabel(c))}</div>
-              <div class="settings-row-sub">Custom · swipe to remove</div>
+              <div class="settings-row-sub">Custom · tap to edit · swipe to remove</div>
             </div>
+            <div class="settings-row-arrow">›</div>
           </div>
         </div>`).join('');
-      catEl.innerHTML = builtIn + custom;
-      catEl.querySelectorAll('.settings-row[data-cat-idx]').forEach(el => attachSettingsSwipe(el, () => {
-        removeCustomCat(parseInt(el.dataset.catIdx));
-      }));
+
+      const removedBuiltIn = CATEGORIES.slice(0, 8).filter(c => hidden.includes(c.id));
+      const removedSection = removedBuiltIn.length ? `
+        <div class="settings-removed-header">Removed — tap to restore</div>
+        ${removedBuiltIn.map(c => `
+          <div class="settings-row" onclick="toggleCatVisibility('${c.id}')" style="cursor:pointer;opacity:0.5">
+            <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
+            <div class="settings-row-info">
+              <div class="settings-row-label">${catLabel(c)}</div>
+            </div>
+            <div class="settings-row-arrow" style="color:var(--success)">+</div>
+          </div>`).join('')}` : '';
+
+      catEl.innerHTML = activeBuiltIn + custom + removedSection;
+
+      catEl.querySelectorAll('.settings-row[data-builtin-id]').forEach(el => {
+        attachSettingsSwipe(el, () => toggleCatVisibility(el.dataset.builtinId));
+      });
+      catEl.querySelectorAll('.settings-row[data-cat-idx]').forEach(el => {
+        attachSettingsSwipe(el, () => removeCustomCat(parseInt(el.dataset.catIdx)));
+      });
     }
+  }
+
+  // ── EDIT CATEGORY ──
+  let _editCatId   = null;
+  let _editCatIsCustom = false;
+
+  function openEditCat(idOrIdx, isCustom) {
+    _editCatId = idOrIdx;
+    _editCatIsCustom = isCustom;
+    let name = '';
+    if (isCustom) {
+      const c = settings.customCats[idOrIdx];
+      name = c ? catLabel(c) : '';
+      document.getElementById('edit-cat-sub').textContent = 'Edit custom category';
+    } else {
+      const c = CATEGORIES.find(c => c.id === idOrIdx);
+      // check for override name
+      name = (settings.catNames || {})[idOrIdx] || (c ? catLabel(c) : '');
+      document.getElementById('edit-cat-sub').textContent = 'Rename this category';
+    }
+    document.getElementById('edit-cat-name').value = name;
+    openModal('modal-edit-cat');
+    setTimeout(() => document.getElementById('edit-cat-name').focus(), 300);
+  }
+
+  function saveEditCategory() {
+    const name = sanitiseText(document.getElementById('edit-cat-name').value.trim(), 30);
+    if (!name) { shake('edit-cat-name'); return; }
+    if (_editCatIsCustom) {
+      if (settings.customCats[_editCatId]) {
+        settings.customCats[_editCatId].label = name;
+        saveSettings(); rebuildCategories(); buildCatPicker();
+      }
+    } else {
+      if (!settings.catNames) settings.catNames = {};
+      settings.catNames[_editCatId] = name;
+      saveSettings();
+    }
+    closeModal('modal-edit-cat');
+    renderSettings();
+    showToast('Category updated');
+  }
+
+  function deleteCategory() {
+    if (_editCatIsCustom) {
+      removeCustomCat(_editCatId);
+    } else {
+      toggleCatVisibility(_editCatId);
+    }
+    closeModal('modal-edit-cat');
+  }
+
+  // ── EDIT BUDGET ──
+  let _editBudgetCatId = null;
+
+  function openEditBudget(catId) {
+    _editBudgetCatId = catId;
+    const current = (settings.budgets || {})[catId] || '';
+    const c = CATEGORIES.find(x => x.id === catId);
+    document.getElementById('edit-budget-sub').textContent = c ? catLabel(c) : catId;
+    document.getElementById('edit-budget-currency-label').textContent = `Amount (${settings.currency})`;
+    document.getElementById('edit-budget-amount').value = current;
+    openModal('modal-edit-budget');
+    setTimeout(() => document.getElementById('edit-budget-amount').focus(), 300);
+  }
+
+  function saveEditBudget() {
+    const val = document.getElementById('edit-budget-amount').value;
+    saveBudget(_editBudgetCatId, val);
+    closeModal('modal-edit-budget');
+    renderSettings();
+    showToast('Budget updated');
+  }
+
+  function deleteBudget() {
+    clearBudget(_editBudgetCatId);
+    closeModal('modal-edit-budget');
   }
 
   function saveUserName(val) {
@@ -5598,6 +5878,28 @@
     if (greetEl && document.getElementById('page-overview').classList.contains('active')) {
       renderOverview();
     }
+  }
+
+  function toggleCatVisibility(catId) {
+    if (!settings.hiddenCats) settings.hiddenCats = [];
+    const idx = settings.hiddenCats.indexOf(catId);
+    if (idx >= 0) {
+      settings.hiddenCats.splice(idx, 1); // show
+    } else {
+      settings.hiddenCats.push(catId); // hide
+    }
+    saveSettings();
+    buildCatPicker();
+    renderSettings();
+    if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
+  }
+
+  function clearBudget(catId) {
+    if (!settings.budgets) return;
+    delete settings.budgets[catId];
+    saveSettings();
+    renderSettings();
+    if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
   }
 
   function saveBudget(catId, val) {
@@ -5610,6 +5912,18 @@
     }
     saveSettings();
     if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
+  }
+
+  function moveAccount(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= settings.accounts.length) return;
+    const tmp = settings.accounts[i];
+    settings.accounts[i] = settings.accounts[j];
+    settings.accounts[j] = tmp;
+    saveSettings();
+    updateAccountSelectors();
+    renderSettings();
+    showToast(j === 0 ? `${settings.accounts[0]} set as default` : 'Order updated');
   }
 
   function addAccount() {
@@ -5843,7 +6157,7 @@
   let editIncSelectedSource = null;
 
   function openEditIncome(id) {
-    const inc = income.find(i => i.id === id);
+    const inc = income.find(i => String(i.id) === String(id));
     if (!inc) return;
     editingIncId = id;
     editIncSelectedSource = inc.source;
@@ -5887,7 +6201,7 @@
     if (!editIncSelectedSource)                       { shake('edit-inc-source-picker'); return; }
     if (!date || !date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('edit-inc-date');          return; }
 
-    const idx = income.findIndex(i => i.id === editingIncId);
+    const idx = income.findIndex(i => String(i.id) === String(editingIncId));
     if (idx === -1) { closeModal('modal-edit-income'); return; }
 
     income[idx] = { ...income[idx], amount, source: editIncSelectedSource, account, date, note };
@@ -5903,7 +6217,7 @@
     save();
     renderTransactions();
     if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
-    showToast('🗑 Income removed');
+    showToast('Income removed');
   }
 
   function deleteIncome() {
@@ -5917,7 +6231,7 @@
   let editSelectedCat = null;
 
   function openEditTransaction(id) {
-    const tx = transactions.find(t => t.id === id);
+    const tx = transactions.find(t => String(t.id) === String(id));
     if (!tx) return;
 
     editingTxId   = id;
@@ -5950,8 +6264,8 @@
     picker.innerHTML = allCats.map(c => `
       <button class="cat-btn ${c.id === selectedId ? 'selected' : ''}"
         onclick="selectEditCat('${esc(c.id)}',this)" type="button">
-        <span class="cat-emoji">${esc(c.emoji)}</span>
-        <span class="cat-name">${esc(catLabel(c))}</span>
+        <span class="cat-icon">${catIcon(c,20)}</span>
+        <span class="cat-label">${esc(catLabel(c))}</span>
       </button>`).join('');
   }
 
@@ -5971,7 +6285,7 @@
     if (!editSelectedCat)  { shake('edit-cat-picker'); return; }
     if (!date || !date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('edit-date'); return; }
 
-    const idx = transactions.findIndex(t => t.id === editingTxId);
+    const idx = transactions.findIndex(t => String(t.id) === String(editingTxId));
     if (idx === -1) { closeModal('modal-edit-tx'); return; }
 
     // preserve id and fromRecurring flag
@@ -6724,6 +7038,20 @@
     showPage('overview', document.querySelector('nav button'));
   }
   checkOnboarding();
+
+  // ── KEYBOARD SCROLL FIX ──
+  // When keyboard opens on iOS, scroll the focused input to the top of the modal
+  function onModalInputFocus(e) {
+    const input = e.target;
+    const modal = input.closest('.modal');
+    if (!modal) return;
+    // small delay to let keyboard animate in
+    setTimeout(() => {
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 320);
+  }
+
+  document.addEventListener('focusin', onModalInputFocus);
 
   // Register Service Worker for offline support
   if ('serviceWorker' in navigator) {
