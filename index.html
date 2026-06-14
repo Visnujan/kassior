@@ -208,8 +208,7 @@
     [data-theme="mix"] .ob-goal-btn.selected { background: #2a1e12; border-color: #d07848; }
 
     /* Mix: smart card accent */
-    [data-theme="mix"] .smart-card.accent-card                   { background: #2a1e12; border-color: #d07848; }
-    [data-theme="mix"] .smart-card.accent-card .smart-card-value { color: #e89868; }
+    /* mix accent-card handled by var(--accent-dim) token */
     [data-theme="mix"] .smart-card.positive .smart-card-value    { color: #4a9a68; }
     [data-theme="mix"] .smart-card.negative .smart-card-value    { color: #c05040; }
 
@@ -885,8 +884,10 @@
     .smart-card-sub { font-size: var(--text-sm); color: var(--muted); }
     .smart-card.positive .smart-card-value { color: var(--success); }
     .smart-card.negative .smart-card-value { color: var(--danger); }
-    .smart-card.accent-card { border-color: #c06840; background: #fdf4ee; }
-    .smart-card.accent-card .smart-card-value { color: #a05030; }
+    .smart-card.accent-card { border-color: var(--accent); background: var(--accent-dim); }
+    .smart-card.accent-card .smart-card-value { color: var(--accent-text); }
+    .smart-card.accent-card .smart-card-label { color: var(--accent-text); opacity: 0.7; }
+    .smart-card.accent-card .smart-card-sub   { color: var(--accent-text); opacity: 0.6; }
     /* smart card accent — dark theme uses accent-dim already via var */
     /* ── CUSTOM DATE PICKER ── */
     .dp-header {
@@ -1027,6 +1028,45 @@
     .trip-paid-badge.me { background: var(--accent-dim); color: var(--accent-text); }
     .trip-paid-badge.other { background: var(--surface2); color: var(--muted); }
 
+    /* kill browser blue outline everywhere — use accent border instead */
+    *:focus { outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent) !important; }
+
+    /* compact inline add-input used in trip settings etc */
+    .inline-add-input {
+      flex: 1; padding: 9px 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); color: var(--text);
+      font-family: var(--font); font-size: 13px;
+      outline: none; transition: border-color 0.15s;
+      min-width: 0;
+    }
+    .inline-add-input:focus { border-color: var(--accent); }
+    .trip-settings-section {
+      margin-bottom: 20px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-sub);
+    }
+    .trip-settings-section:last-of-type { border-bottom: none; margin-bottom: 4px; }
+    .trip-settings-section-title {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--muted); margin-bottom: 10px;
+    }
+    .trip-settings-section-title svg { color: var(--accent); flex-shrink: 0; }
+    .ts-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 99px; padding: 5px 10px;
+      font-size: 12px; font-weight: 600; color: var(--text-dim);
+    }
+    .ts-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-text); }
+    .ts-pill.toggleable { cursor: pointer; transition: all 0.15s; }
+    .ts-pill-remove {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 15px; padding: 0;
+      line-height: 1; margin-left: 2px;
+    }
+
     .hint-banner {
       display: flex; align-items: flex-start; gap: 12px;
       background: var(--accent-dim); border: 1px solid var(--accent);
@@ -1139,25 +1179,25 @@
       background: var(--surface); border: 1px solid var(--border);
       border-left: 3px solid var(--success);
       border-radius: 0 var(--radius) var(--radius) 0;
-      padding: 16px; margin-bottom: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
       cursor: pointer; transition: border-color 0.15s;
     }
     .goal-card:hover { border-color: var(--accent); border-left-color: var(--success); }
-    .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .goal-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
-    .goal-emoji { font-size: 20px; }
+    .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .goal-name { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
+    .goal-emoji { font-size: 16px; }
     .goal-amounts { text-align: right; }
-    .goal-saved { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--success); }
-    .goal-target { font-size: 11px; color: var(--muted); margin-top: 1px; }
-    .goal-bar-bg { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+    .goal-saved { font-family: var(--font-display); font-size: 14px; font-weight: 800; color: var(--success); }
+    .goal-target { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .goal-bar-bg { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 5px; }
     .goal-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--success), #6abf84); transition: width 0.5s ease; }
     .goal-bar-fill.complete { background: linear-gradient(90deg, var(--success), #4abf6a); }
     .goal-footer { display: flex; justify-content: space-between; align-items: center; }
-    .goal-pct { font-size: 12px; font-weight: 700; color: var(--success); }
-    .goal-deadline { font-size: 11px; color: var(--muted); }
+    .goal-pct { font-size: 11px; font-weight: 700; color: var(--success); }
+    .goal-deadline { font-size: 10px; color: var(--muted); }
     .goal-complete-badge {
-      font-size: 11px; font-weight: 700; background: var(--success-dim);
-      color: var(--success); padding: 2px 8px; border-radius: 99px;
+      font-size: 10px; font-weight: 700; background: var(--success-dim);
+      color: var(--success); padding: 2px 7px; border-radius: 99px;
     }
 
     /* search */
@@ -1188,8 +1228,8 @@
       cursor: pointer;
     }
     .reminder-banner.overdue  { background: var(--danger-dim);  border-color: var(--danger);  }
-    .reminder-banner.due-soon { background: #fdf3e0;             border-color: #b07020;        }
-    .reminder-banner.expiring { background: var(--accent-dim);   border-color: var(--accent);  }
+    .reminder-banner.due-soon { background: var(--warn-dim);    border-color: var(--warn);    }
+    .reminder-banner.expiring { background: var(--accent-dim);  border-color: var(--accent);  }
     .reminder-icon {
       width: 32px; height: 32px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
@@ -1444,6 +1484,14 @@
       transform: translateY(0);
     }
     .modal-handle {
+      width: 36px; height: 4px; border-radius: 99px;
+      background: var(--border); margin: 10px auto 20px; display: block;
+      cursor: grab; touch-action: none; position: relative;
+    }
+    .modal-handle::before {
+      content: ''; position: absolute;
+      top: -12px; left: -20px; right: -20px; bottom: -12px;
+    }
       width: 36px; height: 4px; border-radius: 99px;
       background: var(--border); margin: 10px auto 20px; display: block;
     }
@@ -2551,6 +2599,9 @@
       <p id="trips-page-sub">Track expenses on the go</p>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
+      <button class="gear-btn" id="trip-settings-btn" onclick="openTripSettings()" style="display:none" aria-label="Trip settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
       <button class="gear-btn" id="trip-actions-btn" onclick="openTripActions()" style="display:none" aria-label="Trip options">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       </button>
@@ -2635,6 +2686,15 @@
         <input type="date" id="trip-end-date"/>
       </div>
     </div>
+    <div class="form-row">
+      <label>Who's coming? <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input type="text" id="trip-new-companion-input" class="inline-add-input" placeholder="Add name" maxlength="30" autocomplete="off"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addNewTripCompanion()}"/>
+        <button class="btn-secondary" onclick="addNewTripCompanion()" style="padding:0 14px;flex-shrink:0">Add</button>
+      </div>
+      <div id="trip-new-companions-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-new-trip')">Cancel</button>
       <button class="btn-primary" onclick="saveNewTrip()">Create Trip</button>
@@ -2653,8 +2713,12 @@
       <input type="number" id="trip-expense-amount" placeholder="0.00" min="0" step="0.01"/>
     </div>
     <div class="form-row">
-      <label>Category</label>
-      <div class="cat-picker" id="trip-cat-picker"></div>
+      <label>What for?</label>
+      <input type="text" id="trip-expense-note" placeholder="e.g. Dinner at the river" maxlength="60" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Category <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <div id="ts-expense-cat-picker" style="display:flex;flex-wrap:wrap;gap:6px"></div>
     </div>
     <div class="form-row">
       <label>Paid by</label>
@@ -2665,15 +2729,20 @@
     </div>
     <div class="form-row" id="trip-paidby-name-row" style="display:none">
       <label>Who paid?</label>
-      <input type="text" id="trip-paidby-name" placeholder="e.g. Alex" maxlength="30" autocomplete="off"/>
+      <div style="position:relative">
+        <input type="text" id="trip-paidby-name" placeholder="Type name or pick below" maxlength="30" autocomplete="off"
+          style="padding-right:40px"/>
+        <button id="trip-companion-picker-btn" onclick="toggleCompanionPicker()"
+          style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;display:none"
+          aria-label="Pick companion">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div id="trip-companion-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);z-index:50;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.2)"></div>
+      </div>
     </div>
     <div class="form-row">
       <label>Account / Wallet</label>
       <select id="trip-expense-account"></select>
-    </div>
-    <div class="form-row">
-      <label>Note (optional)</label>
-      <input type="text" id="trip-expense-note" placeholder="e.g. Dinner at the river" maxlength="60" autocomplete="off"/>
     </div>
     <div class="form-row">
       <label>Date</label>
@@ -2684,6 +2753,60 @@
       <button class="btn-secondary" onclick="closeModal('modal-trip-expense')">Cancel</button>
       <button class="btn-primary" onclick="saveTripExpense()">Add</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL: TRIP SETTINGS -->
+<div class="modal-overlay" id="modal-trip-settings" onclick="closeModalOnOverlay(event,'modal-trip-settings')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Trip Settings</h2>
+    <p class="modal-sub" id="trip-settings-sub">Companions, categories &amp; wallets</p>
+
+    <!-- COMPANIONS -->
+    <div class="trip-settings-section">
+      <div class="trip-settings-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Travel companions
+      </div>
+      <div id="ts-companions-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:20px"></div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="ts-companion-input" class="inline-add-input" placeholder="Add name" maxlength="30" autocomplete="off"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addTsCompanion()}"/>
+        <button class="btn-secondary" onclick="addTsCompanion()" style="padding:0 14px;flex-shrink:0">Add</button>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="trip-settings-section">
+      <div class="trip-settings-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Categories
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Travel categories are on by default. Toggle or add your own.</p>
+      <div id="ts-categories-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="ts-cat-input" class="inline-add-input" placeholder="Add custom category" maxlength="20" autocomplete="off"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addTsCat()}"/>
+        <button class="btn-secondary" onclick="addTsCat()" style="padding:0 14px;flex-shrink:0">Add</button>
+      </div>
+    </div>
+
+    <!-- WALLETS -->
+    <div class="trip-settings-section">
+      <div class="trip-settings-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Wallets &amp; accounts
+      </div>
+      <div id="ts-wallets-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:20px"></div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="ts-wallet-input" class="inline-add-input" placeholder="e.g. Travel card, Cash" maxlength="20" autocomplete="off"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addTsWallet()}"/>
+        <button class="btn-secondary" onclick="addTsWallet()" style="padding:0 14px;flex-shrink:0">Add</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="closeModal('modal-trip-settings')" style="margin-top:4px">Done</button>
   </div>
 </div>
 
@@ -2842,7 +2965,7 @@
           oninput="saveUserName(this.value)" maxlength="30"/>
       </div>
       <div class="settings-row" onclick="replayOnboarding()" style="cursor:pointer">
-        <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg></div>
         <div class="settings-row-info">
           <div class="settings-row-label">View intro again</div>
           <div class="settings-row-sub">Replay the welcome screens</div>
@@ -3975,9 +4098,19 @@
       populateBillDropdowns();
       setBillType(document.getElementById('rec-input-type').value || 'monthly');
     }
+    if (id === 'modal-new-trip') {
+      _newTripCompanions = [];
+      const listEl = document.getElementById('trip-new-companions-list');
+      if (listEl) listEl.innerHTML = '';
+      const inp = document.getElementById('trip-new-companion-input');
+      if (inp) inp.value = '';
+    }
     if (id === 'modal-add') {
       updateDpField('input-date', todayStr());
       document.getElementById('input-amount').focus();
+    }
+    if (id === 'modal-trip-expense') {
+      updateDpField('trip-expense-date', todayStr());
     }
     // init date fields in this modal
     setTimeout(() => initModalDateFields(id), 10);
@@ -4061,6 +4194,27 @@
       if (fr)  fr.style.display  = '';
       if (si)  si.value = '';
     }
+  }
+
+  // ── TRIP EXPENSE CATEGORY PICKER ──
+  let tripExpenseCat = null;
+
+  function buildTripExpenseCatPicker(selected) {
+    const trip = trips.find(t => t.id === activeTrip);
+    const picker = document.getElementById('ts-expense-cat-picker');
+    if (!picker || !trip) return;
+    const cats = activeTripCats(trip);
+    tripExpenseCat = selected || null;
+    picker.innerHTML = cats.map(c => `
+      <span class="ts-pill toggleable ${c.id === tripExpenseCat ? 'active' : ''}"
+        onclick="selectTripExpenseCat('${esc(c.id)}')">
+        ${esc(c.label)}
+      </span>`).join('');
+  }
+
+  function selectTripExpenseCat(id) {
+    tripExpenseCat = tripExpenseCat === id ? null : id;
+    buildTripExpenseCatPicker(tripExpenseCat);
   }
 
   // ── MONTH HELPERS ──
@@ -4188,7 +4342,7 @@
   // ── ID GENERATION ──
   // Safe unique ID — timestamp + random suffix, no collision risk
   function genId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 5);
   }
   let goals = loadJSON('wdig_goals', []);
 
@@ -4291,7 +4445,7 @@
 
   function contributeToGoal() {
     const amount = parseFloat(document.getElementById('contribute-amount').value);
-    if (!amount || amount <= 0) { shake('contribute-amount'); return; }
+    if (!amount || amount <= 0 || amount > 999999999) { shake('contribute-amount'); return; }
     const g = goals.find(x => x.id === contributingGoalId);
     if (!g) return;
     g.saved = Math.min((g.saved || 0) + amount, g.target);
@@ -6324,7 +6478,10 @@
   // Strip control characters and enforce max length on all user text inputs
   function sanitiseText(val, maxLen = 100) {
     return String(val)
-      .replace(/[\u0000-\u001F\u007F]/g, '') // strip control chars
+      .replace(/[\u0000-\u001F\u007F]/g, '')  // strip control chars
+      .replace(/<[^>]*>/g, '')                 // strip HTML tags
+      .replace(/javascript:/gi, '')            // strip js: protocol
+      .replace(/on\w+\s*=/gi, '')             // strip event handlers
       .trim()
       .slice(0, maxLen);
   }
@@ -6957,9 +7114,13 @@
           data.transactions.map(tx => typeof tx.date === 'string' ? tx.date.slice(0,7) : '')
         ).size;
 
-        const exportedDate = data.exportedAt
-          ? new Date(data.exportedAt).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})
-          : 'unknown date';
+        const exportedDate = (() => {
+          try {
+            if (!data.exportedAt || typeof data.exportedAt !== 'string') return 'unknown date';
+            const d = new Date(data.exportedAt);
+            return isNaN(d.getTime()) ? 'unknown date' : d.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+          } catch { return 'unknown date'; }
+        })();
 
         // safe — only numbers and a sanitised date string go into innerHTML
         document.getElementById('import-preview').innerHTML = `
@@ -6995,25 +7156,62 @@
 
     // restore all data
     transactions = d.transactions  || [];
-    income       = d.income        || [];
-    goals        = d.goals         || [];
-    recurring    = d.recurring     || [];
-    paidStatus   = d.paidStatus    || {};
-    overrides    = d.overrides     || {};
-    trash        = d.trash         || [];
+    income       = Array.isArray(d.income)    ? d.income    : [];
+    goals        = Array.isArray(d.goals)     ? d.goals     : [];
+    recurring    = Array.isArray(d.recurring) ? d.recurring : [];
+    paidStatus   = (d.paidStatus && typeof d.paidStatus === 'object') ? d.paidStatus : {};
+    overrides    = (d.overrides  && typeof d.overrides  === 'object') ? d.overrides  : {};
+    trash        = Array.isArray(d.trash)     ? d.trash     : [];
+    trips        = Array.isArray(d.trips)     ? d.trips     : trips;
 
-    // restore settings — full merge so nothing is lost
+    // restore settings — validate and sanitise each field
     if (d.settings && typeof d.settings === 'object') {
       const s = d.settings;
-      if (s.currency)         settings.currency         = s.currency;
-      if (s.accounts)         settings.accounts         = s.accounts;
-      if (s.customCats)       settings.customCats       = s.customCats;
-      if (s.budgets)          settings.budgets          = s.budgets;
-      if (s.userName)         settings.userName         = s.userName;
-      if (s.themePreference)  settings.themePreference  = s.themePreference;
-      if (s.userGoal)         settings.userGoal         = s.userGoal;
-      if (s.language)         settings.language         = s.language;
-      if (s.theme)            settings.theme            = s.theme;
+      // currency: 1-6 uppercase chars only
+      if (typeof s.currency === 'string' && /^[A-Z]{1,6}$/.test(s.currency.trim()))
+        settings.currency = s.currency.trim();
+      // accounts: array of short strings
+      if (Array.isArray(s.accounts))
+        settings.accounts = s.accounts
+          .filter(a => typeof a === 'string')
+          .map(a => sanitiseText(a, 50))
+          .filter(Boolean)
+          .slice(0, 20);
+      // customCats: array of objects with id/label
+      if (Array.isArray(s.customCats))
+        settings.customCats = s.customCats
+          .filter(c => c && typeof c === 'object')
+          .map(c => ({ ...c, label: sanitiseText(c.label || c.id || '', 30) }))
+          .slice(0, 50);
+      // budgets: object with numeric values
+      if (s.budgets && typeof s.budgets === 'object' && !Array.isArray(s.budgets)) {
+        settings.budgets = {};
+        for (const [k, v] of Object.entries(s.budgets)) {
+          const num = Number(v);
+          if (typeof k === 'string' && k.length < 40 && !isNaN(num) && num >= 0 && num < 1e8)
+            settings.budgets[sanitiseText(k, 40)] = num;
+        }
+      }
+      // userName: short string
+      if (typeof s.userName === 'string')
+        settings.userName = sanitiseText(s.userName, 40);
+      // catNames: object of renamed built-in categories
+      if (s.catNames && typeof s.catNames === 'object' && !Array.isArray(s.catNames)) {
+        settings.catNames = {};
+        for (const [k, v] of Object.entries(s.catNames)) {
+          if (typeof k === 'string' && typeof v === 'string')
+            settings.catNames[sanitiseText(k, 40)] = sanitiseText(v, 30);
+        }
+      }
+      // hiddenCats: array of strings
+      if (Array.isArray(s.hiddenCats))
+        settings.hiddenCats = s.hiddenCats.filter(c => typeof c === 'string').map(c => sanitiseText(c, 40)).slice(0, 20);
+      // safe scalar fields
+      const VALID_THEMES = ['system','light','dark','mix'];
+      if (VALID_THEMES.includes(s.themePreference)) settings.themePreference = s.themePreference;
+      if (VALID_THEMES.includes(s.theme))           settings.theme           = s.theme;
+      if (typeof s.userGoal   === 'string') settings.userGoal  = sanitiseText(s.userGoal,  20);
+      if (typeof s.language   === 'string') settings.language  = sanitiseText(s.language,  10);
     }
 
     save(); saveSettings();
@@ -7348,6 +7546,7 @@
     document.getElementById('trips-page-sub').textContent   = `${trip.currency} · ${(trip.expenses||[]).length} expenses`;
     document.getElementById('trips-back-btn').style.display    = '';
     document.getElementById('trip-actions-btn').style.display  = '';
+    document.getElementById('trip-settings-btn').style.display = '';
     document.getElementById('trips-list-view').style.display   = 'none';
     document.getElementById('trip-detail-view').style.display  = '';
 
@@ -7364,6 +7563,7 @@
     document.getElementById('trips-page-sub').textContent      = 'Track expenses on the go';
     document.getElementById('trips-back-btn').style.display    = 'none';
     document.getElementById('trip-actions-btn').style.display  = 'none';
+    document.getElementById('trip-settings-btn').style.display = 'none';
     document.getElementById('trips-list-view').style.display   = '';
     document.getElementById('trip-detail-view').style.display  = 'none';
     const fabWrap = document.getElementById('fab-wrap');
@@ -7424,15 +7624,15 @@
     }
 
     listEl.innerHTML = [...exps].reverse().map((e, idx) => {
-      const cat = CATEGORIES.find(c => c.id === e.category) || { id: 'other', icon: 'other', emoji: '💰' };
       const paidLabel = e.paidBy === 'me' ? 'Me' : esc(e.paidBy);
       const delay = `animation-delay:${Math.min(idx*0.035,0.35)}s`;
+      const trip2 = trips.find(t => t.id === activeTrip);
+      const catLabel2 = e.tripCat ? (activeTripCats(trip2).find(c => c.id === e.tripCat)?.label || '') : '';
       return `
         <div class="trip-expense-item" onclick="openEditTripExpense('${e.id}')" style="${delay}">
-          <div class="tx-emoji-wrap">${catIcon(cat)}</div>
           <div class="tx-info">
-            <div class="tx-cat">${esc(catLabel(cat))}</div>
-            <div class="tx-meta">${e.note ? esc(e.note) : ''}</div>
+            <div class="tx-cat">${esc(e.note)}</div>
+            <div class="tx-meta">${[catLabel2, e.account, e.date].filter(Boolean).join(' · ')}</div>
           </div>
           <div class="trip-expense-right">
             <div class="trip-expense-amt ${e.paidBy!=='me'?'other':''}">${fmtTrip(e.amount, trip.currency)}</div>
@@ -7442,31 +7642,6 @@
     }).join('');
 
     listEl.innerHTML += `<div style="margin-top:16px"><button class="btn-primary" onclick="openAddTripExpense()">+ Add Expense</button></div>`;
-
-    // trip sandbox settings
-    listEl.innerHTML += `
-      <div style="margin-top:24px">
-        <div class="section-title">TRIP CATEGORIES</div>
-        <div id="trip-cat-sandbox" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="trip-cat-add-input" placeholder="Add category" maxlength="20"
-            style="flex:1;padding:8px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px"
-            onkeydown="if(event.key==='Enter')addTripCat()"/>
-          <button class="btn-secondary" onclick="addTripCat()" style="padding:0 14px;flex-shrink:0">Add</button>
-        </div>
-      </div>
-      <div style="margin-top:20px">
-        <div class="section-title">TRIP ACCOUNTS / WALLETS</div>
-        <div id="trip-acc-sandbox" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="trip-acc-add-input" placeholder="Add wallet or card" maxlength="20"
-            style="flex:1;padding:8px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px"
-            onkeydown="if(event.key==='Enter')addTripAcc()"/>
-          <button class="btn-secondary" onclick="addTripAcc()" style="padding:0 14px;flex-shrink:0">Add</button>
-        </div>
-      </div>`;
-
-    renderTripSandbox(trip);
   }
 
   // ── NEW TRIP ──
@@ -7482,14 +7657,19 @@
     const endDate   = document.getElementById('trip-end-date').value;
     trips.unshift({
       id: genId(), name, currency, budget, startDate, endDate,
-      completed: false, expenses: [], createdAt: todayStr()
+      completed: false, expenses: [],
+      companions: [..._newTripCompanions],
+      createdAt: todayStr()
     });
     saveTrips();
     closeModal('modal-new-trip');
+    _newTripCompanions = [];
+    document.getElementById('trip-new-companions-list').innerHTML = '';
     document.getElementById('trip-name-input').value   = '';
     document.getElementById('trip-budget-input').value = '';
     document.getElementById('trip-start-date').value   = '';
     document.getElementById('trip-end-date').value     = '';
+    document.getElementById('trip-new-companion-input').value = '';
     renderTrips();
     // open the new trip immediately
     openTrip(trips[0].id);
@@ -7525,11 +7705,44 @@
     document.getElementById('trip-paid-me').classList.toggle('active', val === 'me');
     document.getElementById('trip-paid-other').classList.toggle('active', val === 'other');
     document.getElementById('trip-paidby-name-row').style.display = val === 'other' ? '' : 'none';
+    const accRow = document.getElementById('trip-expense-account')?.closest('.form-row');
+    if (accRow) accRow.style.display = val === 'me' ? '' : 'none';
+    // show companion picker arrow if companions exist
+    if (val === 'other') {
+      const trip = trips.find(t => t.id === activeTrip);
+      const hasCompanions = (trip?.companions || []).length > 0;
+      const btn = document.getElementById('trip-companion-picker-btn');
+      if (btn) btn.style.display = hasCompanions ? '' : 'none';
+    }
+  }
+
+  function toggleCompanionPicker() {
+    const dropdown = document.getElementById('trip-companion-dropdown');
+    if (!dropdown) return;
+    if (dropdown.style.display !== 'none') {
+      dropdown.style.display = 'none';
+      return;
+    }
+    const trip = trips.find(t => t.id === activeTrip);
+    const companions = trip?.companions || [];
+    if (!companions.length) return;
+    dropdown.innerHTML = companions.map(c => `
+      <div onclick="pickCompanion('${esc(c)}')"
+        style="padding:11px 14px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border-sub);transition:background 0.1s"
+        onmouseover="this.style.background='var(--surface2)'"
+        onmouseout="this.style.background=''">
+        ${esc(c)}
+      </div>`).join('');
+    dropdown.style.display = '';
+  }
+
+  function pickCompanion(name) {
+    document.getElementById('trip-paidby-name').value = name;
+    document.getElementById('trip-companion-dropdown').style.display = 'none';
   }
 
   function openAddTripExpense() {
     editingTripExpenseId = null;
-    tripSelectedCat = visibleCats()[0]?.id || 'other';
     tripPaidBy = 'me';
     const trip = trips.find(t => t.id === activeTrip);
     if (!trip) return;
@@ -7538,14 +7751,13 @@
     document.getElementById('trip-expense-amount-label').textContent = `Amount (${trip.currency})`;
     document.getElementById('trip-expense-amount').value = '';
     document.getElementById('trip-expense-note').value   = '';
-    document.getElementById('trip-expense-date').value   = todayStr();
     document.getElementById('trip-paidby-name-row').style.display = 'none';
     document.getElementById('trip-paidby-name').value    = '';
     document.getElementById('trip-expense-delete-btn').style.display = 'none';
     document.querySelector('#modal-trip-expense .btn-primary').textContent = 'Add';
     setTripPaidBy('me');
-    buildTripCatPicker(tripSelectedCat);
     populateTripAccountSelect(tripAccounts()[0] || '');
+    buildTripExpenseCatPicker(null);
     openModal('modal-trip-expense');
   }
 
@@ -7555,42 +7767,42 @@
     const exp = (trip.expenses || []).find(e => e.id === expId);
     if (!exp) return;
     editingTripExpenseId = expId;
-    tripSelectedCat = exp.category;
     tripPaidBy = exp.paidBy === 'me' ? 'me' : 'other';
     document.getElementById('trip-expense-modal-title').textContent = 'Edit Expense';
     document.getElementById('trip-expense-modal-sub').textContent   = trip.currency;
     document.getElementById('trip-expense-amount-label').textContent = `Amount (${trip.currency})`;
     document.getElementById('trip-expense-amount').value = exp.amount;
     document.getElementById('trip-expense-note').value   = exp.note || '';
-    document.getElementById('trip-expense-date').value   = exp.date || todayStr();
     document.getElementById('trip-expense-delete-btn').style.display = '';
     document.querySelector('#modal-trip-expense .btn-primary').textContent = 'Save';
     setTripPaidBy(tripPaidBy);
     if (tripPaidBy === 'other') document.getElementById('trip-paidby-name').value = exp.paidBy;
-    buildTripCatPicker(tripSelectedCat);
     populateTripAccountSelect(exp.account || tripAccounts()[0] || '');
+    buildTripExpenseCatPicker(exp.tripCat || null);
     openModal('modal-trip-expense');
+    // override date with expense's actual date (openModal hook resets to today)
+    setTimeout(() => updateDpField('trip-expense-date', exp.date || todayStr()), 20);
   }
 
   function saveTripExpense() {
     const trip = trips.find(t => t.id === activeTrip);
     if (!trip) return;
     const amount = parseFloat(document.getElementById('trip-expense-amount').value);
-    if (!amount || amount <= 0) { shake('trip-expense-amount'); return; }
-    if (!tripSelectedCat) { showToast('Pick a category'); return; }
-    const paidBy = tripPaidBy === 'me'
+    if (!amount || amount <= 0 || amount > 999999999) { shake('trip-expense-amount'); return; }
+    const note = sanitiseText(document.getElementById('trip-expense-note').value.trim(), 60);
+    if (!note) { shake('trip-expense-note'); return; }
+    const paidBy  = tripPaidBy === 'me'
       ? 'me'
       : (sanitiseText(document.getElementById('trip-paidby-name').value.trim(), 30) || 'Someone');
-    const note    = sanitiseText(document.getElementById('trip-expense-note').value.trim(), 60);
     const date    = document.getElementById('trip-expense-date').value || todayStr();
-    const account = document.getElementById('trip-expense-account')?.value || '';
+    const account = tripPaidBy === 'me' ? (document.getElementById('trip-expense-account')?.value || '') : '';
 
     if (editingTripExpenseId) {
       const exp = (trip.expenses || []).find(e => e.id === editingTripExpenseId);
-      if (exp) { exp.amount = amount; exp.category = tripSelectedCat; exp.paidBy = paidBy; exp.note = note; exp.date = date; exp.account = account; }
+      if (exp) { exp.amount = amount; exp.paidBy = paidBy; exp.note = note; exp.date = date; exp.account = account; exp.tripCat = tripExpenseCat; }
     } else {
       if (!trip.expenses) trip.expenses = [];
-      trip.expenses.push({ id: genId(), amount, category: tripSelectedCat, paidBy, note, date, account });
+      trip.expenses.push({ id: genId(), amount, paidBy, note, date, account, tripCat: tripExpenseCat });
     }
     saveTrips();
     closeModal('modal-trip-expense');
@@ -7688,6 +7900,16 @@
   }
 
   function renderTripSandbox(trip) {
+    // companions
+    const compEl = document.getElementById('trip-companions-sandbox');
+    if (compEl) {
+      const companions = trip.companions || [];
+      compEl.innerHTML = companions.map((c,i) => `
+        <div style="display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:4px 10px 4px 8px">
+          <span style="font-size:12px;font-weight:600;color:var(--text)">${esc(c)}</span>
+          <button onclick="removeTripCompanion(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0;line-height:1;margin-left:2px">×</button>
+        </div>`).join('') || `<span style="font-size:12px;color:var(--muted)">No companions added yet</span>`;
+    }
     // categories
     const catEl = document.getElementById('trip-cat-sandbox');
     if (catEl) {
@@ -7708,6 +7930,56 @@
           <button onclick="removeTripAcc(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0;line-height:1;margin-left:2px">×</button>
         </div>`).join('') || `<span style="font-size:12px;color:var(--muted)">None added — uses app accounts</span>`;
     }
+  }
+
+  let _newTripCompanions = [];
+
+  function addNewTripCompanion() {
+    const input = document.getElementById('trip-new-companion-input');
+    if (!input) return;
+    const val = sanitiseText(input.value.trim(), 30);
+    if (!val || _newTripCompanions.includes(val)) return;
+    _newTripCompanions.push(val);
+    input.value = '';
+    renderNewTripCompanions();
+    input.focus();
+  }
+
+  function removeNewTripCompanion(i) {
+    _newTripCompanions.splice(i, 1);
+    renderNewTripCompanions();
+  }
+
+  function renderNewTripCompanions() {
+    const el = document.getElementById('trip-new-companions-list');
+    if (!el) return;
+    el.innerHTML = _newTripCompanions.map((c,i) => `
+      <div style="display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:4px 10px 4px 10px">
+        <span style="font-size:12px;font-weight:600;color:var(--text)">${esc(c)}</span>
+        <button onclick="removeNewTripCompanion(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0;line-height:1;margin-left:4px">×</button>
+      </div>`).join('');
+  }
+
+  function addTripCompanion() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const input = document.getElementById('trip-companion-add-input');
+    const val = sanitiseText(input.value.trim(), 30);
+    if (!val) return;
+    if (!trip.companions) trip.companions = [];
+    if (trip.companions.includes(val)) { showToast('Already added'); return; }
+    trip.companions.push(val);
+    saveTrips();
+    input.value = '';
+    renderTripSandbox(trip);
+  }
+
+  function removeTripCompanion(i) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip || !trip.companions) return;
+    trip.companions.splice(i, 1);
+    saveTrips();
+    renderTripSandbox(trip);
   }
 
   function addTripCat() {
@@ -7770,6 +8042,13 @@
     return [...(trip.tripAccounts || []), ...settings.accounts];
   }
 
+
+  document.addEventListener('click', e => {
+    const dropdown = document.getElementById('trip-companion-dropdown');
+    if (dropdown && dropdown.style.display !== 'none' && !e.target.closest('#trip-paidby-name-row')) {
+      dropdown.style.display = 'none';
+    }
+  });
 
   document.getElementById('trip-currency-input')?.addEventListener('change', function() {
     const row = document.getElementById('trip-currency-custom-row');
@@ -7924,7 +8203,164 @@
     });
   }
 
-  // ── TRIPS HOOK INTO SHOWPAGE ──
+  // ── TRIP SETTINGS ──
+  const TRIP_DEFAULT_CATS = [
+    { id: 'tc_accommodation', label: 'Accommodation', icon: '🏨' },
+    { id: 'tc_food',          label: 'Food & Drink',  icon: '🍽' },
+    { id: 'tc_transport',     label: 'Transport',     icon: '🚌' },
+    { id: 'tc_activities',    label: 'Activities',    icon: '🎯' },
+    { id: 'tc_shopping',      label: 'Shopping',      icon: '🛍' },
+    { id: 'tc_other',         label: 'Other',         icon: '📌' },
+  ];
+
+  function openTripSettings() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    document.getElementById('trip-settings-sub').textContent = trip.name;
+    renderTripSettings(trip);
+    openModal('modal-trip-settings');
+  }
+
+  function renderTripSettings(trip) {
+    // companions
+    const companions = trip.companions || [];
+    const compEl = document.getElementById('ts-companions-list');
+    if (compEl) {
+      compEl.innerHTML = companions.length
+        ? companions.map((c,i) => `
+            <span class="ts-pill">
+              ${esc(c)}
+              <button class="ts-pill-remove" onclick="removeTsCompanion(${i})">×</button>
+            </span>`).join('')
+        : `<span style="font-size:12px;color:var(--muted)">No companions yet</span>`;
+    }
+
+    // categories — defaults + custom, toggleable
+    const enabled = trip.tripCats || TRIP_DEFAULT_CATS.map(c => c.id); // default all on
+    const customCats = (trip.customTripCats || []);
+    const catEl = document.getElementById('ts-categories-list');
+    if (catEl) {
+      const defaultPills = TRIP_DEFAULT_CATS.map(c => {
+        const on = enabled.includes(c.id);
+        return `<span class="ts-pill toggleable ${on?'active':''}" onclick="toggleTsCat('${c.id}')">
+          ${on ? `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>` : ''}
+          ${esc(c.label)}
+        </span>`;
+      }).join('');
+      const customPills = customCats.map((c,i) => `
+        <span class="ts-pill active">
+          ${esc(c)}
+          <button class="ts-pill-remove" onclick="removeTsCustomCat(${i})">×</button>
+        </span>`).join('');
+      catEl.innerHTML = defaultPills + customPills;
+    }
+
+    // wallets
+    const wallets = trip.tripAccounts || [];
+    const walEl = document.getElementById('ts-wallets-list');
+    if (walEl) {
+      walEl.innerHTML = wallets.length
+        ? wallets.map((w,i) => `
+            <span class="ts-pill active">
+              ${esc(w)}
+              <button class="ts-pill-remove" onclick="removeTsWallet(${i})">×</button>
+            </span>`).join('')
+        : `<span style="font-size:12px;color:var(--muted)">None — uses your app accounts</span>`;
+    }
+  }
+
+  function addTsCompanion() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const val = sanitiseText(document.getElementById('ts-companion-input').value.trim(), 30);
+    if (!val) return;
+    if (!trip.companions) trip.companions = [];
+    if (trip.companions.includes(val)) { showToast('Already added'); return; }
+    trip.companions.push(val);
+    saveTrips();
+    document.getElementById('ts-companion-input').value = '';
+    renderTripSettings(trip);
+  }
+
+  function removeTsCompanion(i) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip?.companions) return;
+    trip.companions.splice(i, 1);
+    saveTrips();
+    renderTripSettings(trip);
+  }
+
+  function toggleTsCat(catId) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    if (!trip.tripCats) trip.tripCats = TRIP_DEFAULT_CATS.map(c => c.id);
+    const idx = trip.tripCats.indexOf(catId);
+    if (idx >= 0) {
+      if (trip.tripCats.length <= 1) { showToast('Keep at least one category'); return; }
+      trip.tripCats.splice(idx, 1);
+    } else {
+      trip.tripCats.push(catId);
+    }
+    saveTrips();
+    renderTripSettings(trip);
+  }
+
+  function addTsCat() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const val = sanitiseText(document.getElementById('ts-cat-input').value.trim(), 20);
+    if (!val) return;
+    if (!trip.customTripCats) trip.customTripCats = [];
+    trip.customTripCats.push(val);
+    // also add to enabled list
+    if (!trip.tripCats) trip.tripCats = TRIP_DEFAULT_CATS.map(c => c.id);
+    trip.tripCats.push('tc_custom_' + val);
+    saveTrips();
+    document.getElementById('ts-cat-input').value = '';
+    renderTripSettings(trip);
+  }
+
+  function removeTsCustomCat(i) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip?.customTripCats) return;
+    const name = trip.customTripCats[i];
+    trip.customTripCats.splice(i, 1);
+    trip.tripCats = (trip.tripCats || []).filter(c => c !== 'tc_custom_' + name);
+    saveTrips();
+    renderTripSettings(trip);
+  }
+
+  function addTsWallet() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const val = sanitiseText(document.getElementById('ts-wallet-input').value.trim(), 20);
+    if (!val) return;
+    if (!trip.tripAccounts) trip.tripAccounts = [];
+    trip.tripAccounts.push(val);
+    saveTrips();
+    document.getElementById('ts-wallet-input').value = '';
+    renderTripSettings(trip);
+  }
+
+  function removeTsWallet(i) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip?.tripAccounts) return;
+    trip.tripAccounts.splice(i, 1);
+    saveTrips();
+    renderTripSettings(trip);
+  }
+
+  // get active trip categories for expense picker
+  function activeTripCats(trip) {
+    const enabled = trip.tripCats || TRIP_DEFAULT_CATS.map(c => c.id);
+    const defaults = TRIP_DEFAULT_CATS.filter(c => enabled.includes(c.id));
+    const custom   = (trip.customTripCats || []).map(name => ({
+      id: 'tc_custom_' + name, label: name, icon: '📌'
+    }));
+    return [...defaults, ...custom];
+  }
+
+
   let obSelectedGoal = null;
 
   function obNext(screen) {
@@ -8104,7 +8540,77 @@
 
   document.addEventListener('focusin', onModalInputFocus);
 
-  // Register Service Worker for offline support
+  // ── MODAL SWIPE TO DISMISS ──
+  function initModalSwipe(overlay) {
+    const modal = overlay.querySelector('.modal');
+    if (!modal) return;
+    let startY = 0, curY = 0, dragging = false;
+
+    function onStart(y) {
+      startY = y; curY = y; dragging = true;
+      modal.style.transition = 'none';
+    }
+    function onMove(y) {
+      if (!dragging) return;
+      curY = y;
+      const dy = Math.max(0, curY - startY); // only downward
+      modal.style.transform = `translateY(${dy}px)`;
+    }
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      modal.style.transition = '';
+      const dy = Math.max(0, curY - startY);
+      if (dy > 80) {
+        // dismiss
+        modal.style.transform = `translateY(100%)`;
+        setTimeout(() => {
+          modal.style.transform = '';
+          overlay.classList.remove('open');
+        }, 300);
+      } else {
+        modal.style.transform = '';
+      }
+    }
+
+    // touch
+    modal.addEventListener('touchstart', e => {
+      // only trigger from the handle or top area of modal
+      const handle = e.target.closest('.modal-handle');
+      const topArea = e.clientY - modal.getBoundingClientRect().top < 60;
+      if (!handle && !topArea) return;
+      onStart(e.touches[0].clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      onMove(e.touches[0].clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => onEnd());
+    document.addEventListener('touchcancel', () => onEnd());
+
+    // mouse (desktop)
+    modal.addEventListener('mousedown', e => {
+      const handle = e.target.closest('.modal-handle');
+      const topArea = e.clientY - modal.getBoundingClientRect().top < 60;
+      if (!handle && !topArea) return;
+      onStart(e.clientY);
+      const move = ev => onMove(ev.clientY);
+      const up   = () => { onEnd(); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    });
+  }
+
+  // attach swipe-to-dismiss to all modals on load
+  function initAllModalSwipes() {
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      initModalSwipe(overlay);
+    });
+  }
+
+  initAllModalSwipes();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
