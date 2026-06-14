@@ -3,6 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content" />
+  <style>
+    @media screen and (orientation: landscape) and (max-height: 500px) {
+      body::before {
+        content: 'Please rotate your device to portrait mode';
+        position: fixed; inset: 0; z-index: 99999;
+        background: #111110; color: #f0ece6;
+        display: flex; align-items: center; justify-content: center;
+        font-family: system-ui, sans-serif; font-size: 16px;
+        text-align: center; padding: 24px;
+      }
+      body > * { display: none !important; }
+    }
+  </style>
   <meta name="description" content="Kassior — the privacy-first personal finance tracker. No account. No server. Your data never leaves your device. Made in Switzerland." />
   <meta name="theme-color" content="#f5f0eb" id="theme-color-meta" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2710,7 +2723,10 @@
     <p class="modal-sub" id="trip-expense-modal-sub">Log what you spent</p>
     <div class="form-row">
       <label id="trip-expense-amount-label">Amount</label>
-      <input type="number" id="trip-expense-amount" placeholder="0.00" min="0" step="0.01"/>
+      <div style="display:flex;gap:8px;align-items:stretch">
+        <select id="trip-expense-currency" style="flex-shrink:0;width:90px;padding:11px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text);font-family:var(--font);font-size:14px;font-weight:600"></select>
+        <input type="number" id="trip-expense-amount" placeholder="0.00" min="0" step="0.01" style="flex:1"/>
+      </div>
     </div>
     <div class="form-row">
       <label>What for?</label>
@@ -2762,6 +2778,21 @@
     <div class="modal-handle"></div>
     <h2>Trip Settings</h2>
     <p class="modal-sub" id="trip-settings-sub">Companions, categories &amp; wallets</p>
+
+    <!-- CURRENCY -->
+    <div class="trip-settings-section">
+      <div class="trip-settings-section-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Default currency
+      </div>
+      <div class="form-row" style="margin-bottom:0">
+        <select id="ts-currency-select" onchange="saveTsCurrency(this.value)"></select>
+      </div>
+      <div class="form-row" id="ts-currency-custom-row" style="display:none;margin-bottom:0">
+        <input type="text" id="ts-currency-custom" class="inline-add-input" placeholder="e.g. SGD" maxlength="5" autocomplete="off"
+          onchange="saveTsCustomCurrency(this.value)"/>
+      </div>
+    </div>
 
     <!-- COMPANIONS -->
     <div class="trip-settings-section">
@@ -7624,6 +7655,7 @@
     }
 
     listEl.innerHTML = [...exps].reverse().map((e, idx) => {
+      const expCur = e.currency || trip.currency;
       const paidLabel = e.paidBy === 'me' ? 'Me' : esc(e.paidBy);
       const delay = `animation-delay:${Math.min(idx*0.035,0.35)}s`;
       const trip2 = trips.find(t => t.id === activeTrip);
@@ -7635,7 +7667,7 @@
             <div class="tx-meta">${[catLabel2, e.account, e.date].filter(Boolean).join(' · ')}</div>
           </div>
           <div class="trip-expense-right">
-            <div class="trip-expense-amt ${e.paidBy!=='me'?'other':''}">${fmtTrip(e.amount, trip.currency)}</div>
+            <div class="trip-expense-amt ${e.paidBy!=='me'?'other':''}">${fmtTrip(e.amount, expCur)}</div>
             <span class="trip-paid-badge ${e.paidBy==='me'?'me':'other'}">${paidLabel}</span>
           </div>
         </div>`;
@@ -7747,8 +7779,8 @@
     const trip = trips.find(t => t.id === activeTrip);
     if (!trip) return;
     document.getElementById('trip-expense-modal-title').textContent = 'Add Expense';
-    document.getElementById('trip-expense-modal-sub').textContent   = trip.currency;
-    document.getElementById('trip-expense-amount-label').textContent = `Amount (${trip.currency})`;
+    document.getElementById('trip-expense-modal-sub').textContent   = trip.name;
+    document.getElementById('trip-expense-amount-label').textContent = 'Amount';
     document.getElementById('trip-expense-amount').value = '';
     document.getElementById('trip-expense-note').value   = '';
     document.getElementById('trip-paidby-name-row').style.display = 'none';
@@ -7757,6 +7789,7 @@
     document.querySelector('#modal-trip-expense .btn-primary').textContent = 'Add';
     setTripPaidBy('me');
     populateTripAccountSelect(tripAccounts()[0] || '');
+    populateTripExpenseCurrency(null);
     buildTripExpenseCatPicker(null);
     openModal('modal-trip-expense');
   }
@@ -7769,8 +7802,8 @@
     editingTripExpenseId = expId;
     tripPaidBy = exp.paidBy === 'me' ? 'me' : 'other';
     document.getElementById('trip-expense-modal-title').textContent = 'Edit Expense';
-    document.getElementById('trip-expense-modal-sub').textContent   = trip.currency;
-    document.getElementById('trip-expense-amount-label').textContent = `Amount (${trip.currency})`;
+    document.getElementById('trip-expense-modal-sub').textContent   = trip.name;
+    document.getElementById('trip-expense-amount-label').textContent = 'Amount';
     document.getElementById('trip-expense-amount').value = exp.amount;
     document.getElementById('trip-expense-note').value   = exp.note || '';
     document.getElementById('trip-expense-delete-btn').style.display = '';
@@ -7778,6 +7811,7 @@
     setTripPaidBy(tripPaidBy);
     if (tripPaidBy === 'other') document.getElementById('trip-paidby-name').value = exp.paidBy;
     populateTripAccountSelect(exp.account || tripAccounts()[0] || '');
+    populateTripExpenseCurrency(exp.currency || null);
     buildTripExpenseCatPicker(exp.tripCat || null);
     openModal('modal-trip-expense');
     // override date with expense's actual date (openModal hook resets to today)
@@ -7789,20 +7823,21 @@
     if (!trip) return;
     const amount = parseFloat(document.getElementById('trip-expense-amount').value);
     if (!amount || amount <= 0 || amount > 999999999) { shake('trip-expense-amount'); return; }
-    const note = sanitiseText(document.getElementById('trip-expense-note').value.trim(), 60);
+    const note    = sanitiseText(document.getElementById('trip-expense-note').value.trim(), 60);
     if (!note) { shake('trip-expense-note'); return; }
     const paidBy  = tripPaidBy === 'me'
       ? 'me'
       : (sanitiseText(document.getElementById('trip-paidby-name').value.trim(), 30) || 'Someone');
     const date    = document.getElementById('trip-expense-date').value || todayStr();
     const account = tripPaidBy === 'me' ? (document.getElementById('trip-expense-account')?.value || '') : '';
+    const expCurrency = document.getElementById('trip-expense-currency')?.value || trip.currency;
 
     if (editingTripExpenseId) {
       const exp = (trip.expenses || []).find(e => e.id === editingTripExpenseId);
-      if (exp) { exp.amount = amount; exp.paidBy = paidBy; exp.note = note; exp.date = date; exp.account = account; exp.tripCat = tripExpenseCat; }
+      if (exp) { exp.amount = amount; exp.paidBy = paidBy; exp.note = note; exp.date = date; exp.account = account; exp.tripCat = tripExpenseCat; exp.currency = expCurrency; }
     } else {
       if (!trip.expenses) trip.expenses = [];
-      trip.expenses.push({ id: genId(), amount, paidBy, note, date, account, tripCat: tripExpenseCat });
+      trip.expenses.push({ id: genId(), amount, paidBy, note, date, account, tripCat: tripExpenseCat, currency: expCurrency });
     }
     saveTrips();
     closeModal('modal-trip-expense');
@@ -8204,6 +8239,38 @@
   }
 
   // ── TRIP SETTINGS ──
+  const TRIP_CURRENCIES = [
+    { code: 'CHF', label: 'CHF — Swiss Franc' },
+    { code: 'EUR', label: 'EUR — Euro' },
+    { code: 'USD', label: 'USD — US Dollar' },
+    { code: 'GBP', label: 'GBP — British Pound' },
+    { code: 'ALL', label: 'ALL — Albanian Lek' },
+    { code: 'TRY', label: 'TRY — Turkish Lira' },
+    { code: 'JPY', label: 'JPY — Japanese Yen' },
+    { code: 'THB', label: 'THB — Thai Baht' },
+    { code: 'MXN', label: 'MXN — Mexican Peso' },
+    { code: 'AUD', label: 'AUD — Australian Dollar' },
+    { code: 'CAD', label: 'CAD — Canadian Dollar' },
+    { code: 'NOK', label: 'NOK — Norwegian Krone' },
+    { code: 'SEK', label: 'SEK — Swedish Krona' },
+    { code: 'DKK', label: 'DKK — Danish Krone' },
+    { code: 'HRK', label: 'HRK — Croatian Kuna' },
+    { code: 'HUF', label: 'HUF — Hungarian Forint' },
+    { code: 'PLN', label: 'PLN — Polish Zloty' },
+    { code: 'CZK', label: 'CZK — Czech Koruna' },
+    { code: 'RON', label: 'RON — Romanian Leu' },
+    { code: 'BGN', label: 'BGN — Bulgarian Lev' },
+    { code: 'RSD', label: 'RSD — Serbian Dinar' },
+    { code: 'BAM', label: 'BAM — Bosnian Mark' },
+    { code: 'MKD', label: 'MKD — Macedonian Denar' },
+  ];
+
+  function tripCurrencyOptions(selected) {
+    return TRIP_CURRENCIES.map(c =>
+      `<option value="${c.code}" ${c.code === selected ? 'selected' : ''}>${esc(c.label)}</option>`
+    ).join('') + `<option value="custom" ${!TRIP_CURRENCIES.find(c=>c.code===selected) && selected ? 'selected' : ''}>Other...</option>`;
+  }
+
   const TRIP_DEFAULT_CATS = [
     { id: 'tc_accommodation', label: 'Accommodation', icon: '🏨' },
     { id: 'tc_food',          label: 'Food & Drink',  icon: '🍽' },
@@ -8218,6 +8285,7 @@
     if (!trip) return;
     document.getElementById('trip-settings-sub').textContent = trip.name;
     renderTripSettings(trip);
+    populateTsCurrencySelect(trip);
     openModal('modal-trip-settings');
   }
 
@@ -8266,6 +8334,65 @@
               <button class="ts-pill-remove" onclick="removeTsWallet(${i})">×</button>
             </span>`).join('')
         : `<span style="font-size:12px;color:var(--muted)">None — uses your app accounts</span>`;
+    }
+  }
+
+  function saveTsCurrency(val) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const customRow = document.getElementById('ts-currency-custom-row');
+    if (val === 'custom') {
+      if (customRow) customRow.style.display = '';
+      return;
+    }
+    if (customRow) customRow.style.display = 'none';
+    trip.currency = val;
+    saveTrips();
+    // update header subtitle
+    document.getElementById('trips-page-sub').textContent = `${trip.currency} · ${(trip.expenses||[]).length} expenses`;
+    showToast(`Currency changed to ${val}`);
+  }
+
+  function saveTsCustomCurrency(val) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const clean = sanitiseText(val.toUpperCase().trim(), 5);
+    if (!clean) return;
+    trip.currency = clean;
+    saveTrips();
+    document.getElementById('trips-page-sub').textContent = `${trip.currency} · ${(trip.expenses||[]).length} expenses`;
+    showToast(`Currency changed to ${clean}`);
+  }
+
+  function populateTsCurrencySelect(trip) {
+    const sel = document.getElementById('ts-currency-select');
+    if (!sel) return;
+    sel.innerHTML = tripCurrencyOptions(trip.currency);
+    const customRow = document.getElementById('ts-currency-custom-row');
+    const isCustom = !TRIP_CURRENCIES.find(c => c.code === trip.currency);
+    if (customRow) {
+      customRow.style.display = isCustom ? '' : 'none';
+      if (isCustom) {
+        const inp = document.getElementById('ts-currency-custom');
+        if (inp) inp.value = trip.currency;
+      }
+    }
+  }
+
+  function populateTripExpenseCurrency(selected) {
+    const sel = document.getElementById('trip-expense-currency');
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!sel || !trip) return;
+    // show trip default first, then all others
+    const cur = selected || trip.currency;
+    sel.innerHTML = tripCurrencyOptions(cur);
+    // if custom currency is set on trip, add it as an option
+    if (!TRIP_CURRENCIES.find(c => c.code === trip.currency)) {
+      const opt = document.createElement('option');
+      opt.value = trip.currency;
+      opt.textContent = trip.currency;
+      if (cur === trip.currency) opt.selected = true;
+      sel.prepend(opt);
     }
   }
 

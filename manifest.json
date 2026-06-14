@@ -3,8 +3,9 @@
   "short_name": "Kassior",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f5f0eb",
-  "theme_color": "#f5f0eb",
+  "orientation": "portrait",
+  "background_color": "#111110",
+  "theme_color": "#111110",
   "description": "Your personal finance tracker. Your data, your device.",
   "icons": [
     {
