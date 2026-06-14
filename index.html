@@ -5171,46 +5171,75 @@
 
     // attach swipe to expenses
     listEl.querySelectorAll('.tx-item[data-id]').forEach(el => {
-      attachSwipe(el, () => trashTransaction(parseInt(el.dataset.id)));
+      attachSwipe(el, () => trashTransaction(el.dataset.id));
     });
     // attach swipe to income rows
     listEl.querySelectorAll('.tx-item[data-inc-id]').forEach(el => {
-      attachSwipe(el, () => deleteIncomeById(parseInt(el.dataset.incId)));
+      attachSwipe(el, () => deleteIncomeById(el.dataset.incId));
     });
     updateTrashBadge();
   }
   function setFilter(cat) { txFilter = cat; renderTransactions(); }
 
   // ── SWIPE TO DELETE ──
+  // track globally so we can reset any open swipe when a new one starts
+  let _openSwipeEl = null;
+
+  function resetSwipe(el) {
+    if (!el) return;
+    el.style.transition = 'transform 0.2s ease';
+    el.style.transform  = 'translateX(0)';
+    el.classList.remove('swiped');
+    const bg = el.closest('.tx-swipe-wrap')?.querySelector('.tx-delete-bg') ||
+               el.closest('.settings-swipe-wrap')?.querySelector('.settings-delete-bg');
+    if (bg) bg.style.pointerEvents = 'none';
+    _openSwipeEl = null;
+  }
+
   function attachSwipe(el, onDelete) {
-    let startX = 0, currentX = 0, swiping = false, didSwipe = false;
+    let startX = 0, startY = 0, currentX = 0, swiping = false, didSwipe = false, isHoriz = null;
     const THRESHOLD = 60;
 
-    function onStart(x) { startX = x; swiping = true; didSwipe = false; el.style.transition = 'none'; }
-    function onMove(x) {
+    function onStart(x, y) {
+      // reset any other open swipe
+      if (_openSwipeEl && _openSwipeEl !== el) resetSwipe(_openSwipeEl);
+      startX = x; startY = y; swiping = true; didSwipe = false; isHoriz = null;
+      el.style.transition = 'none';
+    }
+
+    function onMove(x, y) {
       if (!swiping) return;
       const dx = x - startX;
+      const dy = y - startY;
+
+      // determine direction on first significant movement
+      if (isHoriz === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+        isHoriz = Math.abs(dx) > Math.abs(dy);
+      }
+      if (!isHoriz) { swiping = false; return; } // vertical — let scroll take over
+
       if (Math.abs(dx) > 6) didSwipe = true;
       currentX = Math.min(0, Math.max(-90, dx));
       el.style.transform = `translateX(${currentX}px)`;
     }
+
     function onEnd() {
       if (!swiping) return; swiping = false;
       el.style.transition = 'transform 0.2s ease';
       if (currentX < -THRESHOLD) {
         el.style.transform = 'translateX(-80px)';
         el.classList.add('swiped');
-        const bg = el.closest('.tx-swipe-wrap').querySelector('.tx-delete-bg');
+        _openSwipeEl = el;
+        const bg = el.closest('.tx-swipe-wrap')?.querySelector('.tx-delete-bg');
         if (bg) {
           bg.style.pointerEvents = 'all';
           bg.onclick = () => {
+            resetSwipe(el);
             if (onDelete) onDelete();
-            else trashTransaction(parseInt(el.dataset.id));
           };
         }
       } else {
-        el.style.transform = 'translateX(0)';
-        el.classList.remove('swiped');
+        resetSwipe(el);
       }
       currentX = 0;
     }
@@ -5219,22 +5248,83 @@
       if (didSwipe) { e.stopImmediatePropagation(); didSwipe = false; }
     }, true);
 
-    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
-    el.addEventListener('touchmove',  e => onMove(e.touches[0].clientX),  { passive: true });
+    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    el.addEventListener('touchmove',  e => {
+      if (isHoriz === false) return; // let vertical scroll through
+      onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
     el.addEventListener('touchend',   () => onEnd());
-    el.addEventListener('mousedown',  e => onStart(e.clientX));
-    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX); });
+    el.addEventListener('touchcancel',() => { swiping = false; resetSwipe(el); });
+    el.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
+    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX, e.clientY); });
     el.addEventListener('mouseup',    () => onEnd());
-    el.addEventListener('mouseleave', () => onEnd());
+    el.addEventListener('mouseleave', () => { if (swiping) onEnd(); });
+  }
+
+  function attachSettingsSwipe(el, onDelete) {
+    if (el.classList.contains('no-swipe')) return;
+    let startX = 0, startY = 0, currentX = 0, swiping = false, isHoriz = null;
+    const THRESHOLD = 60;
+
+    function onStart(x, y) {
+      if (_openSwipeEl && _openSwipeEl !== el) resetSwipe(_openSwipeEl);
+      startX = x; startY = y; swiping = true; isHoriz = null;
+      el.style.transition = 'none';
+    }
+
+    function onMove(x, y) {
+      if (!swiping) return;
+      const dx = x - startX;
+      const dy = y - startY;
+      if (isHoriz === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+        isHoriz = Math.abs(dx) > Math.abs(dy);
+      }
+      if (!isHoriz) { swiping = false; return; }
+      currentX = Math.min(0, Math.max(-90, dx));
+      el.style.transform = `translateX(${currentX}px)`;
+    }
+
+    function onEnd() {
+      if (!swiping) return; swiping = false;
+      el.style.transition = 'transform 0.2s ease';
+      if (currentX < -THRESHOLD) {
+        el.style.transform = 'translateX(-80px)';
+        el.classList.add('swiped');
+        _openSwipeEl = el;
+        const bg = el.closest('.settings-swipe-wrap')?.querySelector('.settings-delete-bg');
+        if (bg) {
+          bg.style.pointerEvents = 'all';
+          bg.onclick = () => {
+            resetSwipe(el);
+            if (onDelete) onDelete();
+          };
+        }
+      } else {
+        resetSwipe(el);
+      }
+      currentX = 0;
+    }
+
+    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    el.addEventListener('touchmove',  e => {
+      if (isHoriz === false) return;
+      onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    el.addEventListener('touchend',   () => onEnd());
+    el.addEventListener('touchcancel',() => { swiping = false; resetSwipe(el); });
+    el.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
+    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX, e.clientY); });
+    el.addEventListener('mouseup',    () => onEnd());
+    el.addEventListener('mouseleave', () => { if (swiping) onEnd(); });
   }
 
   function trashTransaction(id) {
     dismissHint('history');
-    const tx = transactions.find(t => t.id === id);
+    const tx = transactions.find(t => String(t.id) === String(id));
     if (!tx) return;
     tx.trashedAt = Date.now();
     trash.push(tx);
-    transactions = transactions.filter(t => t.id !== id);
+    transactions = transactions.filter(t => String(t.id) !== String(id));
     save(); renderTransactions();
     showToast(t('removed'));
   }
@@ -6571,40 +6661,6 @@
 
   // ── SETTINGS SWIPE ──
   // settings rows reuse the same swipe mechanic as transactions
-  function attachSettingsSwipe(el, onDelete) {
-    if (el.classList.contains('no-swipe')) return;
-    let startX = 0, currentX = 0, swiping = false;
-    const THRESHOLD = 60;
-
-    function onStart(x) { startX = x; swiping = true; el.style.transition = 'none'; }
-    function onMove(x) {
-      if (!swiping) return;
-      currentX = Math.min(0, Math.max(-90, x - startX));
-      el.style.transform = `translateX(${currentX}px)`;
-    }
-    function onEnd() {
-      if (!swiping) return; swiping = false;
-      el.style.transition = 'transform 0.2s ease';
-      if (currentX < -THRESHOLD) {
-        el.style.transform = 'translateX(-80px)';
-        el.classList.add('swiped');
-        const bg = el.closest('.settings-swipe-wrap').querySelector('.settings-delete-bg');
-        if (bg) { bg.style.pointerEvents = 'all'; bg.onclick = () => onDelete(); }
-      } else {
-        el.style.transform = 'translateX(0)';
-        el.classList.remove('swiped');
-      }
-      currentX = 0;
-    }
-    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX), { passive: true });
-    el.addEventListener('touchmove',  e => onMove(e.touches[0].clientX),  { passive: true });
-    el.addEventListener('touchend',   () => onEnd());
-    el.addEventListener('mousedown',  e => onStart(e.clientX));
-    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX); });
-    el.addEventListener('mouseup',    () => onEnd());
-    el.addEventListener('mouseleave', () => onEnd());
-  }
-
   // ── EMOJI PICKER ──
   const EMOJI_OPTIONS = [
     // Housing & bills
@@ -6787,7 +6843,7 @@
   }
 
   function deleteIncomeById(id) {
-    income = income.filter(i => i.id !== id);
+    income = income.filter(i => String(i.id) !== String(id));
     save();
     renderTransactions();
     if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
