@@ -193,8 +193,9 @@
     [data-theme="mix"] .bill-type-btn.active { background: #2a1e12; border-color: #d07848; color: #e89868; }
 
     /* Mix: cat buttons dark */
-    [data-theme="mix"] .cat-btn            { background: #332e28; border-color: #403830; }
+    [data-theme="mix"] .cat-btn            { background: var(--surface2); border-color: var(--border); }
     [data-theme="mix"] .cat-btn .cat-label { color: #9a8e82; }
+    [data-theme="mix"] .cat-btn .cat-icon  { color: var(--accent-text); }
     [data-theme="mix"] .cat-btn.selected   { background: #2a1e12; border-color: #d07848; }
 
     [data-theme="mix"] .empty h3 { color: #1a1410; }
@@ -887,6 +888,145 @@
     .smart-card.accent-card { border-color: #c06840; background: #fdf4ee; }
     .smart-card.accent-card .smart-card-value { color: #a05030; }
     /* smart card accent — dark theme uses accent-dim already via var */
+    /* ── CUSTOM DATE PICKER ── */
+    .dp-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .dp-nav-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-dim); transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .dp-nav-btn:hover { border-color: var(--accent); color: var(--accent-text); }
+    .dp-month-label {
+      font-family: var(--font-display); font-size: 17px; font-weight: 700;
+      color: var(--text); background: none; border: none; cursor: pointer;
+      letter-spacing: -0.3px; padding: 4px 8px; border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .dp-month-label:hover { background: var(--surface2); }
+    .dp-day-names {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 6px;
+    }
+    .dp-day-names span {
+      text-align: center; font-size: 11px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 4px 0;
+    }
+    .dp-day-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+    }
+    .dp-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; font-size: 14px; font-weight: 500; color: var(--text);
+      cursor: pointer; transition: background 0.12s, color 0.12s;
+      border: none; background: none;
+    }
+    .dp-day:hover { background: var(--surface2); }
+    .dp-day.today { color: var(--accent-text); font-weight: 700; }
+    .dp-day.today::after {
+      content: ''; position: absolute; bottom: 4px; left: 50%;
+      transform: translateX(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+    }
+    .dp-day.selected {
+      background: var(--accent) !important; color: #fff !important;
+      font-weight: 700;
+    }
+    .dp-day.other-month { color: var(--muted); opacity: 0.4; }
+    .dp-day.disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+    .dp-year-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;
+    }
+    .dp-year-btn {
+      padding: 8px 4px; border-radius: var(--radius-xs);
+      background: var(--surface2); border: 1px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--text-dim);
+      cursor: pointer; text-align: center; transition: all 0.12s;
+    }
+    .dp-year-btn:hover { border-color: var(--accent); color: var(--accent-text); }
+    .dp-year-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* styled date display field */
+    .dp-field {
+      width: 100%; padding: 11px 13px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-xs); color: var(--text);
+      font-family: var(--font); font-size: 15px;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; transition: border-color 0.15s;
+      user-select: none;
+    }
+    .dp-field:hover, .dp-field:focus { border-color: var(--accent); outline: none; }
+    .dp-field svg { color: var(--muted); flex-shrink: 0; }
+    .trip-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      margin-bottom: 10px; cursor: pointer;
+      transition: border-color 0.15s;
+      animation: itemIn 0.22s cubic-bezier(0.32,0.72,0,1) both;
+    }
+    .trip-card:hover { border-color: var(--accent); }
+    .trip-card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .trip-card-name {
+      font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px;
+    }
+    .trip-card-dates { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .trip-status-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; padding: 3px 8px; border-radius: 99px; flex-shrink: 0;
+    }
+    .trip-status-badge.active    { background: var(--accent-dim); color: var(--accent-text); border: 1px solid var(--accent); }
+    .trip-status-badge.completed { background: var(--success-dim); color: var(--success); border: 1px solid var(--success); }
+    .trip-status-badge.archived  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .trip-card-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .trip-stat { text-align: center; }
+    .trip-stat-val { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .trip-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .trip-budget-bar { height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+    .trip-budget-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-text)); transition: width 0.6s cubic-bezier(0.32,0.72,0,1); }
+    .trip-budget-fill.over { background: linear-gradient(90deg, var(--danger), #e06050); }
+    .trip-expense-item {
+      background: var(--surface); border: 1px solid var(--border-sub);
+      border-radius: var(--radius-sm); padding: 13px 14px;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 6px; cursor: pointer;
+      animation: itemIn 0.22s cubic-bezier(0.32,0.72,0,1) both;
+    }
+    .trip-expense-right { margin-left: auto; text-align: right; }
+    /* date inputs — browser picker follows app theme */
+    :root                  { color-scheme: light; }
+    [data-theme="dark"]    { color-scheme: dark; }
+    [data-theme="mix"]     { color-scheme: dark; }
+    [data-theme="light"]   { color-scheme: light; }
+
+    input[type="date"] {
+      color-scheme: inherit;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      padding: 11px 13px;
+      font-family: var(--font);
+      font-size: 15px;
+      width: 100%;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input[type="date"]:focus { border-color: var(--accent); }
+    .trip-expense-amt.other { color: var(--muted); }
+    .trip-paid-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; margin-top: 3px; display: inline-block; }
+    .trip-paid-badge.me { background: var(--accent-dim); color: var(--accent-text); }
+    .trip-paid-badge.other { background: var(--surface2); color: var(--muted); }
+
     .hint-banner {
       display: flex; align-items: flex-start; gap: 12px;
       background: var(--accent-dim); border: 1px solid var(--accent);
@@ -1175,16 +1315,18 @@
     .rec-name svg { display: inline; vertical-align: middle; color: var(--accent); }
 
     .cat-btn {
-      background: var(--bg); border: 1px solid var(--border);
+      background: var(--surface2); border: 1px solid var(--border);
       border-radius: var(--radius-xs); padding: 11px 4px;
       cursor: pointer; display: flex; flex-direction: column;
       align-items: center; gap: 5px;
       transition: border-color 0.15s, background 0.15s;
     }
-    .cat-btn .cat-icon  { font-size: 20px; }
+    .cat-btn .cat-icon  { font-size: 20px; color: var(--accent); display: flex; align-items: center; justify-content: center; }
+    .cat-btn .cat-icon svg { display: block; }
     .cat-btn .cat-label { font-size: 10px; color: var(--text-dim); text-align: center; line-height: 1.2; font-weight: 500; }
     .cat-btn.selected   { border-color: var(--accent); background: var(--accent-dim); }
     .cat-btn.selected .cat-label { color: var(--accent-text); }
+    .cat-btn.selected .cat-icon  { color: var(--accent-text); }
 
     /* ── BUTTONS ── */
     .btn-primary {
@@ -2383,6 +2525,14 @@
       <line x1="8" y1="18" x2="8" y2="18" stroke-width="2.5"/><line x1="12" y1="18" x2="12" y2="18" stroke-width="2.5"/>
     </svg>Bills
   </button>
+  <button id="nav-trips" onclick="showPage('trips', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 17l1.5-9L12 2l7.5 6L21 17"/>
+      <path d="M3 17h18"/>
+      <path d="M8 17v4"/><path d="M16 17v4"/>
+      <circle cx="12" cy="10" r="2"/>
+    </svg>Trips
+  </button>
   <button onclick="showPage('charts', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="20" x2="18" y2="10"/>
@@ -2391,8 +2541,179 @@
       <line x1="2" y1="20" x2="22" y2="20"/>
     </svg>Insights
   </button>
-  </button>
 </nav>
+
+<!-- PAGE: TRIPS -->
+<div id="page-trips" class="page">
+  <div class="page-header page-header-row">
+    <div>
+      <h1 id="trips-page-title">Trips</h1>
+      <p id="trips-page-sub">Track expenses on the go</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="gear-btn" id="trip-actions-btn" onclick="openTripActions()" style="display:none" aria-label="Trip options">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+      <button class="gear-btn" id="trips-back-btn" onclick="closeTrip()" style="display:none" aria-label="Back to trips">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- TRIPS LIST VIEW -->
+  <div id="trips-list-view">
+    <div id="trips-list"></div>
+    <button class="btn-primary" onclick="openModal('modal-new-trip')" style="margin-top:8px">
+      + New Trip
+    </button>
+  </div>
+
+  <!-- TRIP DETAIL VIEW -->
+  <div id="trip-detail-view" style="display:none">
+    <!-- trip summary cards -->
+    <div id="trip-summary-cards" class="smart-cards-row" style="margin-bottom:16px"></div>
+    <!-- trip expenses -->
+    <div class="section-header">
+      <div class="section-title">EXPENSES</div>
+    </div>
+    <div id="trip-expenses-list"></div>
+    <div style="height:80px"></div>
+  </div>
+</div>
+
+<!-- MODAL: NEW TRIP -->
+<div class="modal-overlay" id="modal-new-trip" onclick="closeModalOnOverlay(event,'modal-new-trip')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>New Trip</h2>
+    <p class="modal-sub">Create a travel expense tracker</p>
+    <div class="form-row">
+      <label>Trip name</label>
+      <input type="text" id="trip-name-input" placeholder="e.g. Albania July" maxlength="40" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Currency</label>
+      <select id="trip-currency-input">
+        <option value="CHF">CHF — Swiss Franc</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="USD">USD — US Dollar</option>
+        <option value="GBP">GBP — British Pound</option>
+        <option value="ALL">ALL — Albanian Lek</option>
+        <option value="TRY">TRY — Turkish Lira</option>
+        <option value="JPY">JPY — Japanese Yen</option>
+        <option value="THB">THB — Thai Baht</option>
+        <option value="MXN">MXN — Mexican Peso</option>
+        <option value="AUD">AUD — Australian Dollar</option>
+        <option value="CAD">CAD — Canadian Dollar</option>
+        <option value="NOK">NOK — Norwegian Krone</option>
+        <option value="SEK">SEK — Swedish Krona</option>
+        <option value="DKK">DKK — Danish Krone</option>
+        <option value="HRK">HRK — Croatian Kuna</option>
+        <option value="HUF">HUF — Hungarian Forint</option>
+        <option value="PLN">PLN — Polish Zloty</option>
+        <option value="CZK">CZK — Czech Koruna</option>
+        <option value="RON">RON — Romanian Leu</option>
+        <option value="BGN">BGN — Bulgarian Lev</option>
+        <option value="RSD">RSD — Serbian Dinar</option>
+        <option value="BAM">BAM — Bosnian Mark</option>
+        <option value="MKD">MKD — Macedonian Denar</option>
+        <option value="custom">Other...</option>
+      </select>
+    </div>
+    <div class="form-row" id="trip-currency-custom-row" style="display:none">
+      <label>Custom currency code</label>
+      <input type="text" id="trip-currency-custom" placeholder="e.g. SGD" maxlength="5" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Budget (optional)</label>
+      <input type="number" id="trip-budget-input" placeholder="0.00" min="0" step="0.01"/>
+    </div>
+    <div class="form-row">
+      <label>Dates (optional)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input type="date" id="trip-start-date"/>
+        <input type="date" id="trip-end-date"/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-new-trip')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewTrip()">Create Trip</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD TRIP EXPENSE -->
+<div class="modal-overlay" id="modal-trip-expense" onclick="closeModalOnOverlay(event,'modal-trip-expense')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="trip-expense-modal-title">Add Expense</h2>
+    <p class="modal-sub" id="trip-expense-modal-sub">Log what you spent</p>
+    <div class="form-row">
+      <label id="trip-expense-amount-label">Amount</label>
+      <input type="number" id="trip-expense-amount" placeholder="0.00" min="0" step="0.01"/>
+    </div>
+    <div class="form-row">
+      <label>Category</label>
+      <div class="cat-picker" id="trip-cat-picker"></div>
+    </div>
+    <div class="form-row">
+      <label>Paid by</label>
+      <div class="bill-type-row" style="grid-template-columns:1fr 1fr">
+        <button class="bill-type-btn active" id="trip-paid-me" onclick="setTripPaidBy('me')">Me</button>
+        <button class="bill-type-btn" id="trip-paid-other" onclick="setTripPaidBy('other')">Someone else</button>
+      </div>
+    </div>
+    <div class="form-row" id="trip-paidby-name-row" style="display:none">
+      <label>Who paid?</label>
+      <input type="text" id="trip-paidby-name" placeholder="e.g. Alex" maxlength="30" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Account / Wallet</label>
+      <select id="trip-expense-account"></select>
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <input type="text" id="trip-expense-note" placeholder="e.g. Dinner at the river" maxlength="60" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="trip-expense-date"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="trip-expense-delete-btn" style="display:none;color:var(--danger);border-color:var(--danger)" onclick="deleteTripExpense()">Delete</button>
+      <button class="btn-secondary" onclick="closeModal('modal-trip-expense')">Cancel</button>
+      <button class="btn-primary" onclick="saveTripExpense()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TRIP ACTIONS -->
+<div class="modal-overlay" id="modal-trip-actions" onclick="closeModalOnOverlay(event,'modal-trip-actions')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="trip-actions-title">Trip Options</h2>
+    <p class="modal-sub" id="trip-actions-sub"></p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+      <button class="btn-secondary" id="trip-action-complete" onclick="doTripAction('complete')" style="justify-content:flex-start;gap:10px;padding:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="trip-action-complete-label">Mark as complete</span>
+      </button>
+      <button class="btn-secondary" onclick="doTripAction('archive')" style="justify-content:flex-start;gap:10px;padding:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        Archive trip
+      </button>
+      <button class="btn-secondary" onclick="doTripAction('export')" style="justify-content:flex-start;gap:10px;padding:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export as CSV
+      </button>
+      <button class="btn-secondary" onclick="doTripAction('delete')" style="justify-content:flex-start;gap:10px;padding:14px;color:var(--danger);border-color:var(--danger)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Move to trash
+      </button>
+    </div>
+    <button class="btn-secondary" onclick="closeModal('modal-trip-actions')">Cancel</button>
+  </div>
+</div>
 
 <!-- PAGE: SETTINGS -->
 <div id="page-settings" class="page">
@@ -2925,6 +3246,33 @@
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-add-cat')">Cancel</button>
       <button class="btn-primary" onclick="saveCustomCategory()">Add Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DATE PICKER -->
+<div class="modal-overlay" id="modal-date-picker" onclick="closeModalOnOverlay(event,'modal-date-picker')">
+  <div class="modal" style="padding-bottom:32px">
+    <div class="modal-handle"></div>
+    <div class="dp-header">
+      <button class="dp-nav-btn" onclick="dpChangeMonth(-1)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="dp-month-label" onclick="dpToggleYearPicker()" id="dp-month-label">June 2026</button>
+      <button class="dp-nav-btn" onclick="dpChangeMonth(1)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+    <!-- year picker (hidden by default) -->
+    <div id="dp-year-grid" style="display:none;margin-bottom:12px"></div>
+    <!-- day grid -->
+    <div class="dp-day-names">
+      <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+    </div>
+    <div class="dp-day-grid" id="dp-day-grid"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn-secondary" onclick="dpSelectToday()" style="flex:1">Today</button>
+      <button class="btn-primary" onclick="dpConfirm()" style="flex:1">Done</button>
     </div>
   </div>
 </div>
@@ -3622,16 +3970,53 @@
     if (id === 'modal-currency')      renderCurrencyList();
     if (id === 'modal-add-cat')       { selectedEmoji = ''; renderEmojiGrid(); }
     if (id === 'modal-language')      renderLanguagePicker();
-    if (id === 'modal-add-goal') {
-      populateGoalDateDropdowns();
-    }
-    if (id === 'modal-add-rec') {
+    if (id === 'modal-add-goal')      populateGoalDateDropdowns();
+    if (id === 'modal-add-rec')  {
       populateBillDropdowns();
       setBillType(document.getElementById('rec-input-type').value || 'monthly');
     }
     if (id === 'modal-add') {
-      document.getElementById('input-date').value = todayStr();
+      updateDpField('input-date', todayStr());
       document.getElementById('input-amount').focus();
+    }
+    // init date fields in this modal
+    setTimeout(() => initModalDateFields(id), 10);
+  }
+
+  function initModalDateFields(modalId) {
+    const overlay = document.getElementById(modalId);
+    if (!overlay) return;
+    overlay.querySelectorAll('input[type="date"]').forEach(input => {
+      // skip if already wrapped
+      if (input.previousElementSibling?.classList?.contains('dp-field')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'dp-field';
+      wrapper.tabIndex = 0;
+      wrapper.dataset.dpFor = input.id;
+      wrapper.innerHTML = `
+        <span class="dp-display-text">${fmtDateDisplay(input.value)}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+      wrapper.addEventListener('click', () => {
+        openDatePicker(input.value || todayStr(), val => {
+          input.value = val;
+          wrapper.querySelector('.dp-display-text').textContent = fmtDateDisplay(val);
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      });
+      input.style.display = 'none';
+      input.parentNode.insertBefore(wrapper, input);
+    });
+  }
+
+  // update dp-field display text when input value changes programmatically
+  function updateDpField(inputId, val) {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.value = val;
+      const wrapper = input.previousElementSibling;
+      if (wrapper?.classList?.contains('dp-field')) {
+        wrapper.querySelector('.dp-display-text').textContent = fmtDateDisplay(val);
+      }
     }
   }
   function closeModal(id) {
@@ -3655,12 +4040,13 @@
     }
     // hide FAB on pages where it doesn't make sense
     const fab = document.getElementById('fab-wrap');
-    if (fab) fab.style.display = ['recurring','charts','settings'].includes(name) ? 'none' : 'flex';
+    if (fab) fab.style.display = ['recurring','charts','settings','trips'].includes(name) ? 'none' : 'flex';
     // also close it if open
     closeFab();
     if (name === 'overview')     { renderOverview();     showHint('overview'); }
     if (name === 'transactions') { renderTransactions(); showHint('history'); }
     if (name === 'recurring')    { renderRecurring();    showHint('bills'); }
+    if (name === 'trips')        { if (!activeTrip) renderTrips(); }
     if (name === 'charts')       renderCharts();
     if (name === 'settings')     renderSettings();
     // close search when leaving history
@@ -6330,6 +6716,7 @@
       overrides,
       trash,
       settings,
+      trips,
     };
 
     const json     = JSON.stringify(payload, null, 2);
@@ -6873,7 +7260,671 @@
     }, 280);
   }
 
-  // ── ONBOARDING ──
+  // ── TRIPS ──
+  let trips        = loadJSON('wdig_trips', []);
+  let activeTrip   = null; // currently open trip ID
+  let editingTripExpenseId = null;
+  let tripPaidBy   = 'me';
+  let tripSelectedCat = null;
+
+  function saveTrips() { localStorage.setItem('wdig_trips', JSON.stringify(trips)); }
+
+  function fmtTrip(amount, currency) {
+    const num = Number(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    return `${currency} ${num}`;
+  }
+
+  // ── TRIPS LIST ──
+  function renderTrips() {
+    const listEl = document.getElementById('trips-list');
+    if (!listEl) return;
+    const active   = trips.filter(t => !t.archived);
+    const archived = trips.filter(t => t.archived);
+
+    if (!active.length && !archived.length) {
+      listEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.5-9L12 2l7.5 6L21 17"/><path d="M3 17h18"/><path d="M8 17v4"/><path d="M16 17v4"/><circle cx="12" cy="10" r="2"/></svg></div>
+          <h3>No trips yet</h3>
+          <p>Create your first trip to start tracking expenses on the go.</p>
+        </div>`;
+      return;
+    }
+
+    function tripCardHTML(trip) {
+      const exps     = trip.expenses || [];
+      const myTotal  = exps.filter(e => e.paidBy === 'me').reduce((s,e) => s+e.amount, 0);
+      const allTotal = exps.reduce((s,e) => s+e.amount, 0);
+      const otherPaid= allTotal - myTotal;
+      const hasBudget= trip.budget > 0;
+      const budgetPct= hasBudget ? Math.min(myTotal / trip.budget * 100, 100) : 0;
+      const isOver   = hasBudget && myTotal > trip.budget;
+      const dates    = trip.startDate ? `${trip.startDate}${trip.endDate ? ' → ' + trip.endDate : ''}` : '';
+      const status   = trip.archived ? 'archived' : trip.completed ? 'completed' : 'active';
+      return `
+        <div class="trip-card" onclick="openTrip('${trip.id}')">
+          <div class="trip-card-header">
+            <div>
+              <div class="trip-card-name">${esc(trip.name)}</div>
+              ${dates ? `<div class="trip-card-dates">${esc(dates)}</div>` : ''}
+            </div>
+            <span class="trip-status-badge ${status}">${status}</span>
+          </div>
+          <div class="trip-card-stats">
+            <div class="trip-stat">
+              <div class="trip-stat-val">${fmtTrip(myTotal, trip.currency)}</div>
+              <div class="trip-stat-lbl">My spend</div>
+            </div>
+            <div class="trip-stat">
+              <div class="trip-stat-val">${exps.length}</div>
+              <div class="trip-stat-lbl">Expenses</div>
+            </div>
+            <div class="trip-stat">
+              <div class="trip-stat-val">${fmtTrip(otherPaid, trip.currency)}</div>
+              <div class="trip-stat-lbl">Others paid</div>
+            </div>
+          </div>
+          ${hasBudget ? `
+            <div class="trip-budget-bar">
+              <div class="trip-budget-fill ${isOver ? 'over' : ''}" style="width:${budgetPct}%"></div>
+            </div>` : ''}
+        </div>`;
+    }
+
+    let html = active.map(tripCardHTML).join('');
+    if (archived.length) {
+      html += `<div class="settings-removed-header" style="margin-top:8px">Archived</div>`;
+      html += archived.map(tripCardHTML).join('');
+    }
+    listEl.innerHTML = html;
+  }
+
+  // ── OPEN TRIP DETAIL ──
+  function openTrip(id) {
+    activeTrip = id;
+    const trip = trips.find(t => t.id === id);
+    if (!trip) return;
+    document.getElementById('trips-page-title').textContent = trip.name;
+    document.getElementById('trips-page-sub').textContent   = `${trip.currency} · ${(trip.expenses||[]).length} expenses`;
+    document.getElementById('trips-back-btn').style.display    = '';
+    document.getElementById('trip-actions-btn').style.display  = '';
+    document.getElementById('trips-list-view').style.display   = 'none';
+    document.getElementById('trip-detail-view').style.display  = '';
+
+    // FAB shows when inside a trip
+    const fabWrap = document.getElementById('fab-wrap');
+    if (fabWrap) fabWrap.style.display = 'none';
+
+    renderTripDetail(trip);
+  }
+
+  function closeTrip() {
+    activeTrip = null;
+    document.getElementById('trips-page-title').textContent    = 'Trips';
+    document.getElementById('trips-page-sub').textContent      = 'Track expenses on the go';
+    document.getElementById('trips-back-btn').style.display    = 'none';
+    document.getElementById('trip-actions-btn').style.display  = 'none';
+    document.getElementById('trips-list-view').style.display   = '';
+    document.getElementById('trip-detail-view').style.display  = 'none';
+    const fabWrap = document.getElementById('fab-wrap');
+    if (fabWrap) fabWrap.style.display = '';
+    renderTrips();
+  }
+
+  function renderTripDetail(trip) {
+    const exps     = trip.expenses || [];
+    const myTotal  = exps.filter(e => e.paidBy === 'me').reduce((s,e) => s+e.amount, 0);
+    const allTotal = exps.reduce((s,e) => s+e.amount, 0);
+    const otherPaid= allTotal - myTotal;
+
+    // summary cards
+    const cardsEl = document.getElementById('trip-summary-cards');
+    cardsEl.innerHTML = `
+      <div class="smart-card accent-card">
+        <div class="smart-card-label">My spend</div>
+        <div class="smart-card-value">${fmtTrip(myTotal, trip.currency)}</div>
+        <div class="smart-card-sub">${exps.filter(e=>e.paidBy==='me').length} expenses</div>
+      </div>
+      <div class="smart-card">
+        <div class="smart-card-label">Others paid</div>
+        <div class="smart-card-value">${fmtTrip(otherPaid, trip.currency)}</div>
+        <div class="smart-card-sub">${exps.filter(e=>e.paidBy!=='me').length} expenses</div>
+      </div>`;
+
+    // budget row
+    if (trip.budget > 0) {
+      const pct   = Math.min(myTotal / trip.budget * 100, 100).toFixed(1);
+      const over  = myTotal > trip.budget;
+      const label = over
+        ? `Over budget by ${fmtTrip(myTotal - trip.budget, trip.currency)}`
+        : `${fmtTrip(trip.budget - myTotal, trip.currency)} left of ${fmtTrip(trip.budget, trip.currency)} budget`;
+      cardsEl.innerHTML += `
+        <div class="smart-card" style="grid-column:span 2">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div class="smart-card-label">Budget</div>
+            <div style="font-size:12px;color:${over?'var(--danger)':'var(--success)'};font-weight:600">${label}</div>
+          </div>
+          <div class="trip-budget-bar" style="height:5px">
+            <div class="trip-budget-fill ${over?'over':''}" style="width:${pct}%"></div>
+          </div>
+        </div>`;
+    }
+
+    // action buttons
+    const listEl = document.getElementById('trip-expenses-list');
+    if (!exps.length) {
+      listEl.innerHTML = `
+        <div class="empty" style="padding:32px 24px">
+          <div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <h3>No expenses yet</h3>
+          <p>Tap + to log your first expense.</p>
+        </div>
+        <button class="btn-primary" onclick="openAddTripExpense()">+ Add Expense</button>`;
+      return;
+    }
+
+    listEl.innerHTML = [...exps].reverse().map((e, idx) => {
+      const cat = CATEGORIES.find(c => c.id === e.category) || { id: 'other', icon: 'other', emoji: '💰' };
+      const paidLabel = e.paidBy === 'me' ? 'Me' : esc(e.paidBy);
+      const delay = `animation-delay:${Math.min(idx*0.035,0.35)}s`;
+      return `
+        <div class="trip-expense-item" onclick="openEditTripExpense('${e.id}')" style="${delay}">
+          <div class="tx-emoji-wrap">${catIcon(cat)}</div>
+          <div class="tx-info">
+            <div class="tx-cat">${esc(catLabel(cat))}</div>
+            <div class="tx-meta">${e.note ? esc(e.note) : ''}</div>
+          </div>
+          <div class="trip-expense-right">
+            <div class="trip-expense-amt ${e.paidBy!=='me'?'other':''}">${fmtTrip(e.amount, trip.currency)}</div>
+            <span class="trip-paid-badge ${e.paidBy==='me'?'me':'other'}">${paidLabel}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    listEl.innerHTML += `<div style="margin-top:16px"><button class="btn-primary" onclick="openAddTripExpense()">+ Add Expense</button></div>`;
+
+    // trip sandbox settings
+    listEl.innerHTML += `
+      <div style="margin-top:24px">
+        <div class="section-title">TRIP CATEGORIES</div>
+        <div id="trip-cat-sandbox" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="trip-cat-add-input" placeholder="Add category" maxlength="20"
+            style="flex:1;padding:8px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px"
+            onkeydown="if(event.key==='Enter')addTripCat()"/>
+          <button class="btn-secondary" onclick="addTripCat()" style="padding:0 14px;flex-shrink:0">Add</button>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <div class="section-title">TRIP ACCOUNTS / WALLETS</div>
+        <div id="trip-acc-sandbox" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="trip-acc-add-input" placeholder="Add wallet or card" maxlength="20"
+            style="flex:1;padding:8px 12px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px"
+            onkeydown="if(event.key==='Enter')addTripAcc()"/>
+          <button class="btn-secondary" onclick="addTripAcc()" style="padding:0 14px;flex-shrink:0">Add</button>
+        </div>
+      </div>`;
+
+    renderTripSandbox(trip);
+  }
+
+  // ── NEW TRIP ──
+  function saveNewTrip() {
+    const name = sanitiseText(document.getElementById('trip-name-input').value.trim(), 40);
+    if (!name) { shake('trip-name-input'); return; }
+    let currency = document.getElementById('trip-currency-input').value;
+    if (currency === 'custom') {
+      currency = sanitiseText(document.getElementById('trip-currency-custom').value.trim().toUpperCase(), 5) || settings.currency;
+    }
+    const budget    = parseFloat(document.getElementById('trip-budget-input').value) || 0;
+    const startDate = document.getElementById('trip-start-date').value;
+    const endDate   = document.getElementById('trip-end-date').value;
+    trips.unshift({
+      id: genId(), name, currency, budget, startDate, endDate,
+      completed: false, expenses: [], createdAt: todayStr()
+    });
+    saveTrips();
+    closeModal('modal-new-trip');
+    document.getElementById('trip-name-input').value   = '';
+    document.getElementById('trip-budget-input').value = '';
+    document.getElementById('trip-start-date').value   = '';
+    document.getElementById('trip-end-date').value     = '';
+    renderTrips();
+    // open the new trip immediately
+    openTrip(trips[0].id);
+    showToast('Trip created');
+  }
+
+  // ── ADD / EDIT TRIP EXPENSE ──
+  function populateTripAccountSelect(selected) {
+    const sel = document.getElementById('trip-expense-account');
+    if (!sel) return;
+    const accs = tripAccounts();
+    sel.innerHTML = accs.map(a => `<option value="${esc(a)}" ${a===selected?'selected':''}>${esc(a)}</option>`).join('');
+  }
+
+  function buildTripCatPicker(selectedId) {
+    const picker = document.getElementById('trip-cat-picker');
+    if (!picker) return;
+    picker.innerHTML = tripVisibleCats().map(c => `
+      <button class="cat-btn ${c.id === selectedId ? 'selected' : ''}"
+        onclick="selectTripCat('${esc(c.id)}',this)" type="button">
+        <span class="cat-icon">${catIcon(c,20)}</span>
+        <span class="cat-label">${esc(catLabel(c))}</span>
+      </button>`).join('');
+  }
+  function selectTripCat(id, btn) {
+    tripSelectedCat = id;
+    document.querySelectorAll('#trip-cat-picker .cat-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function setTripPaidBy(val) {
+    tripPaidBy = val;
+    document.getElementById('trip-paid-me').classList.toggle('active', val === 'me');
+    document.getElementById('trip-paid-other').classList.toggle('active', val === 'other');
+    document.getElementById('trip-paidby-name-row').style.display = val === 'other' ? '' : 'none';
+  }
+
+  function openAddTripExpense() {
+    editingTripExpenseId = null;
+    tripSelectedCat = visibleCats()[0]?.id || 'other';
+    tripPaidBy = 'me';
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    document.getElementById('trip-expense-modal-title').textContent = 'Add Expense';
+    document.getElementById('trip-expense-modal-sub').textContent   = trip.currency;
+    document.getElementById('trip-expense-amount-label').textContent = `Amount (${trip.currency})`;
+    document.getElementById('trip-expense-amount').value = '';
+    document.getElementById('trip-expense-note').value   = '';
+    document.getElementById('trip-expense-date').value   = todayStr();
+    document.getElementById('trip-paidby-name-row').style.display = 'none';
+    document.getElementById('trip-paidby-name').value    = '';
+    document.getElementById('trip-expense-delete-btn').style.display = 'none';
+    document.querySelector('#modal-trip-expense .btn-primary').textContent = 'Add';
+    setTripPaidBy('me');
+    buildTripCatPicker(tripSelectedCat);
+    populateTripAccountSelect(tripAccounts()[0] || '');
+    openModal('modal-trip-expense');
+  }
+
+  function openEditTripExpense(expId) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const exp = (trip.expenses || []).find(e => e.id === expId);
+    if (!exp) return;
+    editingTripExpenseId = expId;
+    tripSelectedCat = exp.category;
+    tripPaidBy = exp.paidBy === 'me' ? 'me' : 'other';
+    document.getElementById('trip-expense-modal-title').textContent = 'Edit Expense';
+    document.getElementById('trip-expense-modal-sub').textContent   = trip.currency;
+    document.getElementById('trip-expense-amount-label').textContent = `Amount (${trip.currency})`;
+    document.getElementById('trip-expense-amount').value = exp.amount;
+    document.getElementById('trip-expense-note').value   = exp.note || '';
+    document.getElementById('trip-expense-date').value   = exp.date || todayStr();
+    document.getElementById('trip-expense-delete-btn').style.display = '';
+    document.querySelector('#modal-trip-expense .btn-primary').textContent = 'Save';
+    setTripPaidBy(tripPaidBy);
+    if (tripPaidBy === 'other') document.getElementById('trip-paidby-name').value = exp.paidBy;
+    buildTripCatPicker(tripSelectedCat);
+    populateTripAccountSelect(exp.account || tripAccounts()[0] || '');
+    openModal('modal-trip-expense');
+  }
+
+  function saveTripExpense() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const amount = parseFloat(document.getElementById('trip-expense-amount').value);
+    if (!amount || amount <= 0) { shake('trip-expense-amount'); return; }
+    if (!tripSelectedCat) { showToast('Pick a category'); return; }
+    const paidBy = tripPaidBy === 'me'
+      ? 'me'
+      : (sanitiseText(document.getElementById('trip-paidby-name').value.trim(), 30) || 'Someone');
+    const note    = sanitiseText(document.getElementById('trip-expense-note').value.trim(), 60);
+    const date    = document.getElementById('trip-expense-date').value || todayStr();
+    const account = document.getElementById('trip-expense-account')?.value || '';
+
+    if (editingTripExpenseId) {
+      const exp = (trip.expenses || []).find(e => e.id === editingTripExpenseId);
+      if (exp) { exp.amount = amount; exp.category = tripSelectedCat; exp.paidBy = paidBy; exp.note = note; exp.date = date; exp.account = account; }
+    } else {
+      if (!trip.expenses) trip.expenses = [];
+      trip.expenses.push({ id: genId(), amount, category: tripSelectedCat, paidBy, note, date, account });
+    }
+    saveTrips();
+    closeModal('modal-trip-expense');
+    renderTripDetail(trip);
+    document.getElementById('trips-page-sub').textContent = `${trip.currency} · ${trip.expenses.length} expenses`;
+    showToast(editingTripExpenseId ? 'Expense updated' : 'Expense added');
+  }
+
+  let tripTrash = loadJSON('wdig_trip_trash', []);
+  function saveTripTrash() { localStorage.setItem('wdig_trip_trash', JSON.stringify(tripTrash)); }
+
+  function openTripActions() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    document.getElementById('trip-actions-title').textContent = trip.name;
+    document.getElementById('trip-actions-sub').textContent   = `${(trip.expenses||[]).length} expenses · ${trip.currency}`;
+    document.getElementById('trip-action-complete-label').textContent = trip.completed ? 'Reopen trip' : 'Mark as complete';
+    openModal('modal-trip-actions');
+  }
+
+  function doTripAction(action) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    closeModal('modal-trip-actions');
+
+    if (action === 'complete') {
+      toggleTripComplete();
+    } else if (action === 'archive') {
+      trip.archived = true;
+      trip.archivedAt = new Date().toISOString();
+      saveTrips();
+      closeTrip();
+      showToast('Trip archived');
+    } else if (action === 'export') {
+      exportTripCSV();
+    } else if (action === 'delete') {
+      // move to trip trash
+      const trashed = { ...trip, trashedAt: new Date().toISOString() };
+      tripTrash.unshift(trashed);
+      saveTripTrash();
+      trips = trips.filter(t => t.id !== activeTrip);
+      saveTrips();
+      closeTrip();
+      showToast('Trip moved to trash · tap to undo');
+    }
+  }
+
+  function deleteTripExpense() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip || !editingTripExpenseId) return;
+    // soft delete — store in trip's deleted expenses
+    const exp = (trip.expenses || []).find(e => e.id === editingTripExpenseId);
+    if (exp) {
+      if (!trip.deletedExpenses) trip.deletedExpenses = [];
+      trip.deletedExpenses.push({ ...exp, trashedAt: new Date().toISOString() });
+    }
+    trip.expenses = (trip.expenses || []).filter(e => e.id !== editingTripExpenseId);
+    saveTrips();
+    closeModal('modal-trip-expense');
+    renderTripDetail(trip);
+    showToast('Expense removed');
+  }
+
+  function toggleTripComplete() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    trip.completed = !trip.completed;
+    saveTrips();
+    renderTripDetail(trip);
+    // update actions button label if modal was open
+    const lbl = document.getElementById('trip-action-complete-label');
+    if (lbl) lbl.textContent = trip.completed ? 'Reopen trip' : 'Mark as complete';
+    showToast(trip.completed ? 'Trip marked complete' : 'Trip reopened');
+  }
+
+  function deleteTrip() {
+    // legacy — now goes through doTripAction
+    doTripAction('delete');
+  }
+
+
+  function exportTripCSV() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const rows = [['Date','Category','Amount','Currency','Paid by','Note']];
+    (trip.expenses || []).forEach(e => {
+      const cat = CATEGORIES.find(c => c.id === e.category);
+      rows.push([e.date, cat ? catLabel(cat) : e.category, e.amount, trip.currency, e.paidBy, e.note||'']);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `kassior-trip-${trip.name.replace(/\s+/g,'-')}.csv`;
+    a.click();
+  }
+
+  function renderTripSandbox(trip) {
+    // categories
+    const catEl = document.getElementById('trip-cat-sandbox');
+    if (catEl) {
+      const cats = trip.tripCats || [];
+      catEl.innerHTML = cats.map((c,i) => `
+        <div style="display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:4px 10px 4px 8px">
+          <span style="font-size:12px;font-weight:600;color:var(--text)">${esc(c)}</span>
+          <button onclick="removeTripCat(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0;line-height:1;margin-left:2px">×</button>
+        </div>`).join('') || `<span style="font-size:12px;color:var(--muted)">None added — uses app categories</span>`;
+    }
+    // accounts
+    const accEl = document.getElementById('trip-acc-sandbox');
+    if (accEl) {
+      const accs = trip.tripAccounts || [];
+      accEl.innerHTML = accs.map((a,i) => `
+        <div style="display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:4px 10px 4px 8px">
+          <span style="font-size:12px;font-weight:600;color:var(--text)">${esc(a)}</span>
+          <button onclick="removeTripAcc(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0;line-height:1;margin-left:2px">×</button>
+        </div>`).join('') || `<span style="font-size:12px;color:var(--muted)">None added — uses app accounts</span>`;
+    }
+  }
+
+  function addTripCat() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const input = document.getElementById('trip-cat-add-input');
+    const val = sanitiseText(input.value.trim(), 20);
+    if (!val) return;
+    if (!trip.tripCats) trip.tripCats = [];
+    trip.tripCats.push(val);
+    saveTrips();
+    input.value = '';
+    renderTripSandbox(trip);
+    buildTripCatPicker(tripSelectedCat);
+  }
+
+  function removeTripCat(i) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip || !trip.tripCats) return;
+    trip.tripCats.splice(i, 1);
+    saveTrips();
+    renderTripSandbox(trip);
+  }
+
+  function addTripAcc() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip) return;
+    const input = document.getElementById('trip-acc-add-input');
+    const val = sanitiseText(input.value.trim(), 20);
+    if (!val) return;
+    if (!trip.tripAccounts) trip.tripAccounts = [];
+    trip.tripAccounts.push(val);
+    saveTrips();
+    input.value = '';
+    renderTripSandbox(trip);
+  }
+
+  function removeTripAcc(i) {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip || !trip.tripAccounts) return;
+    trip.tripAccounts.splice(i, 1);
+    saveTrips();
+    renderTripSandbox(trip);
+  }
+
+  function tripVisibleCats() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip || !(trip.tripCats || []).length) return visibleCats();
+    // merge: app cats + trip-specific cats as custom objects
+    const appCats = visibleCats();
+    const tripOnly = (trip.tripCats || []).map(name => ({
+      id: 'tc_' + name, label: name, icon: 'other', emoji: '📍'
+    }));
+    return [...appCats, ...tripOnly];
+  }
+
+  function tripAccounts() {
+    const trip = trips.find(t => t.id === activeTrip);
+    if (!trip || !(trip.tripAccounts || []).length) return settings.accounts;
+    return [...(trip.tripAccounts || []), ...settings.accounts];
+  }
+
+
+  document.getElementById('trip-currency-input')?.addEventListener('change', function() {
+    const row = document.getElementById('trip-currency-custom-row');
+    if (row) row.style.display = this.value === 'custom' ? '' : 'none';
+  });
+
+  // ── CUSTOM DATE PICKER ──
+  const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let _dpYear     = 2026;
+  let _dpMonth    = 0; // 0-indexed
+  let _dpSelected = null; // 'YYYY-MM-DD'
+  let _dpCallback = null; // fn(dateStr)
+  let _dpShowYear = false;
+
+  function openDatePicker(currentVal, callback) {
+    _dpCallback = callback;
+    _dpShowYear = false;
+    const now = new Date();
+    if (currentVal) {
+      const [y,m,d] = currentVal.split('-').map(Number);
+      _dpYear = y; _dpMonth = m - 1; _dpSelected = currentVal;
+    } else {
+      _dpYear = now.getFullYear(); _dpMonth = now.getMonth(); _dpSelected = null;
+    }
+    document.getElementById('dp-year-grid').style.display = 'none';
+    renderDpGrid();
+    openModal('modal-date-picker');
+  }
+
+  function renderDpGrid() {
+    document.getElementById('dp-month-label').textContent = `${MONTHS_LONG[_dpMonth]} ${_dpYear}`;
+    const grid = document.getElementById('dp-day-grid');
+    const today = todayStr();
+    const firstDay = new Date(_dpYear, _dpMonth, 1).getDay(); // 0=Sun
+    const daysInMonth = new Date(_dpYear, _dpMonth + 1, 0).getDate();
+    const daysInPrev  = new Date(_dpYear, _dpMonth, 0).getDate();
+    // Monday start: shift
+    const startOffset = (firstDay + 6) % 7; // Mon=0
+    const cells = [];
+    // prev month days
+    for (let i = startOffset - 1; i >= 0; i--) {
+      const d = daysInPrev - i;
+      const ds = `${_dpYear}-${String(_dpMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      cells.push({ d, ds, cls: 'other-month' });
+    }
+    // current month
+    for (let d = 1; d <= daysInMonth; d++) {
+      const ds = `${_dpYear}-${String(_dpMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      let cls = '';
+      if (ds === today)      cls += ' today';
+      if (ds === _dpSelected) cls += ' selected';
+      cells.push({ d, ds, cls: cls.trim() });
+    }
+    // next month days to fill 6 rows
+    const remaining = 42 - cells.length;
+    for (let d = 1; d <= remaining; d++) {
+      const m = _dpMonth + 2 > 12 ? 1 : _dpMonth + 2;
+      const y = _dpMonth + 2 > 12 ? _dpYear + 1 : _dpYear;
+      const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      cells.push({ d, ds, cls: 'other-month' });
+    }
+    grid.innerHTML = cells.map(c => `
+      <button class="dp-day ${c.cls}" onclick="dpSelectDay('${c.ds}')">${c.d}</button>`
+    ).join('');
+  }
+
+  function dpSelectDay(ds) {
+    _dpSelected = ds;
+    const [y,m] = ds.split('-').map(Number);
+    _dpYear = y; _dpMonth = m - 1;
+    renderDpGrid();
+  }
+
+  function dpChangeMonth(dir) {
+    _dpMonth += dir;
+    if (_dpMonth > 11) { _dpMonth = 0; _dpYear++; }
+    if (_dpMonth < 0)  { _dpMonth = 11; _dpYear--; }
+    renderDpGrid();
+  }
+
+  function dpToggleYearPicker() {
+    _dpShowYear = !_dpShowYear;
+    const grid = document.getElementById('dp-year-grid');
+    if (_dpShowYear) {
+      const startYear = _dpYear - 5;
+      let html = '<div class="dp-year-grid">';
+      for (let y = startYear; y <= startYear + 11; y++) {
+        html += `<button class="dp-year-btn ${y===_dpYear?'selected':''}" onclick="dpSelectYear(${y})">${y}</button>`;
+      }
+      html += '</div>';
+      grid.innerHTML = html;
+      grid.style.display = '';
+    } else {
+      grid.style.display = 'none';
+    }
+  }
+
+  function dpSelectYear(y) {
+    _dpYear = y;
+    _dpShowYear = false;
+    document.getElementById('dp-year-grid').style.display = 'none';
+    renderDpGrid();
+  }
+
+  function dpSelectToday() {
+    const t = todayStr();
+    const [y,m] = t.split('-').map(Number);
+    _dpYear = y; _dpMonth = m - 1; _dpSelected = t;
+    renderDpGrid();
+  }
+
+  function dpConfirm() {
+    if (_dpSelected && _dpCallback) {
+      _dpCallback(_dpSelected);
+    }
+    closeModal('modal-date-picker');
+  }
+
+  // helper to format date for display
+  function fmtDateDisplay(dateStr) {
+    if (!dateStr) return 'Select date';
+    try {
+      const [y,m,d] = dateStr.split('-').map(Number);
+      return `${String(d).padStart(2,'0')} ${MONTHS_LONG[m-1].slice(0,3)} ${y}`;
+    } catch { return dateStr; }
+  }
+
+  // replace <input type="date"> with dp-field — call after DOM ready
+  function initDateFields() {
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+      const id = input.id;
+      if (!id) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'dp-field';
+      wrapper.tabIndex = 0;
+      wrapper.setAttribute('role', 'button');
+      wrapper.setAttribute('aria-label', 'Pick a date');
+      wrapper.dataset.dpFor = id;
+      wrapper.innerHTML = `
+        <span class="dp-display-text">${fmtDateDisplay(input.value)}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+      wrapper.addEventListener('click', () => {
+        openDatePicker(input.value, val => {
+          input.value = val;
+          wrapper.querySelector('.dp-display-text').textContent = fmtDateDisplay(val);
+          // fire change event so any listeners pick it up
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      });
+      input.style.display = 'none';
+      input.parentNode.insertBefore(wrapper, input);
+    });
+  }
+
+  // ── TRIPS HOOK INTO SHOWPAGE ──
   let obSelectedGoal = null;
 
   function obNext(screen) {
