@@ -1271,18 +1271,6 @@
     /* ── TX LIST ── */
     .tx-list { display: flex; flex-direction: column; gap: 6px; }
 
-    /* swipe wrapper */
-    .tx-swipe-wrap {
-      position: relative; border-radius: var(--radius-sm); overflow: hidden;
-      touch-action: pan-y;
-    }
-    .tx-delete-bg {
-      position: absolute; right: 0; top: 0; bottom: 0;
-      width: 80px; background: var(--danger);
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 18px; border-radius: var(--radius-sm);
-      pointer-events: none;
-    }
     .tx-item {
       position: relative; z-index: 1;
       background: var(--surface);
@@ -1293,7 +1281,6 @@
       cursor: default; user-select: none;
     }
     .tx-item.from-recurring { border-left: 2px solid var(--accent); }
-    .tx-item.swiped { transform: translateX(-80px); }
 
     .tx-emoji-wrap {
       width: 36px; height: 36px; border-radius: 10px;
@@ -1638,19 +1625,6 @@
     }
     .settings-inline-input:focus { border-bottom-color: var(--accent); }
 
-    /* swipeable settings rows */
-    .settings-swipe-wrap {
-      position: relative; border-radius: var(--radius-sm); overflow: hidden;
-      margin-bottom: 6px; touch-action: pan-y;
-    }
-    .settings-swipe-wrap:last-child { margin-bottom: 0; }
-    .settings-delete-bg {
-      position: absolute; right: 0; top: 0; bottom: 0;
-      width: 80px; background: var(--danger);
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 18px; border-radius: var(--radius-sm);
-      pointer-events: none;
-    }
     .settings-row {
       display: flex; flex-direction: row; align-items: center; gap: 12px;
       padding: 13px 16px;
@@ -1661,9 +1635,6 @@
       transform: translateX(0); transition: transform 0.2s ease;
       user-select: none;
     }
-    .settings-row.swiped { transform: translateX(-80px); }
-    .settings-row.no-swipe { cursor: default; }
-
     /* emoji picker grid */
     .emoji-grid {
       display: grid; grid-template-columns: repeat(7, 1fr);
@@ -3583,7 +3554,7 @@
       categories:     "Categories",
       addCategory:    "+ Add",
       builtIn:        "Built-in",
-      custom:         "Custom · swipe to remove",
+      custom:         "Custom",
       yourData:       "Your Data",
       yourDataDesc:   "Your data is stored only on this device. Export to back up, import to restore.",
       export:         "Export",
@@ -5140,18 +5111,15 @@
         const src  = INCOME_SOURCES.find(s => s.id === data.source) || { emoji:'💰', label: data.source };
         const meta = [data.account, data.note].filter(Boolean).map(esc).join(' · ');
         return `
-          <div class="tx-swipe-wrap" data-inc-id="${data.id}">
-            <div class="tx-delete-bg" style="background:var(--danger)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
-            <div class="tx-item" data-inc-id="${data.id}" onclick="openEditIncome('${data.id}')" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px;${delay}">
-              <div class="tx-emoji-wrap" style="background:var(--success-dim);color:var(--success)">${incIcon(src)}</div>
-              <div class="tx-info">
-                <div class="tx-cat" style="color:var(--success)">${esc(src.label)}</div>
-                <div class="tx-meta">${meta}</div>
-              </div>
-              <div class="tx-right">
-                <div class="tx-amount" style="color:var(--success)">+${fmt(data.amount)}</div>
-                <div class="tx-date">${dateStr}</div>
-              </div>
+          <div class="tx-item" data-inc-id="${data.id}" onclick="openEditIncome('${data.id}')" style="cursor:pointer;border-left:2px solid var(--success);padding-left:12px;${delay}">
+            <div class="tx-emoji-wrap" style="background:var(--success-dim);color:var(--success)">${incIcon(src)}</div>
+            <div class="tx-info">
+              <div class="tx-cat" style="color:var(--success)">${esc(src.label)}</div>
+              <div class="tx-meta">${meta}</div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amount" style="color:var(--success)">+${fmt(data.amount)}</div>
+              <div class="tx-date">${dateStr}</div>
             </div>
           </div>`;
       }
@@ -5161,175 +5129,23 @@
       const meta   = [t.account, t.note].filter(Boolean).map(esc).join(' · ');
       const recClass = t.fromRecurring ? 'from-recurring' : '';
       return `
-        <div class="tx-swipe-wrap" data-id="${t.id}">
-          <div class="tx-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
-          <div class="tx-item ${recClass}" data-id="${t.id}" onclick="openEditTransaction('${t.id}')" style="cursor:pointer;${delay}">
-            <div class="tx-emoji-wrap">${catIcon(cat)}</div>
-            <div class="tx-info">
-              <div class="tx-cat">${esc(catLabel(cat))}</div>
-              <div class="tx-meta">${meta}${t.fromRecurring?' · ↻':''}</div>
-            </div>
-            <div class="tx-right">
-              <div class="tx-amount">-${fmt(t.amount)}</div>
-              <div class="tx-date">${dateStr}</div>
-            </div>
+        <div class="tx-item ${recClass}" data-id="${t.id}" onclick="openEditTransaction('${t.id}')" style="cursor:pointer;${delay}">
+          <div class="tx-emoji-wrap">${catIcon(cat)}</div>
+          <div class="tx-info">
+            <div class="tx-cat">${esc(catLabel(cat))}</div>
+            <div class="tx-meta">${meta}${t.fromRecurring?' · ↻':''}</div>
+          </div>
+          <div class="tx-right">
+            <div class="tx-amount">-${fmt(t.amount)}</div>
+            <div class="tx-date">${dateStr}</div>
           </div>
         </div>`;
     }).join('');
 
-    // attach swipe to expenses
-    listEl.querySelectorAll('.tx-item[data-id]').forEach(el => {
-      attachSwipe(el, () => trashTransaction(el.dataset.id));
-    });
-    // attach swipe to income rows
-    listEl.querySelectorAll('.tx-item[data-inc-id]').forEach(el => {
-      attachSwipe(el, () => deleteIncomeById(el.dataset.incId));
-    });
     updateTrashBadge();
     txRendered = true; // mark list as current
   }
   function setFilter(cat) { txFilter = cat; renderTransactions(); }
-
-  // ── SWIPE TO DELETE ──
-  // track globally so we can reset any open swipe when a new one starts
-  let _openSwipeEl = null;
-
-  function resetSwipe(el) {
-    if (!el) return;
-    el.style.transition = 'transform 0.2s ease';
-    el.style.transform  = 'translateX(0)';
-    el.classList.remove('swiped');
-    const bg = el.closest('.tx-swipe-wrap')?.querySelector('.tx-delete-bg') ||
-               el.closest('.settings-swipe-wrap')?.querySelector('.settings-delete-bg');
-    if (bg) bg.style.pointerEvents = 'none';
-    _openSwipeEl = null;
-  }
-
-  function attachSwipe(el, onDelete) {
-    el.style.touchAction = 'pan-y'; // tell browser: horizontal is JS, vertical is scroll
-    let startX = 0, startY = 0, currentX = 0, swiping = false, didSwipe = false, isHoriz = null;
-    const THRESHOLD = 60;
-
-    function onStart(x, y) {
-      // reset any other open swipe
-      if (_openSwipeEl && _openSwipeEl !== el) resetSwipe(_openSwipeEl);
-      startX = x; startY = y; swiping = true; didSwipe = false; isHoriz = null;
-      el.style.transition = 'none';
-    }
-
-    function onMove(x, y) {
-      if (!swiping) return;
-      const dx = x - startX;
-      const dy = y - startY;
-
-      // determine direction on first significant movement
-      if (isHoriz === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
-        isHoriz = Math.abs(dx) > Math.abs(dy);
-      }
-      if (!isHoriz) { swiping = false; return; } // vertical — let scroll take over
-
-      if (Math.abs(dx) > 6) didSwipe = true;
-      currentX = Math.min(0, Math.max(-90, dx));
-      el.style.transform = `translateX(${currentX}px)`;
-    }
-
-    function onEnd() {
-      if (!swiping) return; swiping = false;
-      el.style.transition = 'transform 0.2s ease';
-      if (currentX < -THRESHOLD) {
-        el.style.transform = 'translateX(-80px)';
-        el.classList.add('swiped');
-        _openSwipeEl = el;
-        const bg = el.closest('.tx-swipe-wrap')?.querySelector('.tx-delete-bg');
-        if (bg) {
-          bg.style.pointerEvents = 'all';
-          bg.onclick = () => {
-            resetSwipe(el);
-            if (onDelete) onDelete();
-          };
-        }
-      } else {
-        resetSwipe(el);
-      }
-      currentX = 0;
-    }
-
-    el.addEventListener('click', e => {
-      if (didSwipe) { e.stopImmediatePropagation(); didSwipe = false; }
-    }, true);
-
-    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-    el.addEventListener('touchmove',  e => {
-      if (isHoriz === false) return; // let vertical scroll through
-      if (isHoriz === true) e.preventDefault(); // confirmed horizontal — stop browser scroll
-      onMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: false }); // must be non-passive to call preventDefault
-    el.addEventListener('touchend',   () => onEnd());
-    el.addEventListener('touchcancel',() => { swiping = false; resetSwipe(el); });
-    el.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
-    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX, e.clientY); });
-    el.addEventListener('mouseup',    () => onEnd());
-    el.addEventListener('mouseleave', () => { if (swiping) onEnd(); });
-  }
-
-  function attachSettingsSwipe(el, onDelete) {
-    if (el.classList.contains('no-swipe')) return;
-    el.style.touchAction = 'pan-y'; // tell browser: horizontal is JS, vertical is scroll
-    let startX = 0, startY = 0, currentX = 0, swiping = false, isHoriz = null;
-    const THRESHOLD = 60;
-
-    function onStart(x, y) {
-      if (_openSwipeEl && _openSwipeEl !== el) resetSwipe(_openSwipeEl);
-      startX = x; startY = y; swiping = true; isHoriz = null;
-      el.style.transition = 'none';
-    }
-
-    function onMove(x, y) {
-      if (!swiping) return;
-      const dx = x - startX;
-      const dy = y - startY;
-      if (isHoriz === null && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
-        isHoriz = Math.abs(dx) > Math.abs(dy);
-      }
-      if (!isHoriz) { swiping = false; return; }
-      currentX = Math.min(0, Math.max(-90, dx));
-      el.style.transform = `translateX(${currentX}px)`;
-    }
-
-    function onEnd() {
-      if (!swiping) return; swiping = false;
-      el.style.transition = 'transform 0.2s ease';
-      if (currentX < -THRESHOLD) {
-        el.style.transform = 'translateX(-80px)';
-        el.classList.add('swiped');
-        _openSwipeEl = el;
-        const bg = el.closest('.settings-swipe-wrap')?.querySelector('.settings-delete-bg');
-        if (bg) {
-          bg.style.pointerEvents = 'all';
-          bg.onclick = () => {
-            resetSwipe(el);
-            if (onDelete) onDelete();
-          };
-        }
-      } else {
-        resetSwipe(el);
-      }
-      currentX = 0;
-    }
-
-    el.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-    el.addEventListener('touchmove',  e => {
-      if (isHoriz === false) return;
-      if (isHoriz === true) e.preventDefault(); // confirmed horizontal — stop browser scroll
-      onMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: false }); // must be non-passive to call preventDefault
-    el.addEventListener('touchend',   () => onEnd());
-    el.addEventListener('touchcancel',() => { swiping = false; resetSwipe(el); });
-    el.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
-    el.addEventListener('mousemove',  e => { if (e.buttons === 1) onMove(e.clientX, e.clientY); });
-    el.addEventListener('mouseup',    () => onEnd());
-    el.addEventListener('mouseleave', () => { if (swiping) onEnd(); });
-  }
 
   function trashTransaction(id) {
     dismissHint('history');
@@ -6356,93 +6172,70 @@
     const accEl = document.getElementById('accounts-list');
     if (accEl) {
       accEl.innerHTML = settings.accounts.map((acc, i) => `
-        <div class="settings-swipe-wrap" data-acc-idx="${i}">
-          <div class="settings-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
-          <div class="settings-row ${settings.accounts.length <= 1 ? 'no-swipe' : ''}" data-acc-idx="${i}">
-            <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
-            <div class="settings-row-info">
-              <div style="display:flex;align-items:center;gap:6px">
-                <input class="settings-inline-input" value="${esc(acc)}"
-                  onchange="renameAccount(${i}, this.value)"
-                  placeholder="Account name" />
-                ${i === 0 ? `<span class="acc-default-badge">Default</span>` : ''}
-              </div>
-            </div>
-            <div class="acc-arrow-btns">
-              <button class="acc-arrow-btn" onclick="moveAccount(${i},-1)"
-                ${i === 0 ? 'disabled' : ''} aria-label="Move up">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-              </button>
-              <button class="acc-arrow-btn" onclick="moveAccount(${i},1)"
-                ${i === settings.accounts.length - 1 ? 'disabled' : ''} aria-label="Move down">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
+        <div class="settings-row" data-acc-idx="${i}">
+          <div class="settings-row-emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
+          <div class="settings-row-info">
+            <div style="display:flex;align-items:center;gap:6px">
+              <input class="settings-inline-input" value="${esc(acc)}"
+                onchange="renameAccount(${i}, this.value)"
+                placeholder="Account name" />
+              ${i === 0 ? `<span class="acc-default-badge">Default</span>` : ''}
             </div>
           </div>
+          <div class="acc-arrow-btns">
+            <button class="acc-arrow-btn" onclick="moveAccount(${i},-1)"
+              ${i === 0 ? 'disabled' : ''} aria-label="Move up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+            </button>
+            <button class="acc-arrow-btn" onclick="moveAccount(${i},1)"
+              ${i === settings.accounts.length - 1 ? 'disabled' : ''} aria-label="Move down">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+          </div>
         </div>`).join('');
-      if (settings.accounts.length > 1) {
-        accEl.querySelectorAll('.settings-row:not(.no-swipe)').forEach(el => attachSettingsSwipe(el, () => {
-          removeAccount(parseInt(el.dataset.accIdx));
-        }));
-      }
     }
 
-    // categories — built-in (no swipe) + custom (swipeable)
     // budgets list
     const budgetsEl = document.getElementById('budgets-list');
     if (budgetsEl) {
-      const deleteBg = `<div class="settings-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
       budgetsEl.innerHTML = visibleCats().map(c => {
         const current = (settings.budgets || {})[c.id] || '';
         return `
-          <div class="settings-swipe-wrap" data-budget-id="${c.id}">
-            ${deleteBg}
-            <div class="settings-row" data-budget-id="${c.id}" onclick="openEditBudget('${c.id}')" style="cursor:pointer">
-              <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
-              <div class="settings-row-info">
-                <div class="settings-row-label">${esc(catLabel(c))}</div>
-                <div class="settings-row-sub">${current ? `${settings.currency} ${Number(current).toLocaleString()} / month` : 'No budget set'}</div>
-              </div>
-              <div class="settings-row-arrow">›</div>
+          <div class="settings-row" data-budget-id="${c.id}" onclick="openEditBudget('${c.id}')" style="cursor:pointer">
+            <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
+            <div class="settings-row-info">
+              <div class="settings-row-label">${esc(catLabel(c))}</div>
+              <div class="settings-row-sub">${current ? `${settings.currency} ${Number(current).toLocaleString()} / month` : 'No budget set'}</div>
             </div>
+            <div class="settings-row-arrow">›</div>
           </div>`;
       }).join('');
-      budgetsEl.querySelectorAll('.settings-row[data-budget-id]').forEach(el => {
-        attachSettingsSwipe(el, () => clearBudget(el.dataset.budgetId));
-      });
     }
 
     const catEl = document.getElementById('categories-list');
     if (catEl) {
       const hidden = settings.hiddenCats || [];
-      const deleteBg = `<div class="settings-delete-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>`;
 
       const activeBuiltIn = CATEGORIES.slice(0, 8)
         .filter(c => !hidden.includes(c.id))
         .map(c => `
-          <div class="settings-swipe-wrap" data-builtin-id="${c.id}">
-            ${deleteBg}
-            <div class="settings-row" data-builtin-id="${c.id}" onclick="openEditCat('${c.id}',false)" style="cursor:pointer">
-              <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
-              <div class="settings-row-info">
-                <div class="settings-row-label">${catLabel(c)}</div>
-                <div class="settings-row-sub">Tap to rename · swipe to remove</div>
-              </div>
-              <div class="settings-row-arrow">›</div>
+          <div class="settings-row" data-builtin-id="${c.id}" onclick="openEditCat('${c.id}',false)" style="cursor:pointer">
+            <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
+            <div class="settings-row-info">
+              <div class="settings-row-label">${catLabel(c)}</div>
+              <div class="settings-row-sub">Tap to rename</div>
             </div>
+            <div class="settings-row-arrow">›</div>
           </div>`).join('');
 
       const custom = settings.customCats.map((c, i) => `
-        <div class="settings-swipe-wrap" data-cat-idx="${i}">
-          ${deleteBg}
-          <div class="settings-row" data-cat-idx="${i}" onclick="openEditCat(${i},true)" style="cursor:pointer">
-            <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
-            <div class="settings-row-info">
-              <div class="settings-row-label">${esc(catLabel(c))}</div>
-              <div class="settings-row-sub">Custom · tap to edit · swipe to remove</div>
-            </div>
-            <div class="settings-row-arrow">›</div>
+        <div class="settings-row" data-cat-idx="${i}" onclick="openEditCat(${i},true)" style="cursor:pointer">
+          <div class="settings-row-emoji cat-svg-emoji">${catIcon(c,18)}</div>
+          <div class="settings-row-info">
+            <div class="settings-row-label">${esc(catLabel(c))}</div>
+            <div class="settings-row-sub">Custom · tap to edit</div>
           </div>
+          <div class="settings-row-arrow">›</div>
         </div>`).join('');
 
       const removedBuiltIn = CATEGORIES.slice(0, 8).filter(c => hidden.includes(c.id));
@@ -6458,13 +6251,6 @@
           </div>`).join('')}` : '';
 
       catEl.innerHTML = activeBuiltIn + custom + removedSection;
-
-      catEl.querySelectorAll('.settings-row[data-builtin-id]').forEach(el => {
-        attachSettingsSwipe(el, () => toggleCatVisibility(el.dataset.builtinId));
-      });
-      catEl.querySelectorAll('.settings-row[data-cat-idx]').forEach(el => {
-        attachSettingsSwipe(el, () => removeCustomCat(parseInt(el.dataset.catIdx)));
-      });
     }
   }
 
@@ -6895,7 +6681,6 @@
     ).join('');
 
     openModal('modal-edit-tx');
-    document.getElementById('edit-amount').focus();
   }
 
   function buildEditCatPicker(selectedId) {
@@ -7510,8 +7295,8 @@
     history: {
       key:   'wdig_hint_history',
       icon:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
-      title: 'Swipe left to delete',
-      sub:   'Swipe any expense left to remove it. Tap an entry to edit it.',
+      title: 'Tap any entry to edit',
+      sub:   'Tap an expense or income row to open it and make changes.',
     },
     bills: {
       key:   'wdig_hint_bills',
