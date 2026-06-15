@@ -173,7 +173,7 @@
     [data-theme="mix"] .page-header p     { color: #7a6858; }
     [data-theme="mix"] #overview-greeting { color: #7a6858; }
     [data-theme="mix"] .section-title     { color: #7a6858; }
-    [data-theme="mix"] .month-label       { color: #c06840; }
+
     [data-theme="mix"] .cat-row-top .cat-name { color: #1a1410; }
     [data-theme="mix"] .cat-row-top .cat-amount { color: #1a1410; }
     [data-theme="mix"] .cat-pct           { color: #9a8878; }
@@ -182,7 +182,7 @@
     /* Mix: nav stays cream */
     [data-theme="mix"] nav               { background: #f0ebe4; border-top-color: #d8d0c8; }
     [data-theme="mix"] nav button        { color: #9a8878; }
-    [data-theme="mix"] nav button.active { color: #c06840; }
+    [data-theme="mix"] nav button.active { color: var(--accent); }
 
     /* Mix: top buttons stay light (gear, month nav) */
     [data-theme="mix"] .gear-btn         { background: #ede8e2; border-color: #d8d0c8; color: #7a6858; }
@@ -190,11 +190,11 @@
 
     /* Mix: filter pills stay light */
     [data-theme="mix"] .filter-pill        { background: #ede8e2; border-color: #d8d0c8; color: #7a6858; }
-    [data-theme="mix"] .filter-pill.active { background: #f5e8de; border-color: #c06840; color: #a05030; }
+    [data-theme="mix"] .filter-pill.active { background: #f5e8de; border-color: var(--accent); color: #a05030; }
 
     /* Mix: modals dark */
     [data-theme="mix"] .modal            { background: #2a2520; border-color: #403830; }
-    [data-theme="mix"] .modal h2         { color: #e89868; }
+    [data-theme="mix"] .modal h2         { color: var(--accent-text); }
     [data-theme="mix"] .modal .modal-sub { color: #9a8e82; }
     [data-theme="mix"] .form-row label   { color: #9a8e82; }
     [data-theme="mix"] .modal input:not([type="range"]),
@@ -1523,7 +1523,7 @@
       border-radius: var(--radius-xs); padding: 14px 16px; margin-bottom: 18px;
       display: flex; align-items: center; gap: 13px;
     }
-    .confirm-bill-preview .preview-emoji { font-size: 24px; }
+    .confirm-bill-preview .preview-emoji { display:flex; align-items:center; justify-content:center; color:var(--accent); }
     .confirm-bill-preview .preview-name  { font-size: 15px; font-weight: 700; color: var(--text); }
     .confirm-bill-preview .preview-amt   { font-size: 13px; color: var(--accent-text); margin-top: 2px; font-weight: 600; }
 
@@ -2995,8 +2995,8 @@
       <button class="data-btn export-btn" onclick="exportData()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
+          <polyline points="7 10 12 5 17 10"/>
+          <line x1="12" y1="5" x2="12" y2="17"/>
         </svg>
         <div>
           <div class="data-btn-label">Export</div>
@@ -3006,8 +3006,8 @@
       <button class="data-btn import-btn" onclick="document.getElementById('import-file-input').click()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 5 17 10"/>
-          <line x1="12" y1="5" x2="12" y2="17"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
         <div>
           <div class="data-btn-label">Import</div>
@@ -3053,6 +3053,9 @@
     </div>
     <div style="font-size:10px;color:var(--muted);margin-top:6px;opacity:0.5">
       Your data never leaves your device
+    </div>
+    <div style="margin-top:10px">
+      <a href="privacy.html" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);opacity:0.6;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px">Privacy Policy</a>
     </div>
   </div>
 
@@ -5182,7 +5185,7 @@
       const daysLeft = Math.max(0, 30 - Math.floor((Date.now() - t.trashedAt) / 86400000));
       return `
         <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px">
-          <div style="font-size:20px;width:32px;text-align:center">${esc(cat.emoji)}</div>
+          <div class="tx-emoji-wrap">${catIcon(cat, 20)}</div>
           <div style="flex:1;min-width:0">
             <div style="font-size:13px;font-weight:600">${esc(catLabel(cat))}</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px">${dateStr} · expires in ${daysLeft}d</div>
@@ -5391,7 +5394,7 @@
     const amt   = eff.amount || rec.amount;
 
     pendingPayId = id;
-    document.getElementById('confirm-emoji').textContent = cat.emoji;
+    document.getElementById('confirm-emoji').innerHTML = catIcon(cat, 24);
     document.getElementById('confirm-name').textContent  = rec.name;
     document.getElementById('confirm-amt').textContent   = fmt(amt);
     document.getElementById('confirm-date').value        = todayStr();
@@ -5440,7 +5443,7 @@
     const rec = recurring.find(r => r.id === id);
     if (!rec) return;
     const cat = CATEGORIES.find(c => c.id === rec.category) || { emoji:'💰' };
-    document.getElementById('action-bill-name').textContent = `${cat.emoji} ${rec.name}`;
+    document.getElementById('action-bill-name').innerHTML = `${catIcon(cat, 16)} ${esc(rec.name)}`;
     document.getElementById('action-bill-meta').textContent = `${fmt(rec.amount)} / month · due day ${rec.day}`;
     openModal('modal-bill-actions');
   }
@@ -5776,7 +5779,7 @@
         </div>
         <div class="insight-card">
           <div class="ic-label">Top Category</div>
-          <div class="ic-value" style="font-size:18px">${topCat ? esc(topCat.emoji) + ' ' + esc(catLabel(topCat)) : '—'}</div>
+          <div class="ic-value" style="font-size:18px;display:flex;align-items:center;gap:5px">${topCat ? catIcon(topCat, 18) + esc(catLabel(topCat)) : '—'}</div>
           <div class="ic-sub">${topPct}% of spending</div>
         </div>
         ${totalInc > 0 ? `
@@ -6539,8 +6542,8 @@
     picker.innerHTML = INCOME_SOURCES.map(s => `
       <button class="cat-btn ${s.id === selectedId ? 'selected' : ''}"
         onclick="selectSource('${esc(s.id)}',this)" type="button">
-        <span class="cat-emoji">${esc(s.emoji)}</span>
-        <span class="cat-name">${esc(s.label)}</span>
+        <span class="cat-icon">${incIcon(s, 20)}</span>
+        <span class="cat-label">${esc(s.label)}</span>
       </button>`).join('');
   }
 
@@ -6600,8 +6603,8 @@
     picker.innerHTML = INCOME_SOURCES.map(s => `
       <button class="cat-btn ${s.id === inc.source ? 'selected' : ''}"
         onclick="selectEditIncSource('${esc(s.id)}',this)" type="button">
-        <span class="cat-emoji">${esc(s.emoji)}</span>
-        <span class="cat-name">${esc(s.label)}</span>
+        <span class="cat-icon">${incIcon(s, 20)}</span>
+        <span class="cat-label">${esc(s.label)}</span>
       </button>`).join('');
 
     // account selector
