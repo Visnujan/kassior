@@ -1274,6 +1274,7 @@
     /* swipe wrapper */
     .tx-swipe-wrap {
       position: relative; border-radius: var(--radius-sm); overflow: hidden;
+      touch-action: pan-y;
     }
     .tx-delete-bg {
       position: absolute; right: 0; top: 0; bottom: 0;
@@ -1640,7 +1641,7 @@
     /* swipeable settings rows */
     .settings-swipe-wrap {
       position: relative; border-radius: var(--radius-sm); overflow: hidden;
-      margin-bottom: 6px;
+      margin-bottom: 6px; touch-action: pan-y;
     }
     .settings-swipe-wrap:last-child { margin-bottom: 0; }
     .settings-delete-bg {
@@ -4101,6 +4102,7 @@
   let txMonth      = new Date().getMonth();
   let txYear       = new Date().getFullYear();
   let txFilter     = 'all';
+  let txRendered   = false;  // true = list is current, skip re-render in showPage
 
   // edit/action state
   let activeRecId   = null;
@@ -4208,7 +4210,7 @@
     // also close it if open
     closeFab();
     if (name === 'overview')     { renderOverview();     showHint('overview'); }
-    if (name === 'transactions') { renderTransactions(); showHint('history'); }
+    if (name === 'transactions') { if (!txRendered) renderTransactions(); showHint('history'); }
     if (name === 'recurring')    { renderRecurring();    showHint('bills'); }
     if (name === 'trips')        { if (!activeTrip) renderTrips(); }
     if (name === 'charts')       renderCharts();
@@ -4856,37 +4858,42 @@
     const incTxs     = monthInc(currentMonth, currentYear);
     const totalExp   = txs.reduce((s, t) => s + t.amount, 0);
     const totalInc   = incTxs.reduce((s, i) => s + i.amount, 0);
-    const balance    = totalInc - totalExp;
-    const hasIncome  = totalInc > 0;
+    const net        = totalInc - totalExp;
+    const isNegative = net < 0;
 
-    const heroNum  = hasIncome ? balance : totalExp;
-    document.getElementById('hero-label').textContent = hasIncome ? 'Balance' : 'Total Spent';
+    // hero label — always "Net this month"
+    document.getElementById('hero-label').textContent = 'Net this month';
 
     // animate hero number
-    const heroNumEl = document.getElementById('hero-num');
-    const targetNum = Math.abs(heroNum);
-    const duration  = 500;
-    const start     = performance.now();
-    const startVal  = parseFloat(heroNumEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+    const heroNumEl  = document.getElementById('hero-num');
+    const heroSymEl  = document.getElementById('hero-currency');
+    const targetNum  = Math.abs(net);
+    const duration   = 500;
+    const start      = performance.now();
+    const startVal   = parseFloat(heroNumEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+
     function animateNum(ts) {
       const elapsed  = ts - start;
       const progress = Math.min(elapsed / duration, 1);
       const eased    = 1 - Math.pow(1 - progress, 3);
       const current  = startVal + (targetNum - startVal) * eased;
-      heroNumEl.textContent = current.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+      heroNumEl.textContent = (isNegative && progress > 0 ? '−' : '') +
+        current.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
       if (progress < 1) requestAnimationFrame(animateNum);
     }
     requestAnimationFrame(animateNum);
-    heroNumEl.style.color = hasIncome
-      ? (balance >= 0 ? 'var(--hero-num)' : 'var(--danger)')
-      : 'var(--hero-num)';
+
+    // colour — red when negative, normal when positive/zero
+    const numColour = isNegative ? 'var(--danger)' : 'var(--hero-num)';
+    heroNumEl.style.color = numColour;
+    if (heroSymEl) heroSymEl.style.color = isNegative ? 'var(--danger)' : '';
 
     document.getElementById('hero-month-sub').textContent =
       `${txs.length} ${txs.length !== 1 ? t('transactions') : t('transaction')} · ${getMonths()[currentMonth]}`;
 
-    // income/expense pills
+    // income/expense pills — always show if any data exists
     const incExpEl = document.getElementById('hero-inc-exp');
-    if (hasIncome) {
+    if (totalInc > 0 || totalExp > 0) {
       incExpEl.innerHTML = `
         <div class="inc-pill"><div class="pill-dot"></div>+${fmt(totalInc)}</div>
         <div class="exp-pill"><div class="pill-dot"></div>−${fmt(totalExp)}</div>`;
@@ -5056,7 +5063,7 @@
     const date    = document.getElementById('input-date').value;
     const note    = sanitiseText(document.getElementById('input-note').value, 200);
     if (!amount || amount <= 0 || amount > 999999999) { shake('input-amount'); return; }
-    if (!selectedCat)   { shake('cat-picker');  return; }
+    if (!selectedCat)   selectedCat = 'other';
     if (!date)          { shake('input-date');   return; }
     if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) { shake('input-date'); return; }
     transactions.unshift({ id: genId(), amount, category: selectedCat, account, date, note });
@@ -5069,6 +5076,7 @@
     selectedCat = null;
     closeModal('modal-add');
     if (document.getElementById('page-overview').classList.contains('active')) renderOverview();
+    renderTransactions(); // pre-render so History shows instantly on tab switch
     dismissHint('overview');
     showToast(t('expenseAdded'));
   }
@@ -5178,6 +5186,7 @@
       attachSwipe(el, () => deleteIncomeById(el.dataset.incId));
     });
     updateTrashBadge();
+    txRendered = true; // mark list as current
   }
   function setFilter(cat) { txFilter = cat; renderTransactions(); }
 
