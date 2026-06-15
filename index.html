@@ -5206,6 +5206,7 @@
   }
 
   function attachSwipe(el, onDelete) {
+    el.style.touchAction = 'pan-y'; // tell browser: horizontal is JS, vertical is scroll
     let startX = 0, startY = 0, currentX = 0, swiping = false, didSwipe = false, isHoriz = null;
     const THRESHOLD = 60;
 
@@ -5260,8 +5261,9 @@
     el.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
     el.addEventListener('touchmove',  e => {
       if (isHoriz === false) return; // let vertical scroll through
+      if (isHoriz === true) e.preventDefault(); // confirmed horizontal — stop browser scroll
       onMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
+    }, { passive: false }); // must be non-passive to call preventDefault
     el.addEventListener('touchend',   () => onEnd());
     el.addEventListener('touchcancel',() => { swiping = false; resetSwipe(el); });
     el.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
@@ -5272,6 +5274,7 @@
 
   function attachSettingsSwipe(el, onDelete) {
     if (el.classList.contains('no-swipe')) return;
+    el.style.touchAction = 'pan-y'; // tell browser: horizontal is JS, vertical is scroll
     let startX = 0, startY = 0, currentX = 0, swiping = false, isHoriz = null;
     const THRESHOLD = 60;
 
@@ -5317,8 +5320,9 @@
     el.addEventListener('touchstart', e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
     el.addEventListener('touchmove',  e => {
       if (isHoriz === false) return;
+      if (isHoriz === true) e.preventDefault(); // confirmed horizontal — stop browser scroll
       onMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
+    }, { passive: false }); // must be non-passive to call preventDefault
     el.addEventListener('touchend',   () => onEnd());
     el.addEventListener('touchcancel',() => { swiping = false; resetSwipe(el); });
     el.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
