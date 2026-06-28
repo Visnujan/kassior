@@ -26,7 +26,6 @@
   <meta property="og:title"       content="Kassior — Your finances. Your device." />
   <meta property="og:description" content="Privacy-first finance tracker. No account, no server, works offline. Made in Switzerland." />
   <meta property="og:type"        content="website" />
-  <meta name="theme-color" content="#f5f0eb" id="theme-color-meta" />
   <!-- Content Security Policy — restricts what can run on this page -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
@@ -34,7 +33,7 @@
     font-src https://fonts.gstatic.com data:;
     script-src 'self' 'unsafe-inline';
     img-src 'self' data:;
-    connect-src 'none';
+    connect-src https://fonts.googleapis.com https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -135,35 +134,36 @@
     /* ── MIX THEME ── */
     /* Cream page, mid-dark cards, light header/nav, dark-mode text inside dark sections */
     [data-theme="mix"] {
-      --bg:          #f0ebe4;
-      --surface:     #2a2520;
-      --surface2:    #332e28;
-      --border:      #403830;
-      --border-sub:  #383028;
+      /* Nature Distilled × Swiss — warm earth (Mix showcase) */
+      --bg:          #f5f0e1;
+      --surface:     #2a2017;
+      --surface2:    #352a1d;
+      --border:      #41342a;
+      --border-sub:  #392d22;
 
-      --accent:      #d07848;
-      --accent-dim:  #2a1e12;
-      --accent-text: #e89868;
-      --accent-glow: rgba(208,120,72,0.18);
+      --accent:      #c67b5c;
+      --accent-dim:  #2e2013;
+      --accent-text: #e8a877;
+      --accent-glow: rgba(198,123,92,0.18);
 
       --danger:      #c05040;
       --danger-dim:  #2a1410;
-      --success:     #4a9a68;
-      --success-dim: #102014;
+      --success:     #8a9b5a;
+      --success-dim: #1a200f;
       --warn:        #b08030;
       --warn-dim:    #241808;
 
       --text:        #f0ece6;
-      --text-dim:    #9a8e82;
-      --muted:       #7a6e64;
+      --text-dim:    #a3937f;
+      --muted:       #8a7a66;
 
-      --hero-bg:           #1a1410;
-      --hero-label:        #7a6858;
-      --hero-num:          #e89868;
-      --hero-currency:     #c06840;
-      --hero-sub:          #504840;
-      --hero-circle-warm:  radial-gradient(circle at 40% 40%, rgba(192,104,64,0.35), rgba(192,104,64,0.05));
-      --hero-circle-dark:  rgba(0,0,0,0.3);
+      --hero-bg:           #261d14;
+      --hero-label:        #9a836e;
+      --hero-num:          #e8a877;
+      --hero-currency:     #c67b5c;
+      --hero-sub:          #5a4d3e;
+      --hero-circle-warm:  transparent;
+      --hero-circle-dark:  transparent;
       --hero-border:       none;
     }
 
@@ -215,10 +215,7 @@
     [data-theme="mix"] .empty p  { color: #7a6858; }
 
     /* Mix: ob-goal buttons dark */
-    [data-theme="mix"] .ob-goal-btn          { background: #2a2520; border-color: #403830; }
-    [data-theme="mix"] .ob-goal-label        { color: #f0ece6; }
-    [data-theme="mix"] .ob-goal-sub          { color: #7a6e64; }
-    [data-theme="mix"] .ob-goal-btn.selected { background: #2a1e12; border-color: #d07848; }
+    /* ob-goal theme overrides replaced — onboarding is always dark, no theme overrides needed */
 
     /* Mix: smart card accent */
     /* mix accent-card handled by var(--accent-dim) token */
@@ -528,6 +525,14 @@
       pointer-events: none; z-index: 1;
     }
 
+    .hero-spark {
+      width: 100%; height: 40px; display: block; margin-top: 14px;
+      position: relative; z-index: 2; overflow: visible;
+    }
+    /* Mix showcase: warm hairline frame + olive income (Light/Dark untouched) */
+    [data-theme="mix"] .hero-total { border: 1px solid rgba(198,123,92,0.26); }
+    [data-theme="mix"] .hero-inc-exp .inc-pill { color: #a3b878; }
+    [data-theme="mix"] .inc-pill .pill-dot { background: #a3b878; }
     .hero-total .hero-label,
     .hero-total .hero-amount,
     .hero-total .hero-month { position: relative; z-index: 2; }
@@ -675,154 +680,103 @@
       background: var(--bg);
       display: flex; flex-direction: column;
     }
+    /* ── ONBOARDING — minimal ── */
+    #onboarding { background: #0c0b0a !important; }
     .ob-screen {
       display: none; flex-direction: column;
-      height: 100%; padding: 0;
-      animation: obFade 0.3s ease;
+      height: 100%; background: #0c0b0a;
+      animation: obSlide 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .ob-screen.active { display: flex; }
-    @keyframes obFade { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes obSlide {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes obFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ob-anim-1, .ob-anim-2, .ob-anim-3, .ob-anim-4 { opacity: 0; }
+    .ob-screen.active .ob-anim-1 { animation: obFadeUp 0.5s ease 0.06s both; }
+    .ob-screen.active .ob-anim-2 { animation: obFadeUp 0.5s ease 0.18s both; }
+    .ob-screen.active .ob-anim-3 { animation: obFadeUp 0.5s ease 0.30s both; }
+    .ob-screen.active .ob-anim-4 { animation: obFadeUp 0.5s ease 0.42s both; }
 
-    .ob-content {
+    .ob-progress { display: flex; gap: 5px; padding: 20px 32px 0; flex-shrink: 0; }
+    .ob-progress-seg {
+      flex: 1; height: 1.5px; border-radius: 99px;
+      background: rgba(255,255,255,0.07); transition: background 0.4s;
+    }
+    .ob-progress-seg.filled { background: rgba(185,94,56,0.5); }
+
+    /* Screen 1 — centered, spaced */
+    .ob-s1 {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 48px 32px 24px; text-align: center;
+      align-items: center; justify-content: space-between;
+      padding: 44px 32px 16px; text-align: center;
     }
-    .ob-logo { margin-bottom: 28px; }
-    .ob-eyebrow {
-      font-family: var(--font); font-size: 13px; font-weight: 600;
-      color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px;
-      margin-bottom: 8px;
+    .ob-s1-brand {
+      font-family: var(--font-display); font-size: 52px; font-weight: 800;
+      color: #f0ebe4; letter-spacing: -2.5px; line-height: 1;
     }
-    .ob-title {
-      font-family: var(--font-display); font-size: 42px; font-weight: 800;
-      color: var(--text); letter-spacing: -1.5px; line-height: 1.1;
-      margin-bottom: 16px;
+    .ob-s1-tagline {
+      font-size: 18px; font-weight: 400;
+      color: #6a5e56; letter-spacing: -0.2px; line-height: 1.6;
     }
-    .ob-subtitle {
-      font-family: var(--font-display); font-size: 22px; font-weight: 700;
-      color: var(--accent-text); letter-spacing: -0.5px; line-height: 1.4;
-      margin-bottom: 28px;
+    .ob-s1-note { font-size: 12px; color: #2a2620; font-weight: 500; }
+
+    /* Screen 2 — left-aligned statement */
+    .ob-s2 {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; padding: 0 32px 16px;
     }
-    .ob-pills {
-      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    .ob-s2-main {
+      font-family: var(--font-display); font-size: 36px; font-weight: 800;
+      color: #f0ebe4; letter-spacing: -1.5px; line-height: 1.08;
+      margin-bottom: 4px;
     }
-    .ob-pill {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 99px; padding: 6px 14px;
-      font-size: 13px; font-weight: 600; color: var(--text-dim);
+    .ob-s2-accent {
+      font-family: var(--font-display); font-size: 36px; font-weight: 800;
+      color: #b85e38; letter-spacing: -1.5px; line-height: 1.08;
+      margin-bottom: 32px;
     }
-    .ob-icon-big {
-      width: 80px; height: 80px; border-radius: 24px;
-      background: var(--accent-dim); border: 1px solid var(--accent);
-      display: flex; align-items: center; justify-content: center;
+    .ob-s2-body { font-size: 15px; color: #4a4440; line-height: 1.7; }
+
+    /* Screen 3 — goal list */
+    .ob-s3 {
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; padding: 0 32px 16px;
+    }
+    .ob-s3-q {
+      font-family: var(--font-display); font-size: 30px; font-weight: 800;
+      color: #f0ebe4; letter-spacing: -1px; line-height: 1.1;
       margin-bottom: 24px;
-      animation: obBounce 0.5s ease;
     }
-    @keyframes obBounce { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .ob-body {
-      font-size: 16px; line-height: 1.6; color: var(--text-dim);
-      margin-bottom: 28px; max-width: 300px;
+    .ob-option-list { display: flex; flex-direction: column; gap: 8px; }
+    .ob-option {
+      padding: 15px 18px;
+      border: 1px solid #1c1916; border-left: 2px solid transparent;
+      border-radius: 12px; font-size: 15px; font-weight: 500;
+      color: #3a3632; background: transparent; cursor: pointer;
+      text-align: left; font-family: var(--font);
+      transition: border-color 0.15s, color 0.15s;
     }
-    .ob-feature-list {
-      display: flex; flex-direction: column; gap: 16px;
-      width: 100%; max-width: 320px; text-align: left;
-    }
-    .ob-feature {
-      display: flex; align-items: center; gap: 14px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 14px;
-    }
-    .ob-feature-icon {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--accent-dim); flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .ob-feature-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-    .ob-feature-sub   { font-size: 12px; color: var(--muted); }
+    .ob-option.selected { border-color: #1c1916; border-left-color: #b85e38; color: #f0ebe4; }
+    .ob-option:active { opacity: 0.7; }
 
-    .ob-footer {
-      padding: 20px 32px 40px;
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
-    }
-    .ob-dots { display: flex; gap: 6px; }
-    .ob-dot {
-      width: 6px; height: 6px; border-radius: 99px;
-      background: var(--border); transition: all 0.3s ease;
-    }
-    .ob-dot.active { width: 20px; background: var(--accent); }
-    .ob-btn {
-      width: 100%; padding: 16px; border-radius: var(--radius);
-      background: var(--surface); border: 1px solid var(--border);
-      font-family: var(--font); font-size: 16px; font-weight: 700;
-      color: var(--text); cursor: pointer; transition: all 0.15s;
-    }
+    /* Footer */
+    .ob-footer { padding: 16px 32px 48px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+    .ob-footer-note { font-size: 11px; color: #2a2620; text-align: center; }
     .ob-btn-primary {
-      background: var(--accent); border-color: var(--accent);
-      color: white;
+      width: 100%; padding: 16px; border-radius: 13px; border: none;
+      background: #b85e38; color: #f5ede6;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      letter-spacing: -0.2px; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(160,80,40,0.2);
+      transition: opacity 0.15s, transform 0.15s;
     }
-    .ob-btn:active { opacity: 0.8; transform: scale(0.98); }
-
-    /* goal picker grid */
-    .ob-goal-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-      width: 100%; max-width: 320px;
-    }
-    .ob-goal-btn {
-      background: var(--surface); border: 2px solid var(--border);
-      border-radius: var(--radius); padding: 16px 12px; text-align: center;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .ob-goal-btn.selected {
-      border-color: var(--accent); background: var(--accent-dim);
-    }
-    .ob-goal-icon {
-      font-size: 28px; margin-bottom: 8px;
-      color: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .ob-goal-icon svg { display: block; }
-    .ob-goal-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-    .ob-goal-sub   { font-size: 11px; color: var(--muted); line-height: 1.3; }
-
-    /* demo card */
-    .ob-demo-card {
-      width: 100%; max-width: 320px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px;
-      display: flex; flex-direction: column; gap: 16px;
-    }
-    .ob-demo-step { transition: opacity 0.4s ease; }
-    .ob-demo-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; }
-    .ob-demo-amount {
-      display: flex; align-items: baseline; gap: 6px;
-    }
-    .ob-demo-currency { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--muted); }
-    #ob-demo-num { font-family: var(--font-display); font-size: 40px; font-weight: 800;
-      color: var(--text); letter-spacing: -1.5px; }
-    .ob-demo-note {
-      font-size: 16px; font-weight: 600; color: var(--accent-text);
-      min-height: 24px; font-family: var(--font);
-    }
-    .ob-demo-cats { display: flex; gap: 8px; flex-wrap: wrap; }
-    .ob-demo-cat {
-      padding: 6px 12px; border-radius: 99px;
-      border: 1px solid var(--border); background: var(--bg);
-      font-size: 13px; font-weight: 600; color: var(--text-dim);
-      transition: all 0.2s;
-    }
-    .ob-demo-cat.selected {
-      background: var(--accent-dim); border-color: var(--accent); color: var(--accent-text);
-      transform: scale(1.05);
-    }
-    .ob-demo-result {
-      align-items: center; justify-content: center; gap: 10px;
-      padding: 12px; background: var(--success-dim); border-radius: var(--radius-sm);
-      animation: obFade 0.4s ease;
-    }
-    .ob-demo-check { font-size: 24px; color: var(--success); }
-    .ob-demo-result-text { font-size: 15px; font-weight: 700; color: var(--success); }
+    .ob-btn-primary:not(:disabled):active { opacity: 0.85; transform: scale(0.98); }
+    .ob-btn-primary:disabled { background: #181614; color: #2a2620; box-shadow: none; cursor: default; }
 
     .year-month-row {
       display: flex; align-items: center; justify-content: space-between;
@@ -1691,6 +1645,39 @@
     #fab-wrap.open #fab-icon { transform: rotate(45deg); }
     #fab-wrap.open #fab { animation: none; }
 
+    /* trip quick-add button */
+    #trip-fab {
+      position: fixed; bottom: 96px; right: 20px; z-index: 99;
+      display: none;
+      align-items: center; gap: 8px;
+      height: 52px; padding: 0 22px 0 16px;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 26px; cursor: pointer;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    #trip-fab:hover { transform: scale(1.04); box-shadow: 0 6px 28px var(--accent-glow); }
+    #trip-fab:active { transform: scale(0.95); }
+    #trip-fab.visible { display: flex; }
+
+    #space-fab {
+      position: fixed; bottom: 96px; right: 20px; z-index: 99;
+      display: none;
+      align-items: center; gap: 8px;
+      height: 52px; padding: 0 22px 0 16px;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 26px; cursor: pointer;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    #space-fab:hover { transform: scale(1.04); box-shadow: 0 6px 28px var(--accent-glow); }
+    #space-fab:active { transform: scale(0.95); }
+    #space-fab.visible { display: flex; }
+
     /* option buttons */
     #fab-options {
       display: flex; flex-direction: column; align-items: flex-end;
@@ -1885,6 +1872,106 @@
     }
     .dow-col.peak .dow-amt { display: block; }
 
+  /* ── PAYWALL ── */
+  .paywall-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: flex-end;
+    background: rgba(0,0,0,0.72);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .paywall-overlay.open { opacity: 1; pointer-events: all; }
+  .paywall-sheet {
+    width: 100%; max-width: 440px; margin: 0 auto;
+    background: #1a1410;
+    border-radius: 20px 20px 0 0;
+    padding: 8px 24px 44px;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.25,0.86,0.44,1);
+  }
+  .paywall-overlay.open .paywall-sheet { transform: translateY(0); }
+  .paywall-handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.15);
+    margin: 0 auto 22px;
+  }
+  .paywall-sparkle {
+    text-align: center; font-size: 32px; margin-bottom: 10px; letter-spacing: 4px;
+  }
+  .paywall-title {
+    text-align: center; font-size: 22px; font-weight: 700;
+    color: #f0a868; letter-spacing: -0.3px; margin-bottom: 4px;
+  }
+  .paywall-sub {
+    text-align: center; font-size: 14px;
+    color: rgba(255,255,255,0.5); margin-bottom: 22px; line-height: 1.4;
+    min-height: 38px;
+  }
+  .paywall-features {
+    list-style: none; padding: 0; margin: 0 0 22px;
+    display: flex; flex-direction: column; gap: 11px;
+  }
+  .paywall-features li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: rgba(255,255,255,0.82); line-height: 1.35;
+  }
+  .paywall-check { color: #f0a868; font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .paywall-price-row {
+    display: flex; align-items: center; gap: 8px;
+    justify-content: center; margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .paywall-price { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .paywall-price-orig {
+    font-size: 16px; color: rgba(255,255,255,0.28); text-decoration: line-through;
+  }
+  .paywall-price-tag {
+    font-size: 11px; font-weight: 700; background: #c06840; color: #fff;
+    padding: 2px 8px; border-radius: 20px; letter-spacing: 0.3px;
+  }
+  .paywall-cta {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, #f0a868 0%, #c06840 100%);
+    color: #fff; font-size: 16px; font-weight: 700;
+    border: none; border-radius: 14px; cursor: pointer; letter-spacing: 0.1px;
+    transition: opacity 0.15s;
+  }
+  .paywall-cta:active { opacity: 0.82; }
+  .paywall-restore {
+    display: block; text-align: center; margin-top: 14px;
+    font-size: 13px; color: rgba(255,255,255,0.3);
+    background: none; border: none; cursor: pointer; width: 100%;
+  }
+  .paywall-close-btn {
+    display: block; text-align: center; margin-top: 8px;
+    font-size: 13px; color: rgba(255,255,255,0.2);
+    background: none; border: none; cursor: pointer; width: 100%;
+  }
+  /* Pro badge on locked buttons */
+  .pro-badge {
+    display: inline-block; font-size: 9px; font-weight: 700;
+    background: #c06840; color: #fff;
+    padding: 1px 5px; border-radius: 10px;
+    margin-left: 5px; vertical-align: middle; letter-spacing: 0.3px;
+  }
+  /* Pro status row in settings */
+  .pro-status-card {
+    background: linear-gradient(135deg, rgba(240,168,104,0.12) 0%, rgba(192,104,64,0.06) 100%);
+    border: 1px solid rgba(240,168,104,0.2);
+    border-radius: var(--radius-sm, 12px);
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .pro-status-info { flex: 1; }
+  .pro-status-title { font-size: 15px; font-weight: 700; color: #f0a868; }
+  .pro-status-sub   { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+  .pro-unlock-btn {
+    flex-shrink: 0; padding: 8px 14px;
+    background: linear-gradient(135deg, #f0a868, #c06840);
+    color: #fff; font-size: 13px; font-weight: 700;
+    border: none; border-radius: 10px; cursor: pointer;
+    white-space: nowrap;
+  }
+
   </style>
 </head>
 <body>
@@ -1929,6 +2016,10 @@
       </div>
       <div class="pace-insight" id="pace-insight"></div>
     </div>
+    <!-- SPEND TREND SPARKLINE -->
+    <svg id="hero-spark" class="hero-spark" viewBox="0 0 300 42" preserveAspectRatio="none" style="display:none" aria-hidden="true">
+      <polyline id="hero-spark-line" fill="none" stroke="var(--hero-num)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    </svg>
   </div>
 
   <!-- SMART CARDS -->
@@ -1975,6 +2066,18 @@
     </svg>
   </button>
 </div>
+
+<!-- Trip quick-add button — separate from FAB, only visible inside a trip -->
+<button id="trip-fab" onclick="openAddTripExpense()" title="Add expense">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  Add expense
+</button>
+
+<!-- Space quick-add button — separate from FAB, only visible inside a space -->
+<button id="space-fab" onclick="openAddSpaceExpense()" title="Add expense">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  Add expense
+</button>
 
 <!-- MODAL: EDIT INCOME -->
 <div class="modal-overlay" id="modal-edit-income" onclick="closeModalOnOverlay(event,'modal-edit-income')">
@@ -2264,22 +2367,26 @@
 
 <!-- ONBOARDING -->
 <div id="onboarding" style="display:none">
+
+  <!-- SCREEN 1 -->
   <div id="onboarding-screen-1" class="ob-screen active">
-    <div class="ob-content">
-      <div class="ob-logo">
-        <svg viewBox="0 0 512 512" width="80" height="80" style="border-radius:20px;display:block">
+    <div class="ob-progress">
+      <div class="ob-progress-seg filled"></div>
+      <div class="ob-progress-seg"></div>
+      <div class="ob-progress-seg"></div>
+    </div>
+    <div class="ob-s1">
+      <div class="ob-anim-1" style="display:flex;justify-content:center">
+        <svg viewBox="0 0 512 512" width="80" height="80" style="border-radius:20px;display:block;box-shadow:0 2px 14px rgba(100,40,10,0.22),0 0 0 0.5px rgba(255,255,255,0.04)">
           <defs>
             <linearGradient id="ob-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#1a1410"/>
-              <stop offset="100%" stop-color="#0c0906"/>
+              <stop offset="0%" stop-color="#1a1410"/><stop offset="100%" stop-color="#0c0906"/>
             </linearGradient>
             <linearGradient id="ob-panel" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2e1e12"/>
-              <stop offset="100%" stop-color="#1a1008"/>
+              <stop offset="0%" stop-color="#2e1e12"/><stop offset="100%" stop-color="#1a1008"/>
             </linearGradient>
             <linearGradient id="ob-k" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#f0a868"/>
-              <stop offset="100%" stop-color="#c06840"/>
+              <stop offset="0%" stop-color="#f0a868"/><stop offset="100%" stop-color="#c06840"/>
             </linearGradient>
             <clipPath id="ob-clip"><rect width="512" height="512" rx="108"/></clipPath>
           </defs>
@@ -2290,249 +2397,55 @@
           <polygon points="194,256 258,256 396,378 396,402 350,402 194,330" fill="url(#ob-k)"/>
         </svg>
       </div>
-      <div class="ob-eyebrow">Welcome to</div>
-      <h1 class="ob-title">Kassior</h1>
-      <p class="ob-subtitle">Your finances.<br>Your device.<br>Your rules.</p>
-      <div class="ob-pills">
-        <div class="ob-pill">No account</div>
-        <div class="ob-pill">No server</div>
-        <div class="ob-pill">No tracking</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+        <div class="ob-s1-brand ob-anim-2">Kassior</div>
+        <p class="ob-s1-tagline ob-anim-3">Your finances.<br>Kept to yourself.</p>
       </div>
+      <p class="ob-s1-note ob-anim-4">No account &middot; No server &middot; Switzerland 🇨🇭</p>
     </div>
     <div class="ob-footer">
-      <div class="ob-dots">
-        <div class="ob-dot active"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-      </div>
-      <button class="ob-btn" onclick="obNext(2)">Continue</button>
+      <button class="ob-btn-primary" onclick="obNext(2)">Continue</button>
     </div>
   </div>
 
+  <!-- SCREEN 2 -->
   <div id="onboarding-screen-2" class="ob-screen">
-    <div class="ob-content">
-      <!-- lock icon -->
-      <div class="ob-icon-big">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <h1 class="ob-title" style="font-size:28px">Your data never leaves your phone</h1>
-      <p class="ob-body">Most finance apps store your data on their servers. Not Kassior. Everything you log stays on your device — expenses, income, bills, goals. All of it.</p>
-      <div class="ob-feature-list">
-        <div class="ob-feature">
-          <div class="ob-feature-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-          </div>
-          <div class="ob-feature-text">
-            <div class="ob-feature-title">Stored locally</div>
-            <div class="ob-feature-sub">Data lives on your phone, nowhere else</div>
-          </div>
-        </div>
-        <div class="ob-feature">
-          <div class="ob-feature-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-          </div>
-          <div class="ob-feature-text">
-            <div class="ob-feature-title">Works offline</div>
-            <div class="ob-feature-sub">No internet needed, ever</div>
-          </div>
-        </div>
-        <div class="ob-feature">
-          <div class="ob-feature-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-          </div>
-          <div class="ob-feature-text">
-            <div class="ob-feature-title">No ads, ever</div>
-            <div class="ob-feature-sub">You pay once. We never sell your data.</div>
-          </div>
-        </div>
-      </div>
+    <div class="ob-progress">
+      <div class="ob-progress-seg filled"></div>
+      <div class="ob-progress-seg filled"></div>
+      <div class="ob-progress-seg"></div>
+    </div>
+    <div class="ob-s2">
+      <p class="ob-s2-main ob-anim-1">We can't sell<br>your data.</p>
+      <p class="ob-s2-accent ob-anim-2">We don't have it.</p>
+      <p class="ob-s2-body ob-anim-3">Everything you log stays on your phone. No server receives it. No account holds it. Nothing to breach, nothing to sell. If you want it on another device, you move the file — through iCloud or Google Drive. We're not in that conversation.</p>
     </div>
     <div class="ob-footer">
-      <div class="ob-dots">
-        <div class="ob-dot"></div>
-        <div class="ob-dot active"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-      </div>
-      <button class="ob-btn" onclick="obNext(3)">Continue</button>
+      <button class="ob-btn-primary" onclick="obNext(3)">Continue</button>
     </div>
   </div>
 
+  <!-- SCREEN 3 -->
   <div id="onboarding-screen-3" class="ob-screen">
-    <div class="ob-content">
-      <!-- Swiss cross / shield icon -->
-      <div class="ob-icon-big">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
-          <line x1="8" y1="12" x2="16" y2="12"/>
-        </svg>
-      </div>
-      <h1 class="ob-title" style="font-size:28px">Built in Switzerland</h1>
-      <p class="ob-body">Switzerland has some of the world's strongest privacy laws. Kassior was built here, with that mindset from day one.</p>
-      <div class="ob-feature-list">
-        <div class="ob-feature">
-          <div class="ob-feature-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-          </div>
-          <div class="ob-feature-text">
-            <div class="ob-feature-title">Optional sync</div>
-            <div class="ob-feature-sub">Back up to iCloud on your terms</div>
-          </div>
-        </div>
-        <div class="ob-feature">
-          <div class="ob-feature-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          </div>
-          <div class="ob-feature-text">
-            <div class="ob-feature-title">Export anytime</div>
-            <div class="ob-feature-sub">Your data as JSON or CSV — always portable</div>
-          </div>
-        </div>
-        <div class="ob-feature">
-          <div class="ob-feature-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <div class="ob-feature-text">
-            <div class="ob-feature-title">Nothing hidden</div>
-            <div class="ob-feature-sub">We don't know who you are. That's the point.</div>
-          </div>
-        </div>
+    <div class="ob-progress">
+      <div class="ob-progress-seg filled"></div>
+      <div class="ob-progress-seg filled"></div>
+      <div class="ob-progress-seg filled"></div>
+    </div>
+    <div class="ob-s3">
+      <p class="ob-s3-q ob-anim-1">What matters<br>to you?</p>
+      <div class="ob-option-list ob-anim-2" id="ob-goal-grid">
+        <button class="ob-option" onclick="selectGoal('spending', this)">Daily spending</button>
+        <button class="ob-option" onclick="selectGoal('bills', this)">Bills &amp; subscriptions</button>
+        <button class="ob-option" onclick="selectGoal('savings', this)">Saving for something</button>
+        <button class="ob-option" onclick="selectGoal('all', this)">All of the above</button>
       </div>
     </div>
     <div class="ob-footer">
-      <div class="ob-dots">
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot active"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-      </div>
-      <button class="ob-btn ob-btn-primary" onclick="obNext(4)">Continue</button>
+      <button class="ob-btn-primary" id="ob-goal-btn" onclick="obFinish()" disabled>Open Kassior</button>
     </div>
   </div>
 
-  <!-- SCREEN 4: Personalisation question -->
-  <div id="onboarding-screen-4" class="ob-screen">
-    <div class="ob-content">
-      <!-- personalisation icon -->
-      <div class="ob-icon-big">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <circle cx="12" cy="12" r="3"/>
-          <line x1="12" y1="2" x2="12" y2="5"/>
-          <line x1="12" y1="19" x2="12" y2="22"/>
-          <line x1="2" y1="12" x2="5" y2="12"/>
-          <line x1="19" y1="12" x2="22" y2="12"/>
-        </svg>
-      </div>
-      <h1 class="ob-title" style="font-size:26px">What matters most to you?</h1>
-      <p class="ob-body">Kassior will start with the right view for you.</p>
-      <div class="ob-goal-grid" id="ob-goal-grid">
-        <button class="ob-goal-btn" onclick="selectGoal('spending', this)">
-          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-          <div class="ob-goal-label">Daily spending</div>
-          <div class="ob-goal-sub">Track where money goes</div>
-        </button>
-        <button class="ob-goal-btn" onclick="selectGoal('bills', this)">
-          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-          <div class="ob-goal-label">Bills & subs</div>
-          <div class="ob-goal-sub">Never miss a payment</div>
-        </button>
-        <button class="ob-goal-btn" onclick="selectGoal('savings', this)">
-          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-          <div class="ob-goal-label">Save for something</div>
-          <div class="ob-goal-sub">Goals with progress</div>
-        </button>
-        <button class="ob-goal-btn" onclick="selectGoal('all', this)">
-          <div class="ob-goal-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <div class="ob-goal-label">Everything</div>
-          <div class="ob-goal-sub">Full picture</div>
-        </button>
-      </div>
-    </div>
-    <div class="ob-footer">
-      <div class="ob-dots">
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot active"></div>
-        <div class="ob-dot"></div>
-      </div>
-      <button class="ob-btn ob-btn-primary" id="ob-goal-btn" onclick="obNext(5)" disabled
-        style="opacity:0.4;transition:opacity 0.2s">
-        Continue
-      </button>
-    </div>
-  </div>
-
-  <!-- SCREEN 5: Live demo -->
-  <div id="onboarding-screen-5" class="ob-screen">
-    <div class="ob-content" style="justify-content:flex-start;padding-top:40px">
-      <div class="ob-eyebrow">See it in action</div>
-      <h1 class="ob-title" style="font-size:26px;margin-bottom:8px">Log an expense in 3 taps</h1>
-      <p class="ob-body" style="margin-bottom:20px">That's all it takes. Try it yourself after.</p>
-
-      <!-- Animated demo card -->
-      <div class="ob-demo-card" id="ob-demo-card">
-        <div class="ob-demo-step" id="ob-demo-step-1">
-          <div class="ob-demo-label">① Enter the amount</div>
-          <div class="ob-demo-amount" id="ob-demo-amount">
-            <span class="ob-demo-currency">CHF</span>
-            <span id="ob-demo-num">0</span>
-          </div>
-        </div>
-        <div class="ob-demo-step" id="ob-demo-step-2" style="opacity:0.3">
-          <div class="ob-demo-label">② What for?</div>
-          <div class="ob-demo-note" id="ob-demo-note"></div>
-        </div>
-        <div class="ob-demo-step" id="ob-demo-step-3" style="opacity:0.3">
-          <div class="ob-demo-label">③ Pick a category</div>
-          <div class="ob-demo-cats">
-            <div class="ob-demo-cat" id="ob-demo-cat-food">Food</div>
-            <div class="ob-demo-cat" id="ob-demo-cat-transport">Transport</div>
-            <div class="ob-demo-cat" id="ob-demo-cat-other">Other</div>
-          </div>
-        </div>
-        <div class="ob-demo-result" id="ob-demo-result" style="display:none">
-          <div class="ob-demo-check">✓</div>
-          <div class="ob-demo-result-text">Expense logged!</div>
-        </div>
-      </div>
-    </div>
-    <div class="ob-footer">
-      <div class="ob-dots">
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot"></div>
-        <div class="ob-dot active"></div>
-      </div>
-      <!-- name input -->
-      <div style="width:100%;margin-bottom:12px">
-        <div style="font-size:13px;font-weight:600;color:var(--text-dim);margin-bottom:8px;text-align:center">
-          What should we call you? <span style="color:var(--muted);font-weight:400">(optional)</span>
-        </div>
-        <input type="text" id="ob-name-input"
-          placeholder="Your name or nickname"
-          maxlength="30"
-          autocomplete="off"
-          style="width:100%;padding:11px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;text-align:center;transition:border-color 0.15s"
-          onfocus="this.style.borderColor='var(--accent)'"
-          onblur="this.style.borderColor='var(--border)'"
-        />
-      </div>
-      <button class="ob-btn ob-btn-primary" id="ob-start-btn" onclick="obFinish()">
-        Start using Kassior →
-      </button>
-    </div>
-  </div>
 </div>
 
 <!-- NAV -->
@@ -2558,7 +2471,7 @@
       <line x1="8" y1="18" x2="8" y2="18" stroke-width="2.5"/><line x1="12" y1="18" x2="12" y2="18" stroke-width="2.5"/>
     </svg>Bills
   </button>
-  <button id="nav-trips" onclick="showPage('trips', this)">
+  <button id="nav-trips" onclick="gatedPage('trips', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 17l1.5-9L12 2l7.5 6L21 17"/>
       <path d="M3 17h18"/>
@@ -2566,7 +2479,15 @@
       <circle cx="12" cy="10" r="2"/>
     </svg>Trips
   </button>
-  <button onclick="showPage('charts', this)">
+  <button id="nav-spaces" onclick="gatedPage('spaces', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+      <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+    </svg>Spaces
+  </button>
+  <button id="nav-charts" onclick="gatedPage('charts', this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="20" x2="18" y2="10"/>
       <line x1="12" y1="20" x2="12" y2="4"/>
@@ -2841,6 +2762,148 @@
   </div>
 </div>
 
+<!-- PAGE: SPACES -->
+<div id="page-spaces" class="page">
+  <div class="page-header page-header-row">
+    <div>
+      <h1 id="spaces-page-title">Spaces</h1>
+      <p id="spaces-page-sub">Lifetime spend on anything</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="gear-btn" id="space-actions-btn" onclick="openSpaceActions()" style="display:none" aria-label="Space options">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+      <button class="gear-btn" id="spaces-back-btn" onclick="closeSpace()" style="display:none" aria-label="Back to spaces">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- SPACES LIST VIEW -->
+  <div id="spaces-list-view">
+    <div id="spaces-list"></div>
+    <button class="btn-primary" onclick="openModal('modal-new-space')" style="margin-top:8px">
+      + New Space
+    </button>
+  </div>
+
+  <!-- SPACE DETAIL VIEW -->
+  <div id="space-detail-view" style="display:none">
+    <div id="space-summary-cards" class="smart-cards-row" style="margin-bottom:16px"></div>
+    <div class="section-header">
+      <div class="section-title">EXPENSES</div>
+    </div>
+    <div id="space-expenses-list"></div>
+    <div style="height:80px"></div>
+  </div>
+</div>
+
+<!-- MODAL: NEW SPACE -->
+<div class="modal-overlay" id="modal-new-space" onclick="closeModalOnOverlay(event,'modal-new-space')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>New Space</h2>
+    <p class="modal-sub">Track lifetime spending on a thing or person</p>
+    <div class="form-row">
+      <label>Name</label>
+      <input type="text" id="space-name-input" placeholder="e.g. My motorbike" maxlength="40" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Type</label>
+      <div id="space-type-picker" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <div class="form-row">
+      <label>Currency</label>
+      <select id="space-currency-input"></select>
+    </div>
+    <div class="form-row" id="space-currency-custom-row" style="display:none">
+      <label>Custom currency code</label>
+      <input type="text" id="space-currency-custom" placeholder="e.g. SGD" maxlength="5" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Acquired on <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <input type="date" id="space-purchase-date"/>
+    </div>
+    <div class="form-row">
+      <label>Purchase price <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <input type="number" id="space-purchase-price" placeholder="0.00" min="0" step="0.01"/>
+    </div>
+    <div class="form-row">
+      <label>Was this your money?</label>
+      <div class="bill-type-row" style="grid-template-columns:1fr 1fr">
+        <button class="bill-type-btn active" id="space-mine-yes" onclick="setSpaceMine(true)">Yes, I paid</button>
+        <button class="bill-type-btn" id="space-mine-no" onclick="setSpaceMine(false)">Gift / other</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-new-space')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewSpace()">Create Space</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD / EDIT SPACE EXPENSE -->
+<div class="modal-overlay" id="modal-space-expense" onclick="closeModalOnOverlay(event,'modal-space-expense')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="space-expense-modal-title">Add Expense</h2>
+    <p class="modal-sub" id="space-expense-modal-sub">Log what you spent</p>
+    <div class="form-row">
+      <label>Amount</label>
+      <input type="number" id="space-expense-amount" placeholder="0.00" min="0" step="0.01"/>
+    </div>
+    <div class="form-row">
+      <label>What for?</label>
+      <input type="text" id="space-expense-note" placeholder="e.g. Annual service" maxlength="60" autocomplete="off"/>
+    </div>
+    <div class="form-row">
+      <label>Category</label>
+      <div id="space-expense-cat-picker" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <div class="form-row">
+      <label>Date</label>
+      <input type="date" id="space-expense-date"/>
+    </div>
+    <div class="form-row">
+      <label>Count in my spending</label>
+      <div class="bill-type-row" style="grid-template-columns:1fr 1fr">
+        <button class="bill-type-btn active" id="space-count-on" onclick="setSpaceCount(true)">On</button>
+        <button class="bill-type-btn" id="space-count-off" onclick="setSpaceCount(false)">Off</button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px" id="space-count-help">On = your money, also shows in your monthly tracker.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="space-expense-delete-btn" style="display:none;color:var(--danger);border-color:var(--danger)" onclick="deleteSpaceExpense()">Delete</button>
+      <button class="btn-secondary" onclick="closeModal('modal-space-expense')">Cancel</button>
+      <button class="btn-primary" onclick="saveSpaceExpense()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SPACE ACTIONS -->
+<div class="modal-overlay" id="modal-space-actions" onclick="closeModalOnOverlay(event,'modal-space-actions')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="space-actions-title">Space Options</h2>
+    <p class="modal-sub" id="space-actions-sub"></p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+      <button class="btn-secondary" id="space-action-archive" onclick="doSpaceAction('archive')" style="justify-content:flex-start;gap:10px;padding:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        <span id="space-action-archive-label">Archive space</span>
+      </button>
+      <button class="btn-secondary" onclick="doSpaceAction('export')" style="justify-content:flex-start;gap:10px;padding:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export as CSV
+      </button>
+      <button class="btn-secondary" onclick="doSpaceAction('delete')" style="justify-content:flex-start;gap:10px;padding:14px;color:var(--danger);border-color:var(--danger)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Move to trash
+      </button>
+    </div>
+    <button class="btn-secondary" onclick="closeModal('modal-space-actions')">Cancel</button>
+  </div>
+</div>
+
 <!-- PAGE: SETTINGS -->
 <div id="page-settings" class="page">
   <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -2883,9 +2946,9 @@
         </div>
         <div class="bill-type-row" style="width:100%;grid-template-columns:repeat(2,1fr)">
           <button class="bill-type-btn" id="theme-btn-system" onclick="setThemePreference('system')">System</button>
-          <button class="bill-type-btn" id="theme-btn-light"  onclick="setThemePreference('light')">Light</button>
+          <button class="bill-type-btn" id="theme-btn-light"  onclick="setThemePreference('light')">Light <span class="pro-badge">PRO</span></button>
           <button class="bill-type-btn" id="theme-btn-dark"   onclick="setThemePreference('dark')">Dark</button>
-          <button class="bill-type-btn" id="theme-btn-mix"    onclick="setThemePreference('mix')">Mix</button>
+          <button class="bill-type-btn" id="theme-btn-mix"    onclick="setThemePreference('mix')">Mix <span class="pro-badge">PRO</span></button>
         </div>
       </div>
     </div>
@@ -2948,6 +3011,9 @@
     </div>
     <div class="settings-card" id="categories-list"></div>
   </div>
+
+  <!-- PRO STATUS -->
+  <div class="settings-section" id="pro-section"></div>
 
   <!-- YOUR DATA -->
   <div class="settings-section">
@@ -3056,6 +3122,8 @@
     </div>
     <div style="margin-top:10px">
       <a href="privacy.html" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);opacity:0.6;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px">Privacy Policy</a>
+      &nbsp;·&nbsp;
+      <a href="terms.html" target="_blank" rel="noopener" style="font-size:11px;color:var(--muted);opacity:0.6;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px">Terms of Use</a>
     </div>
   </div>
 
@@ -3440,6 +3508,32 @@
     <div style="margin-top:14px">
       <button class="btn-secondary" style="width:100%" onclick="closeModal('modal-language')" id="lang-cancel-btn">Cancel</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL: PAYWALL -->
+<div class="paywall-overlay" id="modal-paywall" onclick="closePaywallOnOverlay(event)">
+  <div class="paywall-sheet">
+    <div class="paywall-handle"></div>
+    <div class="paywall-sparkle">✦ ✦ ✦</div>
+    <div class="paywall-title">Kassior Pro</div>
+    <div class="paywall-sub" id="paywall-sub">Unlock everything. One price, forever.</div>
+    <ul class="paywall-features">
+      <li><span class="paywall-check">✦</span><span>Full transaction history — no month limit</span></li>
+      <li><span class="paywall-check">✦</span><span>Unlimited bills and savings goals</span></li>
+      <li><span class="paywall-check">✦</span><span>Trips — track expenses on the go</span></li>
+      <li><span class="paywall-check">✦</span><span>Insights — spending charts and trends</span></li>
+      <li><span class="paywall-check">✦</span><span>Light and Mix themes</span></li>
+      <li><span class="paywall-check">✦</span><span>Unlimited custom categories</span></li>
+    </ul>
+    <div class="paywall-price-row">
+      <span class="paywall-price">CHF 9.99</span>
+      <span class="paywall-price-orig">CHF 49.99</span>
+      <span class="paywall-price-tag">Early Adopter</span>
+    </div>
+    <button class="paywall-cta" onclick="unlockPro()">Unlock Kassior Pro</button>
+    <button class="paywall-restore" onclick="restorePurchase()">Restore Purchase</button>
+    <button class="paywall-close-btn" onclick="closePaywall()">Maybe later</button>
   </div>
 </div>
 
@@ -4119,6 +4213,14 @@
     if (id === 'modal-trip-expense') {
       updateDpField('trip-expense-date', todayStr());
     }
+    if (id === 'modal-new-space') {
+      buildSpaceTypePicker(spaceTypeSel);
+      populateSpaceCurrencySelect(settings.currency);
+      updateDpField('space-purchase-date', '');
+    }
+    if (id === 'modal-space-expense') {
+      updateDpField('space-expense-date', todayStr());
+    }
     // init date fields in this modal
     setTimeout(() => initModalDateFields(id), 10);
   }
@@ -4180,13 +4282,20 @@
     }
     // hide FAB on pages where it doesn't make sense
     const fab = document.getElementById('fab-wrap');
-    if (fab) fab.style.display = ['recurring','charts','settings','trips'].includes(name) ? 'none' : 'flex';
+    if (fab) fab.style.display = ['recurring','charts','settings','trips','spaces'].includes(name) ? 'none' : 'flex';
     // also close it if open
     closeFab();
+    // keep the detail-only FABs (trip/space "Add expense") from leaking onto other
+    // pages where they'd sit on top of the main + button and steal taps
+    const spaceFab = document.getElementById('space-fab');
+    if (spaceFab) spaceFab.classList.toggle('visible', name === 'spaces' && !!activeSpace);
+    const tripFab = document.getElementById('trip-fab');
+    if (tripFab) tripFab.classList.toggle('visible', name === 'trips' && !!activeTrip);
     if (name === 'overview')     { renderOverview();     showHint('overview'); }
     if (name === 'transactions') { if (!txRendered) renderTransactions(); showHint('history'); }
     if (name === 'recurring')    { renderRecurring();    showHint('bills'); }
     if (name === 'trips')        { if (!activeTrip) renderTrips(); }
+    if (name === 'spaces')       { if (!activeSpace) renderSpaces(); }
     if (name === 'charts')       renderCharts();
     if (name === 'settings')     renderSettings();
     // close search when leaving history
@@ -4226,15 +4335,31 @@
 
   // ── MONTH HELPERS ──
   function changeMonth(d) {
-    currentMonth += d;
-    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+    let newMonth = currentMonth + d;
+    let newYear  = currentYear;
+    if (newMonth > 11) { newMonth = 0; newYear++; }
+    if (newMonth < 0)  { newMonth = 11; newYear--; }
+    // Free tier: max 2 months back (current month + 1 previous)
+    if (!isPro() && d < 0) {
+      const now = new Date();
+      const monthsBack = (now.getFullYear() - newYear) * 12 + (now.getMonth() - newMonth);
+      if (monthsBack >= 2) { showPaywall('history'); return; }
+    }
+    currentMonth = newMonth;
+    currentYear  = newYear;
     renderOverview();
   }
   function changeTxMonth(d) {
-    txMonth += d;
-    if (txMonth > 11) { txMonth = 0; txYear++; }
-    if (txMonth < 0)  { txMonth = 11; txYear--; }
+    let newMonth = txMonth + d;
+    let newYear  = txYear;
+    if (newMonth > 11) { newMonth = 0; newYear++; }
+    if (newMonth < 0)  { newMonth = 11; newYear--; }
+    if (!isPro() && d < 0) {
+      const now = new Date();
+      const monthsBack = (now.getFullYear() - newYear) * 12 + (now.getMonth() - newMonth);
+      if (monthsBack >= 2) { showPaywall('history'); return; }
+    }
+    txMonth = newMonth; txYear = newYear;
     renderTransactions();
   }
   function monthTx(m, y) {
@@ -4422,6 +4547,8 @@
 
     if (!name)                         { shake('goal-input-name');   return; }
     if (!target || target <= 0)        { shake('goal-input-target'); return; }
+    // Pro gate: max 1 savings goal on free tier
+    if (!isPro() && !editingGoalId && goals.length >= 1) { showPaywall('goals'); return; }
 
     if (editingGoalId) {
       const g = goals.find(x => x.id === editingGoalId);
@@ -4890,12 +5017,44 @@
       document.getElementById('pace-start').textContent = `1 ${monthName}`;
       document.getElementById('pace-today').textContent = `Today · day ${dayOfMonth}`;
       document.getElementById('pace-end').textContent   = `${daysInMonth} ${monthName}`;
+      // warmer voice line, with a gentle nod to last month
+      const lpm = currentMonth === 0 ? 11 : currentMonth - 1;
+      const lpy = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const lastTot = monthTx(lpm, lpy).reduce((s, t) => s + t.amount, 0);
+      let cmp = '';
+      if (lastTot > 0) {
+        const diff = Math.round(projected - lastTot);
+        cmp = Math.abs(diff) >= 20
+          ? ` — about <strong>${fmt(Math.abs(diff))} ${diff < 0 ? 'under' : 'over'}</strong> last month`
+          : ` — right around <strong>last month</strong>`;
+      }
       document.getElementById('pace-insight').innerHTML =
-        `At this pace, ${monthName} total will be ~<strong>${fmt(projected)}</strong>`;
+        `At this pace, about <strong>${fmt(projected)}</strong> by month end${cmp}`;
       paceEl.style.display = '';
     } else {
       if (paceEl) paceEl.style.display = 'none';
     }
+
+    // ── SPEND TREND SPARKLINE (current month, needs at least 2 days of data) ──
+    (function renderHeroSpark() {
+      const spark = document.getElementById('hero-spark');
+      const line  = document.getElementById('hero-spark-line');
+      if (!spark || !line) return;
+      if (!(isNow && txs.length >= 2)) { spark.style.display = 'none'; return; }
+      const dom = now.getDate();
+      const daily = new Array(dom + 1).fill(0);
+      txs.forEach(t => { const d = parseLocalDate(t.date).getDate(); if (d >= 1 && d <= dom) daily[d] += t.amount; });
+      let run = 0; const cum = [];
+      for (let d = 1; d <= dom; d++) { run += daily[d]; cum.push(run); }
+      const max = Math.max(...cum, 1);
+      const pts = cum.map((v, i) => {
+        const x = dom === 1 ? 0 : (i / (dom - 1)) * 300;
+        const y = 40 - (v / max) * 36;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+      line.setAttribute('points', pts);
+      spark.style.display = '';
+    })();
 
     // ── SMART CARDS (current month only, needs data) ──
     const smartRow = document.getElementById('smart-cards-row');
@@ -5587,6 +5746,11 @@
 
     if (!name)                                        { shake('rec-input-name');   return; }
     if (!amount || amount <= 0 || amount > 999999999) { shake('rec-input-amount'); return; }
+    // Pro gate: max 3 bills on free tier (only block new bills, not edits)
+    if (!isPro() && !activeRecId) {
+      const activeBills = recurring.filter(r => !r.archived);
+      if (activeBills.length >= 3) { showPaywall('bills'); return; }
+    }
 
     const now = new Date();
     const m   = now.getMonth();
@@ -6157,6 +6321,32 @@
   }
 
   function renderSettings() {
+    // Pro status card
+    const proSection = document.getElementById('pro-section');
+    if (proSection) {
+      if (isPro()) {
+        proSection.innerHTML = `
+          <div class="pro-status-card">
+            <div class="pro-status-info">
+              <div class="pro-status-title">✦ Kassior Pro</div>
+              <div class="pro-status-sub">All features unlocked. Thank you!</div>
+            </div>
+          </div>`;
+      } else {
+        proSection.innerHTML = `
+          <div class="pro-status-card">
+            <div class="pro-status-info">
+              <div class="pro-status-title">Kassior Pro</div>
+              <div class="pro-status-sub">Trips, Insights, full history & more</div>
+            </div>
+            <button class="pro-unlock-btn" onclick="showPaywall('upgrade')">CHF 9.99 →</button>
+          </div>`;
+      }
+    }
+    // also hide/show pro badges on theme buttons based on pro status
+    document.querySelectorAll('#theme-btn-light .pro-badge, #theme-btn-mix .pro-badge').forEach(b => {
+      b.style.display = isPro() ? 'none' : '';
+    });
     const lbl = document.getElementById('currency-picker-label');
     if (lbl) lbl.textContent = settings.currency;
     const langCurrent = document.getElementById('lang-current');
@@ -6434,6 +6624,8 @@
   }
 
   function saveCustomCategory() {
+    // Pro gate: custom categories are a Pro feature
+    if (!isPro()) { showPaywall('categories'); return; }
     const customInput = sanitiseText(document.getElementById('cat-input-emoji').value, 8);
     const emoji = customInput || selectedEmoji;
     const name  = sanitiseText(document.getElementById('cat-input-name').value, 40);
@@ -6762,6 +6954,7 @@
       trash,
       settings,
       trips,
+      spaces,
     };
 
     const json     = JSON.stringify(payload, null, 2);
@@ -6875,7 +7068,7 @@
           const type   = (r[1]||'').trim();
           const catSrc = (r[2]||'').trim();
           const amount = parseFloat((r[3]||'').replace(/[+"]/g,''));
-          const acct   = (r[4]||'').trim();
+          const acct   = sanitiseText(r[4]||'', 50);
           const note   = sanitiseText(r[5]||'', 200);
 
           if (!date.match(/^\d{4}-\d{2}-\d{2}$/) || !amount || amount <= 0) { skipped++; return; }
@@ -7052,6 +7245,43 @@
     trash        = Array.isArray(d.trash)     ? d.trash     : [];
     trips        = Array.isArray(d.trips)     ? d.trips     : trips;
 
+    // restore spaces — validate and sanitise each field
+    if (Array.isArray(d.spaces)) {
+      const capAmt = n => { const x = Number(n); return (!isNaN(x) && x >= 0) ? Math.min(x, 999999999) : 0; };
+      spaces = d.spaces
+        .filter(s => s && typeof s === 'object')
+        .slice(0, 500)
+        .map(s => {
+          const type = SPACE_TYPES.find(t => String(t.id) === String(s.type)) || SPACE_TYPES[SPACE_TYPES.length - 1];
+          const extras = Array.isArray(s.extras) ? s.extras
+            .filter(e => e && typeof e === 'object' && typeof e.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date))
+            .slice(0, 5000)
+            .map(e => ({
+              id: (typeof e.id === 'string' && e.id) ? e.id : genId(),
+              amount: capAmt(e.amount),
+              date: e.date,
+              cat: (typeof e.cat === 'string' && SPACE_CATS.find(c => c.id === e.cat)) ? e.cat : null,
+              note: sanitiseText(e.note || '', 60)
+            })) : [];
+          let cur = (typeof s.currency === 'string' && /^[A-Za-z]{1,6}$/.test(s.currency.trim())) ? s.currency.trim().toUpperCase() : settings.currency;
+          return {
+            id: (typeof s.id === 'string' && s.id) ? s.id : genId(),
+            name: sanitiseText(s.name || 'Space', 40),
+            type: type.id,
+            icon: type.icon,
+            currency: cur,
+            purchaseDate: (typeof s.purchaseDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.purchaseDate)) ? s.purchaseDate : '',
+            purchasePrice: capAmt(s.purchasePrice),
+            purchaseMine: s.purchaseMine !== false,
+            createdAt: (typeof s.createdAt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.createdAt)) ? s.createdAt : todayStr(),
+            archived: !!s.archived,
+            archivedAt: (typeof s.archivedAt === 'string') ? s.archivedAt : null,
+            extras
+          };
+        });
+      saveSpaces();
+    }
+
     // restore settings — validate and sanitise each field
     if (d.settings && typeof d.settings === 'object') {
       const s = d.settings;
@@ -7197,6 +7427,11 @@
   }
 
   function pickMonth(month) {
+    if (!isPro() && (pickerContext === 'overview' || pickerContext === 'history')) {
+      const now = new Date();
+      const monthsBack = (now.getFullYear() - pickerYear) * 12 + (now.getMonth() - month);
+      if (monthsBack >= 2) { closeModal('modal-month-picker'); showPaywall('history'); return; }
+    }
     if (pickerContext === 'overview') {
       currentMonth = month; currentYear = pickerYear; renderOverview();
     }
@@ -7226,6 +7461,8 @@
   }
 
   function setThemePreference(pref) {
+    // Pro gate: light and mix themes
+    if (!isPro() && (pref === 'light' || pref === 'mix')) { showPaywall('theme'); return; }
     settings.themePreference = pref;
     saveSettings();
     if (pref === 'system') {
@@ -7357,7 +7594,7 @@
 
   function fmtTrip(amount, currency) {
     const num = Number(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-    return `${currency} ${num}`;
+    return `${esc(currency)} ${num}`;
   }
 
   // ── TRIPS LIST ──
@@ -7438,9 +7675,11 @@
     document.getElementById('trips-list-view').style.display   = 'none';
     document.getElementById('trip-detail-view').style.display  = '';
 
-    // FAB shows when inside a trip
-    const fabWrap = document.getElementById('fab-wrap');
+    // Show trip quick-add button; hide the normal FAB
+    const fabWrap  = document.getElementById('fab-wrap');
+    const tripFab  = document.getElementById('trip-fab');
     if (fabWrap) fabWrap.style.display = 'none';
+    if (tripFab)  tripFab.classList.add('visible');
 
     renderTripDetail(trip);
   }
@@ -7454,8 +7693,9 @@
     document.getElementById('trip-settings-btn').style.display = 'none';
     document.getElementById('trips-list-view').style.display   = '';
     document.getElementById('trip-detail-view').style.display  = 'none';
-    const fabWrap = document.getElementById('fab-wrap');
-    if (fabWrap) fabWrap.style.display = '';
+    // Hide trip quick-add; normal FAB stays hidden on trips list
+    const tripFab = document.getElementById('trip-fab');
+    if (tripFab) tripFab.classList.remove('visible');
     renderTrips();
   }
 
@@ -7467,6 +7707,7 @@
 
     // summary cards
     const cardsEl = document.getElementById('trip-summary-cards');
+    if (!cardsEl) return;
     cardsEl.innerHTML = `
       <div class="smart-card accent-card">
         <div class="smart-card-label">My spend</div>
@@ -7500,6 +7741,7 @@
 
     // action buttons
     const listEl = document.getElementById('trip-expenses-list');
+    if (!listEl) return;
     if (!exps.length) {
       listEl.innerHTML = `
         <div class="empty" style="padding:32px 24px">
@@ -7521,7 +7763,7 @@
         <div class="trip-expense-item" onclick="openEditTripExpense('${e.id}')" style="${delay}">
           <div class="tx-info">
             <div class="tx-cat">${esc(e.note)}</div>
-            <div class="tx-meta">${[catLabel2, e.account, e.date].filter(Boolean).join(' · ')}</div>
+            <div class="tx-meta">${[catLabel2, e.account, e.date].filter(Boolean).map(esc).join(' · ')}</div>
           </div>
           <div class="trip-expense-right">
             <div class="trip-expense-amt ${e.paidBy!=='me'?'other':''}">${fmtTrip(e.amount, expCur)}</div>
@@ -7530,7 +7772,7 @@
         </div>`;
     }).join('');
 
-    listEl.innerHTML += `<div style="margin-top:16px"><button class="btn-primary" onclick="openAddTripExpense()">+ Add Expense</button></div>`;
+    listEl.innerHTML += `<div style="height:80px"></div>`; /* bottom padding so last item clears the fixed pill */
   }
 
   // ── NEW TRIP ──
@@ -7947,6 +8189,546 @@
     if (row) row.style.display = this.value === 'custom' ? '' : 'none';
   });
 
+  // ══════════════════════════════════════════════════════════
+  //  SPACES — lifetime spend tracker (mirrors Trips)
+  // ══════════════════════════════════════════════════════════
+  let spaces        = loadJSON('wdig_spaces', []);
+  let activeSpace   = null; // currently open space ID
+  let editingSpaceExpenseId   = null;   // string id of expense being edited
+  let editingSpaceExpenseKind = null;   // 'mine' (transactions) or 'extra' (space.extras)
+  let spaceTypeSel  = 'other';          // selected type id in new-space modal
+  let spaceMine     = true;             // "was this your money?" toggle in new-space modal
+  let spaceCount    = true;             // "count in my spending" toggle in expense modal
+  let spaceSelectedCat = null;          // selected space expense category id
+
+  function saveSpaces() { localStorage.setItem('wdig_spaces', JSON.stringify(spaces)); }
+
+  let spaceTrash = loadJSON('wdig_space_trash', []);
+  function saveSpaceTrash() { localStorage.setItem('wdig_space_trash', JSON.stringify(spaceTrash)); }
+
+  const SPACE_TYPES = [
+    { id: 'vehicle',   label: 'Vehicle',   icon: '🏍' },
+    { id: 'car',       label: 'Car',       icon: '🚗' },
+    { id: 'pet',       label: 'Pet',       icon: '🐾' },
+    { id: 'person',    label: 'Person',    icon: '❤️' },
+    { id: 'child',     label: 'Child',     icon: '🧒' },
+    { id: 'education', label: 'Education', icon: '🎓' },
+    { id: 'home',      label: 'Home',      icon: '🏠' },
+    { id: 'other',     label: 'Other',     icon: '📦' },
+  ];
+
+  const SPACE_CATS = [
+    { id: 'sc_purchase',  label: 'Purchase',  icon: '🧾' },
+    { id: 'sc_fuel',      label: 'Fuel',      icon: '⛽' },
+    { id: 'sc_service',   label: 'Service',   icon: '🔧' },
+    { id: 'sc_insurance', label: 'Insurance', icon: '🛡' },
+    { id: 'sc_tax',       label: 'Tax',       icon: '🏛' },
+    { id: 'sc_repair',    label: 'Repair',    icon: '🛠' },
+    { id: 'sc_supplies',  label: 'Supplies',  icon: '🛒' },
+    { id: 'sc_other',     label: 'Other',     icon: '📌' },
+  ];
+
+  function spaceTypeMeta(id)  { return SPACE_TYPES.find(s => String(s.id) === String(id)) || SPACE_TYPES[SPACE_TYPES.length - 1]; }
+  function spaceCatMeta(id)   { return SPACE_CATS.find(c => String(c.id) === String(id)); }
+  function fmtSpace(amount, currency) {
+    const num = Number(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    return `${esc(currency)} ${num}`;
+  }
+
+  // Returns the merged expense list for a space.
+  // "mine" rows come from the global transactions store; "extra" rows are lifetime-only.
+  function spaceExpenseRows(space) {
+    const mine = transactions
+      .filter(t => t.spaceId != null && String(t.spaceId) === String(space.id))
+      .map(t => ({ id: t.id, kind: 'mine', amount: Number(t.amount) || 0, date: t.date, cat: t.spaceCat || null, note: t.note || '' }));
+    const extras = (space.extras || [])
+      .map(e => ({ id: e.id, kind: 'extra', amount: Number(e.amount) || 0, date: e.date, cat: e.cat || null, note: e.note || '' }));
+    return { mine, extras, all: [...mine, ...extras] };
+  }
+
+  // Totals: lifetime cost vs what YOU actually paid.
+  function spaceTotals(space) {
+    const rows = spaceExpenseRows(space);
+    const price       = Number(space.purchasePrice) || 0;
+    const mineSum     = rows.mine.reduce((s, r) => s + r.amount, 0);
+    const extraSum    = rows.extras.reduce((s, r) => s + r.amount, 0);
+    const lifetime    = price + mineSum + extraSum;
+    const youPaid     = (space.purchaseMine ? price : 0) + mineSum;
+    return { price, mineSum, extraSum, lifetime, youPaid, count: rows.all.length };
+  }
+
+  function spaceCurrencyOf(space) { return space.currency || settings.currency; }
+
+  // ── SPACES LIST ──
+  function renderSpaces() {
+    const listEl = document.getElementById('spaces-list');
+    if (!listEl) return;
+    const active   = spaces.filter(s => !s.archived);
+    const archived = spaces.filter(s => s.archived);
+
+    if (!active.length && !archived.length) {
+      listEl.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+          <h3>No spaces yet</h3>
+          <p>Create a space to track lifetime spending on anything — a motorbike, a pet, your home.</p>
+        </div>`;
+      return;
+    }
+
+    function spaceCardHTML(space) {
+      const totals = spaceTotals(space);
+      const cur    = spaceCurrencyOf(space);
+      const meta   = spaceTypeMeta(space.type);
+      const status = space.archived ? 'archived' : 'active';
+      return `
+        <div class="trip-card" onclick="openSpace('${esc(space.id)}')">
+          <div class="trip-card-header">
+            <div>
+              <div class="trip-card-name"><span style="font-size:15px;margin-right:6px">${esc(space.icon || meta.icon)}</span>${esc(space.name)}</div>
+              <div class="trip-card-dates">${esc(meta.label)}</div>
+            </div>
+            <span class="trip-status-badge ${status}">${status}</span>
+          </div>
+          <div class="trip-card-stats">
+            <div class="trip-stat">
+              <div class="trip-stat-val">${fmtSpace(totals.lifetime, cur)}</div>
+              <div class="trip-stat-lbl">Lifetime</div>
+            </div>
+            <div class="trip-stat">
+              <div class="trip-stat-val">${totals.count}</div>
+              <div class="trip-stat-lbl">Expenses</div>
+            </div>
+            <div class="trip-stat">
+              <div class="trip-stat-val">${fmtSpace(totals.youPaid, cur)}</div>
+              <div class="trip-stat-lbl">You paid</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    let html = active.map(spaceCardHTML).join('');
+    if (archived.length) {
+      html += `<div class="settings-removed-header" style="margin-top:8px">Archived</div>`;
+      html += archived.map(spaceCardHTML).join('');
+    }
+    listEl.innerHTML = html;
+  }
+
+  // ── OPEN / CLOSE SPACE DETAIL ──
+  function openSpace(id) {
+    activeSpace = id;
+    const space = spaces.find(s => String(s.id) === String(id));
+    if (!space) return;
+    document.getElementById('spaces-page-title').textContent = space.name;
+    document.getElementById('spaces-page-sub').textContent   = `${spaceCurrencyOf(space)} · ${spaceTotals(space).count} expenses`;
+    document.getElementById('spaces-back-btn').style.display   = '';
+    document.getElementById('space-actions-btn').style.display = '';
+    document.getElementById('spaces-list-view').style.display  = 'none';
+    document.getElementById('space-detail-view').style.display = '';
+
+    const fabWrap  = document.getElementById('fab-wrap');
+    const spaceFab = document.getElementById('space-fab');
+    if (fabWrap)  fabWrap.style.display = 'none';
+    if (spaceFab) spaceFab.classList.add('visible');
+
+    renderSpaceDetail(space);
+  }
+
+  function closeSpace() {
+    activeSpace = null;
+    document.getElementById('spaces-page-title').textContent   = 'Spaces';
+    document.getElementById('spaces-page-sub').textContent     = 'Lifetime spend on anything';
+    document.getElementById('spaces-back-btn').style.display   = 'none';
+    document.getElementById('space-actions-btn').style.display = 'none';
+    document.getElementById('spaces-list-view').style.display  = '';
+    document.getElementById('space-detail-view').style.display = 'none';
+    const spaceFab = document.getElementById('space-fab');
+    if (spaceFab) spaceFab.classList.remove('visible');
+    renderSpaces();
+  }
+
+  function renderSpaceDetail(space) {
+    const cur    = spaceCurrencyOf(space);
+    const totals = spaceTotals(space);
+    const rows   = spaceExpenseRows(space);
+
+    // cost per month / year since acquisition (or creation)
+    const sinceStr = space.purchaseDate || space.createdAt;
+    let perMonth = 0, perYear = 0, monthsElapsed = 0;
+    if (sinceStr) {
+      const start = parseLocalDate(sinceStr);
+      const now   = new Date();
+      const days  = Math.max(1, (now - start) / 86400000);
+      monthsElapsed = days / 30.44;
+      perMonth = totals.lifetime / Math.max(1, monthsElapsed);
+      perYear  = perMonth * 12;
+    }
+
+    // category breakdown (combine mine + extras)
+    const catTotals = {};
+    rows.all.forEach(r => {
+      const key = r.cat || '_uncat';
+      catTotals[key] = (catTotals[key] || 0) + r.amount;
+    });
+    if (totals.price > 0) {
+      catTotals['sc_purchase'] = (catTotals['sc_purchase'] || 0) + totals.price;
+    }
+
+    // summary cards
+    const cardsEl = document.getElementById('space-summary-cards');
+    if (!cardsEl) return;
+    cardsEl.innerHTML = `
+      <div class="smart-card accent-card">
+        <div class="smart-card-label">Lifetime cost</div>
+        <div class="smart-card-value">${fmtSpace(totals.lifetime, cur)}</div>
+        <div class="smart-card-sub">${totals.count} expenses${totals.price>0?' + purchase':''}</div>
+      </div>
+      <div class="smart-card">
+        <div class="smart-card-label">You paid</div>
+        <div class="smart-card-value">${fmtSpace(totals.youPaid, cur)}</div>
+        <div class="smart-card-sub">your money only</div>
+      </div>`;
+
+    if (sinceStr) {
+      cardsEl.innerHTML += `
+        <div class="smart-card">
+          <div class="smart-card-label">Per month</div>
+          <div class="smart-card-value">${fmtSpace(perMonth, cur)}</div>
+          <div class="smart-card-sub">avg since ${esc(fmtDateDisplay(sinceStr))}</div>
+        </div>
+        <div class="smart-card">
+          <div class="smart-card-label">Per year</div>
+          <div class="smart-card-value">${fmtSpace(perYear, cur)}</div>
+          <div class="smart-card-sub">avg run rate</div>
+        </div>`;
+    }
+
+    // category breakdown card (full width)
+    const catKeys = Object.keys(catTotals).filter(k => catTotals[k] > 0);
+    if (catKeys.length) {
+      catKeys.sort((a, b) => catTotals[b] - catTotals[a]);
+      const breakdown = catKeys.map(k => {
+        const meta  = spaceCatMeta(k);
+        const label = meta ? `${meta.icon} ${meta.label}` : 'Uncategorised';
+        const pct   = totals.lifetime > 0 ? Math.round(catTotals[k] / totals.lifetime * 100) : 0;
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px">
+            <span style="color:var(--text)">${esc(label)}</span>
+            <span style="color:var(--text-dim);font-weight:600">${fmtSpace(catTotals[k], cur)} · ${pct}%</span>
+          </div>`;
+      }).join('');
+      cardsEl.innerHTML += `
+        <div class="smart-card" style="grid-column:span 2">
+          <div class="smart-card-label" style="margin-bottom:6px">By category</div>
+          ${breakdown}
+        </div>`;
+    }
+
+    // expenses list
+    const listEl = document.getElementById('space-expenses-list');
+    if (!listEl) return;
+    if (!rows.all.length) {
+      listEl.innerHTML = `
+        <div class="empty" style="padding:32px 24px">
+          <div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <h3>No expenses yet</h3>
+          <p>Tap + to log your first expense.</p>
+        </div>
+        <button class="btn-primary" onclick="openAddSpaceExpense()">+ Add Expense</button>`;
+      return;
+    }
+
+    const sorted = [...rows.all].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+    listEl.innerHTML = sorted.map((r, idx) => {
+      const meta = spaceCatMeta(r.cat);
+      const catLabel2 = meta ? `${meta.icon} ${meta.label}` : '';
+      const delay = `animation-delay:${Math.min(idx*0.035,0.35)}s`;
+      const isExtra = r.kind === 'extra';
+      return `
+        <div class="trip-expense-item" onclick="openEditSpaceExpense('${esc(r.id)}','${r.kind}')" style="${delay}">
+          <div class="tx-info">
+            <div class="tx-cat">${esc(r.note || (meta ? meta.label : 'Expense'))}</div>
+            <div class="tx-meta">${[catLabel2, fmtDateDisplay(r.date)].filter(Boolean).map(esc).join(' · ')}</div>
+          </div>
+          <div class="trip-expense-right">
+            <div class="trip-expense-amt ${isExtra?'other':''}">${fmtSpace(r.amount, cur)}</div>
+            <span class="trip-paid-badge ${isExtra?'other':'me'}">${isExtra?'Not mine':'Mine'}</span>
+          </div>
+        </div>`;
+    }).join('');
+    listEl.innerHTML += `<div style="height:80px"></div>`;
+  }
+
+  // ── TYPE PICKER (new space) ──
+  function buildSpaceTypePicker(selectedId) {
+    const picker = document.getElementById('space-type-picker');
+    if (!picker) return;
+    spaceTypeSel = selectedId || 'other';
+    picker.innerHTML = SPACE_TYPES.map(t => `
+      <span class="ts-pill toggleable ${String(t.id)===String(spaceTypeSel) ? 'active' : ''}"
+        onclick="setSpaceType('${esc(t.id)}')">
+        ${esc(t.icon)} ${esc(t.label)}
+      </span>`).join('');
+  }
+  function setSpaceType(id) {
+    spaceTypeSel = id;
+    buildSpaceTypePicker(id);
+  }
+
+  function setSpaceMine(val) {
+    spaceMine = !!val;
+    document.getElementById('space-mine-yes').classList.toggle('active', spaceMine);
+    document.getElementById('space-mine-no').classList.toggle('active', !spaceMine);
+  }
+
+  function populateSpaceCurrencySelect(selected) {
+    const sel = document.getElementById('space-currency-input');
+    if (!sel) return;
+    const cur = selected || settings.currency;
+    let html = tripCurrencyOptions(cur);
+    // ensure the app currency is present even if non-standard
+    if (!TRIP_CURRENCIES.find(c => c.code === cur)) {
+      html = `<option value="${esc(cur)}" selected>${esc(cur)}</option>` + html;
+    }
+    sel.innerHTML = html;
+    sel.value = cur;
+    const row = document.getElementById('space-currency-custom-row');
+    if (row) row.style.display = sel.value === 'custom' ? '' : 'none';
+  }
+
+  function buildSpaceExpenseCatPicker(selectedId) {
+    const picker = document.getElementById('space-expense-cat-picker');
+    if (!picker) return;
+    spaceSelectedCat = selectedId || null;
+    picker.innerHTML = SPACE_CATS.map(c => `
+      <span class="ts-pill toggleable ${String(c.id)===String(spaceSelectedCat) ? 'active' : ''}"
+        onclick="selectSpaceExpenseCat('${esc(c.id)}')">
+        ${esc(c.icon)} ${esc(c.label)}
+      </span>`).join('');
+  }
+  function selectSpaceExpenseCat(id) {
+    spaceSelectedCat = String(spaceSelectedCat) === String(id) ? null : id;
+    buildSpaceExpenseCatPicker(spaceSelectedCat);
+  }
+
+  function setSpaceCount(val) {
+    spaceCount = !!val;
+    document.getElementById('space-count-on').classList.toggle('active', spaceCount);
+    document.getElementById('space-count-off').classList.toggle('active', !spaceCount);
+    const help = document.getElementById('space-count-help');
+    if (help) help.textContent = spaceCount
+      ? 'On = your money, also shows in your monthly tracker.'
+      : 'Off = logged here only, e.g. a gift or someone else paying.';
+  }
+
+  // ── NEW SPACE ──
+  function saveNewSpace() {
+    const name = sanitiseText(document.getElementById('space-name-input').value.trim(), 40);
+    if (!name) { shake('space-name-input'); return; }
+    let currency = document.getElementById('space-currency-input').value;
+    if (currency === 'custom') {
+      currency = sanitiseText(document.getElementById('space-currency-custom').value.trim().toUpperCase(), 5) || settings.currency;
+    }
+    const meta = spaceTypeMeta(spaceTypeSel);
+    const purchaseDate  = document.getElementById('space-purchase-date').value || '';
+    let purchasePrice   = parseFloat(document.getElementById('space-purchase-price').value) || 0;
+    if (purchasePrice < 0) purchasePrice = 0;
+    if (purchasePrice > 999999999) purchasePrice = 999999999;
+    spaces.unshift({
+      id: genId(), name, type: meta.id, icon: meta.icon, currency,
+      purchaseDate, purchasePrice, purchaseMine: spaceMine,
+      createdAt: todayStr(), archived: false, archivedAt: null,
+      extras: []
+    });
+    saveSpaces();
+    closeModal('modal-new-space');
+    // reset form
+    document.getElementById('space-name-input').value = '';
+    document.getElementById('space-purchase-price').value = '';
+    updateDpField('space-purchase-date', '');
+    spaceTypeSel = 'other'; spaceMine = true;
+    setSpaceMine(true);
+    renderSpaces();
+    openSpace(spaces[0].id);
+    showToast('Space created');
+  }
+
+  // ── ADD / EDIT SPACE EXPENSE ──
+  function openAddSpaceExpense() {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space) return;
+    editingSpaceExpenseId = null;
+    editingSpaceExpenseKind = null;
+    spaceCount = true;
+    document.getElementById('space-expense-modal-title').textContent = 'Add Expense';
+    document.getElementById('space-expense-modal-sub').textContent   = space.name;
+    document.getElementById('space-expense-amount').value = '';
+    document.getElementById('space-expense-note').value   = '';
+    document.getElementById('space-expense-delete-btn').style.display = 'none';
+    document.querySelector('#modal-space-expense .btn-primary').textContent = 'Add';
+    setSpaceCount(true);
+    buildSpaceExpenseCatPicker(null);
+    openModal('modal-space-expense');
+  }
+
+  function openEditSpaceExpense(expId, kind) {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space) return;
+    let amount, note, date, cat;
+    if (kind === 'mine') {
+      const tx = transactions.find(t => String(t.id) === String(expId));
+      if (!tx) return;
+      amount = tx.amount; note = tx.note || ''; date = tx.date; cat = tx.spaceCat || null;
+    } else {
+      const ex = (space.extras || []).find(e => String(e.id) === String(expId));
+      if (!ex) return;
+      amount = ex.amount; note = ex.note || ''; date = ex.date; cat = ex.cat || null;
+    }
+    editingSpaceExpenseId   = expId;
+    editingSpaceExpenseKind = kind;
+    spaceCount = kind === 'mine';
+    document.getElementById('space-expense-modal-title').textContent = 'Edit Expense';
+    document.getElementById('space-expense-modal-sub').textContent   = space.name;
+    document.getElementById('space-expense-amount').value = amount;
+    document.getElementById('space-expense-note').value   = note;
+    document.getElementById('space-expense-delete-btn').style.display = '';
+    document.querySelector('#modal-space-expense .btn-primary').textContent = 'Save';
+    setSpaceCount(spaceCount);
+    buildSpaceExpenseCatPicker(cat);
+    openModal('modal-space-expense');
+    setTimeout(() => updateDpField('space-expense-date', date || todayStr()), 20);
+  }
+
+  function saveSpaceExpense() {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space) return;
+    const amount = parseFloat(document.getElementById('space-expense-amount').value);
+    if (!amount || amount <= 0 || amount > 999999999) { shake('space-expense-amount'); return; }
+    const note = sanitiseText(document.getElementById('space-expense-note').value.trim(), 60);
+    const date = document.getElementById('space-expense-date').value || todayStr();
+    const cat  = spaceSelectedCat || null;
+    const wantMine = spaceCount;
+    const wasEditing = !!editingSpaceExpenseId;
+
+    // If editing, the store may need to change (mine <-> extra). Remove the old record first.
+    if (editingSpaceExpenseId) {
+      removeSpaceExpenseRecord(space, editingSpaceExpenseId, editingSpaceExpenseKind, false);
+    }
+
+    if (wantMine) {
+      // real transaction in the global store — keep category 'other' so existing code never breaks
+      const defAccount = (settings.accounts && settings.accounts[0]) || '';
+      transactions.unshift({
+        id: genId(), amount, category: 'other', account: defAccount,
+        note, date, spaceId: space.id, spaceCat: cat
+      });
+      save();
+    } else {
+      if (!space.extras) space.extras = [];
+      space.extras.push({ id: genId(), amount, date, cat, note });
+      saveSpaces();
+    }
+
+    editingSpaceExpenseId = null;
+    editingSpaceExpenseKind = null;
+    closeModal('modal-space-expense');
+    renderSpaceDetail(space);
+    document.getElementById('spaces-page-sub').textContent = `${spaceCurrencyOf(space)} · ${spaceTotals(space).count} expenses`;
+    showToast(wasEditing ? 'Expense updated' : 'Expense saved');
+  }
+
+  // Hard-remove a single expense record from its store.
+  // soft=true sends "mine" txs to the normal trash (recoverable), and extras into space.deletedExtras.
+  function removeSpaceExpenseRecord(space, expId, kind, soft) {
+    if (kind === 'mine') {
+      const tx = transactions.find(t => String(t.id) === String(expId));
+      if (tx && soft) {
+        trash.unshift({ ...tx, type: 'expense', trashedAt: Date.now() });
+      }
+      transactions = transactions.filter(t => String(t.id) !== String(expId));
+      save();
+    } else {
+      const ex = (space.extras || []).find(e => String(e.id) === String(expId));
+      if (ex && soft) {
+        if (!space.deletedExtras) space.deletedExtras = [];
+        space.deletedExtras.push({ ...ex, trashedAt: new Date().toISOString() });
+      }
+      space.extras = (space.extras || []).filter(e => String(e.id) !== String(expId));
+      saveSpaces();
+    }
+  }
+
+  function deleteSpaceExpense() {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space || !editingSpaceExpenseId) return;
+    removeSpaceExpenseRecord(space, editingSpaceExpenseId, editingSpaceExpenseKind, true);
+    editingSpaceExpenseId = null;
+    editingSpaceExpenseKind = null;
+    closeModal('modal-space-expense');
+    renderSpaceDetail(space);
+    document.getElementById('spaces-page-sub').textContent = `${spaceCurrencyOf(space)} · ${spaceTotals(space).count} expenses`;
+    showToast('Expense removed');
+  }
+
+  // ── SPACE ACTIONS ──
+  function openSpaceActions() {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space) return;
+    document.getElementById('space-actions-title').textContent = space.name;
+    document.getElementById('space-actions-sub').textContent   = `${spaceTotals(space).count} expenses · ${spaceCurrencyOf(space)}`;
+    document.getElementById('space-action-archive-label').textContent = space.archived ? 'Unarchive space' : 'Archive space';
+    openModal('modal-space-actions');
+  }
+
+  function doSpaceAction(action) {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space) return;
+    closeModal('modal-space-actions');
+
+    if (action === 'archive') {
+      space.archived = !space.archived;
+      space.archivedAt = space.archived ? new Date().toISOString() : null;
+      saveSpaces();
+      closeSpace();
+      showToast(space.archived ? 'Space archived' : 'Space unarchived');
+    } else if (action === 'export') {
+      exportSpaceCSV();
+    } else if (action === 'delete') {
+      const trashed = { ...space, trashedAt: new Date().toISOString() };
+      spaceTrash.unshift(trashed);
+      saveSpaceTrash();
+      spaces = spaces.filter(s => String(s.id) !== String(activeSpace));
+      saveSpaces();
+      closeSpace();
+      showToast('Space moved to trash');
+    }
+  }
+
+  function exportSpaceCSV() {
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    if (!space) return;
+    const cur = spaceCurrencyOf(space);
+    const rows = [['Date','Category','Amount','Currency','Counts in spending','Note']];
+    if ((Number(space.purchasePrice) || 0) > 0) {
+      rows.push([space.purchaseDate || space.createdAt || '', 'Purchase', space.purchasePrice, cur, space.purchaseMine ? 'Yes' : 'No', 'Acquisition cost']);
+    }
+    spaceExpenseRows(space).all.forEach(r => {
+      const meta = spaceCatMeta(r.cat);
+      rows.push([r.date, meta ? meta.label : '', r.amount, cur, r.kind === 'mine' ? 'Yes' : 'No', r.note || '']);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `kassior-space-${String(space.name).replace(/\s+/g,'-')}.csv`;
+    a.click();
+  }
+
+  document.getElementById('space-currency-input')?.addEventListener('change', function() {
+    const row = document.getElementById('space-currency-custom-row');
+    if (row) row.style.display = this.value === 'custom' ? '' : 'none';
+  });
+
   // ── CUSTOM DATE PICKER ──
   const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   let _dpYear     = 2026;
@@ -8350,15 +9132,14 @@
   function obNext(screen) {
     document.querySelectorAll('.ob-screen').forEach(s => s.classList.remove('active'));
     document.getElementById(`onboarding-screen-${screen}`).classList.add('active');
-    if (screen === 5) startObDemo();
   }
 
   function selectGoal(goal, btn) {
     obSelectedGoal = goal;
-    document.querySelectorAll('.ob-goal-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.ob-option').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     const continueBtn = document.getElementById('ob-goal-btn');
-    if (continueBtn) { continueBtn.disabled = false; continueBtn.style.opacity = '1'; }
+    if (continueBtn) { continueBtn.disabled = false; }
   }
 
   // ── DEMO ANIMATION ──
@@ -8460,9 +9241,9 @@
     ob.style.display = 'flex';
     ob.style.transition = 'opacity 0.3s ease';
     obSelectedGoal = null;
-    document.querySelectorAll('.ob-goal-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.ob-option').forEach(b => b.classList.remove('selected'));
     const continueBtn = document.getElementById('ob-goal-btn');
-    if (continueBtn) { continueBtn.disabled = true; continueBtn.style.opacity = '0.4'; }
+    if (continueBtn) { continueBtn.disabled = true; continueBtn.style.opacity = ''; }
     obNext(1);
     setTimeout(() => { ob.style.opacity = '1'; }, 10);
   }
@@ -8500,8 +9281,14 @@
   renderCharts();
   renderGoals();
   // navigate to user's preferred landing page
+  // If there are active (non-archived, non-completed) trips and user is Pro,
+  // land on the trips tab. If exactly one, open it directly — saves 2 taps.
+  const _activeTrips = trips.filter(t => !t.archived && !t.completed);
   const _goal = settings.userGoal;
-  if (_goal === 'bills') {
+  if (_activeTrips.length > 0 && isPro()) {
+    showPage('trips', document.getElementById('nav-trips'));
+    if (_activeTrips.length === 1) openTrip(_activeTrips[0].id);
+  } else if (_goal === 'bills') {
     showPage('recurring', document.querySelectorAll('nav button')[2]);
   } else if (_goal === 'savings') {
     showPage('settings', document.querySelectorAll('nav button')[3]);
@@ -8597,6 +9384,91 @@
   initAllModalSwipes();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+
+  // ── DEEP LINK HANDLER (Capacitor URL scheme: kassior://) ──
+  // Supports: kassior://add  → add expense
+  //           kassior://income → add income
+  // Used by: Action Button, Back Tap, Siri Shortcuts, Lock Screen
+  function handleDeepLink(url) {
+    try {
+      const path = url.replace(/^kassior:\/\/?/, '').split('?')[0].toLowerCase().trim();
+      // Always navigate to overview first so modals have a valid base page
+      showPage('overview', document.querySelector('nav button'));
+      setTimeout(() => {
+        if (path === 'income') {
+          openAddIncome();
+        } else {
+          // default: 'add', 'add/expense', or anything unrecognised → expense
+          openAddExpense();
+        }
+      }, 80);
+    } catch (e) {}
+  }
+
+  // ── PRO / PAYWALL ──
+  function isPro() {
+    return loadJSON('wdig_pro', false) === true;
+  }
+
+  function unlockPro() {
+    // In production this is where Apple IAP completes and calls back.
+    // For now: direct unlock (used in dev / sandbox; replace with IAP callback).
+    localStorage.setItem('wdig_pro', 'true');
+    closePaywall();
+    renderSettings();
+    showToast('✦ Kassior Pro unlocked');
+  }
+
+  function restorePurchase() {
+    // Placeholder — wire up to Apple IAP restoreCompletedTransactions when ready
+    showToast('No previous purchase found.');
+  }
+
+  function closePaywall() {
+    document.getElementById('modal-paywall').classList.remove('open');
+  }
+
+  function closePaywallOnOverlay(e) {
+    if (e.target === document.getElementById('modal-paywall')) closePaywall();
+  }
+
+  function showPaywall(feature) {
+    const subs = {
+      history:    'Unlock full history to go back further than 2 months.',
+      trips:      'Track expenses across trips and travel — Pro only.',
+      spaces:     'Track lifetime spending on anything with Spaces — Pro only.',
+      insights:   'See spending charts and trends — Pro only.',
+      bills:      'You\'ve reached the free limit of 3 bills.',
+      goals:      'You\'ve reached the free limit of 1 savings goal.',
+      theme:      'Light and Mix themes are included in Kassior Pro.',
+      categories: 'Create unlimited custom categories with Kassior Pro.',
+      upgrade:    'Unlock everything. One price, forever.',
+    };
+    const sub = document.getElementById('paywall-sub');
+    if (sub) sub.textContent = subs[feature] || 'Unlock everything. One price, forever.';
+    document.getElementById('modal-paywall').classList.add('open');
+  }
+
+  // Wrapper for gated nav pages (Trips and Insights)
+  function gatedPage(name, btn) {
+    if (!isPro() && (name === 'trips' || name === 'charts' || name === 'spaces')) {
+      const ctx = name === 'trips' ? 'trips' : name === 'spaces' ? 'spaces' : 'insights';
+      showPaywall(ctx);
+      return;
+    }
+    showPage(name, btn);
+  }
+
+  // Capacitor: fires when app is opened via URL scheme (warm or cold start)
+  if (window.Capacitor) {
+    window.Capacitor.Plugins.App.addListener('appUrlOpen', function(data) {
+      if (data && data.url) handleDeepLink(data.url);
+    });
+    // Cold start: check if the app was launched with a URL
+    window.Capacitor.Plugins.App.getLaunchUrl().then(function(result) {
+      if (result && result.url) handleDeepLink(result.url);
+    }).catch(function() {});
   }
 </script>
 </body>
