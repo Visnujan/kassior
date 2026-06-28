@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kassior — Your finances. Your device.</title>
+  <meta name="description" content="A personal finance tracker that lives entirely on your device. No account. No subscription. No one watching. Built by one person in Luzern, Switzerland."/>
+  <meta property="og:title" content="Kassior — Your finances. Your device."/>
+  <meta property="og:description" content="No account. No subscription. No one watching. Your expenses, on your device, forever."/>
+  <meta property="og:image" content="https://kassior.com/icons/icon-512.png"/>
+  <meta property="og:url" content="https://kassior.com"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <link rel="icon" href="icon.svg" type="image/svg+xml"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@300;400;500;600;700&display=swap"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      /* Kassior Mix theme — cream bg, dark cards */
+      --cream:    #f0ebe4;
+      --cream2:   #e8e0d6;
+      --dark:     #1a1410;
+      --card:     #2a2520;
+      --card2:    #332e28;
+      --border:   #403830;
+      --text:     #f0ece6;
+      --dim:      #9a8e82;
+      --muted:    #7a6e64;
+      --accent:   #d07848;
+      --accent2:  #c06840;
+      --accent-t: #e89868;
+      --success:  #4a9a68;
+      --danger:   #c05040;
+      --fd:       'DM Sans', system-ui, sans-serif;
+      --fb:       'Outfit', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--dark);
+      font-family: var(--fb);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: rgba(192,104,64,0.2); }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+      height: 60px;
+      background: rgba(240,235,228,0.88);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--fd);
+      font-size: 19px; font-weight: 800;
+      color: var(--accent2); letter-spacing: -0.4px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-link { font-size: 13px; font-weight: 500; color: #7a6858; }
+    .nav-link:hover { color: var(--dark); text-decoration: none; }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--dark); color: var(--cream);
+      font-size: 13px; font-weight: 700;
+      padding: 8px 18px; border-radius: 99px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .nav-pill:hover { background: #2e2820; transform: translateY(-1px); text-decoration: none; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 0;
+      padding: 100px 80px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-left { padding-right: 48px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(192,104,64,0.1);
+      border: 1px solid rgba(192,104,64,0.2);
+      color: var(--accent2);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 5px 12px 5px 8px; border-radius: 99px;
+      margin-bottom: 32px;
+    }
+    .hero-tag-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent2);
+    }
+    h1 {
+      font-family: var(--fd);
+      font-size: clamp(48px, 5.5vw, 76px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -3px;
+      color: var(--dark);
+      margin-bottom: 28px;
+    }
+    h1 .brick { color: var(--accent2); }
+    .hero-sub {
+      font-size: 18px; font-weight: 400;
+      color: #7a6858; line-height: 1.65;
+      max-width: 440px;
+      margin-bottom: 40px;
+    }
+    .hero-sub strong { color: var(--dark); font-weight: 600; }
+    .hero-cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn-dark {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--dark);
+      color: var(--cream); font-size: 15px; font-weight: 700;
+      padding: 14px 26px; border-radius: 12px;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 24px rgba(26,20,16,0.25);
+    }
+    .btn-dark:hover { background: #2e2820; transform: translateY(-2px); text-decoration: none; box-shadow: 0 8px 32px rgba(26,20,16,0.3); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      border: 1.5px solid rgba(26,20,16,0.15);
+      color: #7a6858; font-size: 15px; font-weight: 600;
+      padding: 14px 24px; border-radius: 12px;
+      transition: all 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); text-decoration: none; transform: translateY(-1px); }
+
+    /* ─── PHONE ─── */
+    .hero-right {
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+    }
+    .phone-outer {
+      position: relative;
+      filter: drop-shadow(0 32px 64px rgba(26,20,16,0.22)) drop-shadow(0 8px 16px rgba(26,20,16,0.12));
+      transform: rotate(1.5deg);
+      transition: transform 0.4s ease;
+    }
+    .phone-outer:hover { transform: rotate(0deg) translateY(-6px); }
+    .phone-device {
+      width: 240px;
+      background: #1c1814;
+      border-radius: 48px;
+      padding: 10px;
+      border: 1.5px solid #2a2420;
+      position: relative;
+    }
+    /* side buttons */
+    .phone-device::before {
+      content: '';
+      position: absolute;
+      right: -2.5px; top: 80px;
+      width: 3px; height: 50px;
+      background: #252018; border-radius: 0 2px 2px 0;
+    }
+    .phone-screen {
+      background: #111110;
+      border-radius: 40px;
+      overflow: hidden;
+      aspect-ratio: 393/852;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    /* Dynamic Island */
+    .di {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 100px; height: 30px;
+      background: #111110;
+      border-radius: 20px;
+      z-index: 10;
+      border: 1.5px solid #1c1814;
+    }
+    /* Screen content */
+    .sc { flex: 1; padding: 50px 14px 0; display: flex; flex-direction: column; overflow: hidden; }
+    /* Header row */
+    .sc-hdr { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
+    .sc-hdr-l {}
+    .sc-greet { font-size: 9px; color: rgba(255,255,255,0.35); margin-bottom: 1px; font-family: var(--fb); }
+    .sc-title { font-size: 18px; font-weight: 800; color: #e89868; letter-spacing: -0.5px; font-family: var(--fd); line-height: 1; }
+    .sc-gear {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Month nav */
+    .sc-mnav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .sc-mchev { font-size: 16px; color: rgba(255,255,255,0.2); line-height: 1; }
+    .sc-mlbl { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); }
+    /* Hero card */
+    .sc-hero {
+      background: #1a1410;
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 12px;
+      position: relative; overflow: hidden; flex-shrink: 0;
+    }
+    .sc-hero::after {
+      content: ''; position: absolute;
+      right: -40px; bottom: -40px;
+      width: 120px; height: 120px; border-radius: 50%;
+      background: rgba(192,104,64,0.12); pointer-events: none;
+    }
+    .sc-hlbl { font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.28); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    .sc-hamt { font-family: var(--fd); font-size: 30px; font-weight: 800; color: #ede9e2; letter-spacing: -1.5px; line-height: 1; position: relative; z-index: 1; }
+    .sc-hcur { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); margin-right: 2px; }
+    .sc-hsub { display: flex; gap: 14px; margin-top: 8px; position: relative; z-index: 1; }
+    .sc-hitem { font-size: 9px; color: rgba(255,255,255,0.3); display: flex; align-items: center; gap: 4px; }
+    .sc-hitem .g { color: #4a9a68; font-weight: 700; }
+    .sc-hitem .r { color: #e07858; font-weight: 700; }
+    /* Pace bar */
+    .sc-pace { margin-top: 10px; position: relative; z-index: 1; }
+    .sc-pace-track { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; position: relative; }
+    .sc-pace-fill { position: absolute; left: 0; top: 0; height: 3px; width: 47%; background: linear-gradient(90deg, rgba(192,104,64,0.5), var(--accent2)); border-radius: 2px; }
+    .sc-pace-dot { position: absolute; left: 47%; top: -4px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent2); border: 2px solid #1a1410; transform: translateX(-50%); }
+    /* Section title */
+    .sc-sec { font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.22); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px; }
+    /* Category rows */
+    .sc-cats { display: flex; flex-direction: column; gap: 7px; flex: 1; }
+    .sc-cat { display: flex; align-items: center; gap: 8px; }
+    .sc-cat-ic { width: 26px; height: 26px; border-radius: 9px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sc-cat-ic svg { color: var(--accent2); }
+    .sc-cat-info { flex: 1; min-width: 0; }
+    .sc-cat-name { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.75); margin-bottom: 3px; }
+    .sc-cat-bar { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; }
+    .sc-cat-fill { height: 3px; border-radius: 2px; }
+    .sc-cat-amt { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.45); flex-shrink: 0; }
+    /* Nav bar */
+    .sc-nav {
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 10px 8px 16px; flex-shrink: 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: auto;
+    }
+    .sc-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .sc-tab svg { opacity: 0.2; }
+    .sc-tab.on svg { opacity: 1; }
+    .sc-tab-lbl { font-size: 7px; font-weight: 600; color: rgba(255,255,255,0.2); letter-spacing: 0.2px; }
+    .sc-tab.on .sc-tab-lbl { color: var(--accent2); }
+
+    /* ─── SECTION WRAPPER ─── */
+    .section-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ─── STRIP: dark full-bleed ─── */
+    .strip-dark {
+      background: var(--dark);
+      padding: 80px 0;
+    }
+    .strip-stats {
+      display: flex; justify-content: space-around; flex-wrap: wrap; gap: 40px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: var(--fd); font-size: 52px; font-weight: 800;
+      letter-spacing: -2px; color: var(--cream); line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-num em { font-style: normal; color: var(--accent-t); }
+    .stat-desc { font-size: 14px; color: rgba(240,235,228,0.4); font-weight: 500; max-width: 160px; margin: 0 auto; line-height: 1.4; }
+
+    /* ─── FEATURES ─── */
+    .features-wrap { padding: 120px 0; }
+    .features-header { max-width: 560px; margin-bottom: 80px; }
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--accent2);
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-family: var(--fd); font-size: clamp(32px, 4vw, 50px);
+      font-weight: 800; letter-spacing: -1.5px; line-height: 1.06;
+      color: var(--dark); margin-bottom: 16px;
+    }
+    .section-sub { font-size: 17px; color: #7a6858; line-height: 1.6; }
+
+    .feature-list { display: flex; flex-direction: column; gap: 4px; }
+    .feature-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .feature-card {
+      background: var(--card);
+      border-radius: 20px; padding: 36px;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+    .feature-card:hover { transform: translateY(-3px); }
+    .feature-card.wide { grid-column: 1 / -1; }
+    .feature-card.accent-card { background: var(--accent2); }
+    .fc-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .fc-icon svg { color: var(--accent-t); }
+    .accent-card .fc-icon { background: rgba(255,255,255,0.2); }
+    .accent-card .fc-icon svg { color: #fff; }
+    .fc-title {
+      font-family: var(--fd); font-size: 20px; font-weight: 800;
+      letter-spacing: -0.4px; color: var(--text);
+      margin-bottom: 10px;
+    }
+    .accent-card .fc-title { color: #fff; }
+    .fc-desc { font-size: 14px; color: var(--dim); line-height: 1.6; }
+    .accent-card .fc-desc { color: rgba(255,255,255,0.72); }
+    /* Decorative glow in card */
+    .fc-glow {
+      position: absolute; bottom: -60px; right: -60px;
+      width: 180px; height: 180px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(208,120,72,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ─── PRIVACY SECTION ─── */
+    .privacy-section {
+      background: var(--dark);
+      padding: 120px 0;
+    }
+    .privacy-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 48px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .privacy-left {}
+    .privacy-headline {
+      font-family: var(--fd);
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 800; letter-spacing: -2px;
+      line-height: 1.04; color: var(--cream);
+      margin-bottom: 28px;
+    }
+    .privacy-headline .hl { color: var(--accent-t); }
+    .privacy-body { font-size: 16px; color: rgba(240,235,228,0.5); line-height: 1.75; }
+    .privacy-body p { margin-bottom: 16px; }
+    .privacy-body strong { color: rgba(240,235,228,0.85); font-weight: 600; }
+    .privacy-body a { color: var(--accent-t); }
+    .privacy-right {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .privacy-point {
+      background: #252018; border-radius: 14px;
+      padding: 20px 22px;
+      display: flex; gap: 14px; align-items: flex-start;
+      border: 1px solid #302820;
+      transition: border-color 0.2s;
+    }
+    .privacy-point:hover { border-color: rgba(208,120,72,0.3); }
+    .pp-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(208,120,72,0.1);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pp-icon svg { color: var(--accent-t); }
+    .pp-text {}
+    .pp-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .pp-desc { font-size: 12px; color: var(--dim); line-height: 1.5; }
+
+    /* ─── PRICING ─── */
+    .pricing-section { padding: 120px 0; }
+    .pricing-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 48px;
+    }
+    .pricing-grid {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 48px; align-items: start;
+      margin-top: 64px;
+    }
+    .pricing-left {}
+    .pricing-big-price {
+      font-family: var(--fd);
+      font-size: clamp(60px, 8vw, 100px);
+      font-weight: 800; letter-spacing: -4px;
+      line-height: 1; color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .pricing-was-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .pricing-was { font-size: 20px; color: #b0a090; text-decoration: line-through; }
+    .pricing-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      background: rgba(192,104,64,0.12); border: 1px solid rgba(192,104,64,0.25);
+      color: var(--accent2); padding: 3px 12px; border-radius: 99px;
+    }
+    .pricing-note { font-size: 14px; color: #b0a090; line-height: 1.5; max-width: 280px; }
+    .pricing-card {
+      background: var(--card);
+      border-radius: 24px; padding: 36px;
+      border: 1px solid var(--border);
+    }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--dim); }
+    .pf-check { color: var(--accent-t); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    .pf-text { color: rgba(240,235,228,0.8); }
+    .pf-sub { font-size: 12px; color: var(--muted); }
+    .pricing-cta {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #e8a070 0%, #b85c30 100%);
+      color: #fff; font-size: 16px; font-weight: 800;
+      border: none; border-radius: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 24px rgba(184,92,48,0.4);
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .pricing-cta:hover { opacity: 0.9; transform: translateY(-2px); text-decoration: none; box-shadow: 0 8px 32px rgba(184,92,48,0.45); }
+    .pricing-restore { display: block; text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); cursor: pointer; }
+    .pricing-web { display: block; text-align: center; margin-top: 10px; font-size: 13px; color: var(--dim); }
+    .pricing-web a { color: var(--accent-t); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid rgba(26,20,16,0.1);
+      padding: 48px;
+      display: flex; flex-wrap: wrap;
+      align-items: flex-start; justify-content: space-between;
+      gap: 32px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .footer-brand {}
+    .footer-logo { font-family: var(--fd); font-size: 20px; font-weight: 800; color: var(--accent2); letter-spacing: -0.3px; display: block; margin-bottom: 6px; }
+    .footer-made { font-size: 13px; color: #b0a090; }
+    .footer-links { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; }
+    .footer-links a { font-size: 14px; color: #7a6858; }
+    .footer-links a:hover { color: var(--dark); text-decoration: none; }
+    .footer-border { border-top: 1px solid rgba(26,20,16,0.08); max-width: 1100px; margin: 0 auto 0; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
+      .hero-left { padding-right: 0; }
+      h1 { letter-spacing: -2px; }
+      .hero-right { order: -1; }
+      .phone-device { width: 200px; }
+      .section-wrap { padding: 0 24px; }
+      .features-wrap { padding: 80px 0; }
+      .feature-row { grid-template-columns: 1fr; }
+      .feature-card.wide { grid-column: auto; }
+      .privacy-inner { grid-template-columns: 1fr; gap: 48px; padding: 0 24px; }
+      .pricing-grid { grid-template-columns: 1fr; gap: 32px; }
+      .pricing-inner { padding: 0 24px; }
+      footer { padding: 40px 24px; }
+      .strip-stats { gap: 48px; }
+    }
+    @media (max-width: 600px) {
+      .nav-link { display: none; }
+      h1 { letter-spacing: -1.5px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <span class="nav-logo">Kassior</span>
+  <div class="nav-right">
+    <a class="nav-link" href="privacy.html">Privacy</a>
+    <a class="nav-pill" href="#get">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      App Store
+    </a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag reveal">
+      <div class="hero-tag-dot"></div>
+      Made in Luzern, Switzerland 🇨🇭
+    </div>
+    <h1 class="reveal reveal-d1">
+      Your<br/>finances.<br/><span class="brick">Your device.</span>
+    </h1>
+    <p class="hero-sub reveal reveal-d2">
+      I built Kassior because I didn't want to give a fintech company access to my bank account just to see where my money goes. <strong>So I built something that doesn't need it.</strong>
+    </p>
+    <div class="hero-cta-row reveal reveal-d3">
+      <a class="btn-dark" href="#get">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        Download on App Store
+      </a>
+      <a class="btn-outline" href="index.html">Try for free →</a>
+    </div>
+  </div>
+
+  <div class="hero-right reveal reveal-d2">
+    <div class="phone-outer">
+      <div class="phone-device">
+        <div class="phone-screen">
+          <div class="di"></div>
+          <div class="sc">
+
+            <!-- Header -->
+            <div class="sc-hdr">
+              <div>
+                <div class="sc-greet">Good morning, Vili 👋</div>
+                <div class="sc-title">Overview</div>
+              </div>
+              <div class="sc-gear">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+            </div>
+
+            <!-- Month nav -->
+            <div class="sc-mnav">
+              <span class="sc-mchev">‹</span>
+              <span class="sc-mlbl">June 2026</span>
+              <span class="sc-mchev">›</span>
+            </div>
+
+            <!-- Hero card -->
+            <div class="sc-hero">
+              <div class="sc-hlbl">NET THIS MONTH</div>
+              <div class="sc-hamt"><span class="sc-hcur">CHF</span>3,560</div>
+              <div class="sc-hsub">
+                <div class="sc-hitem"><span class="g">↑ 4,800</span> income</div>
+                <div class="sc-hitem"><span class="r">↓ 1,240</span> spent</div>
+              </div>
+              <div class="sc-pace">
+                <div class="sc-pace-track">
+                  <div class="sc-pace-fill"></div>
+                  <div class="sc-pace-dot"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- By Category -->
+            <div class="sc-sec">BY CATEGORY</div>
+            <div class="sc-cats">
+              <div class="sc-cat">
+                <div class="sc-cat-ic">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </div>
+                <div class="sc-cat-info">
+                  <div class="sc-cat-name">Groceries</div>
+                  <div class="sc-cat-bar"><div class="sc-cat-fill" style="width:72%;background:#c06840"></div></div>
+                </div>
+                <div class="sc-cat-amt">420</div>
+              </div>
+              <div class="sc-cat">
+                <div class="sc-cat-ic">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div class="sc-cat-info">
+                  <div class="sc-cat-name">Transport</div>
+                  <div class="sc-cat-bar"><div class="sc-cat-fill" style="width:48%;background:#7a6840"></div></div>
+                </div>
+                <div class="sc-cat-amt">280</div>
+              </div>
+              <div class="sc-cat">
+                <div class="sc-cat-ic">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                </div>
+                <div class="sc-cat-info">
+                  <div class="sc-cat-name">Food & Drink</div>
+                  <div class="sc-cat-bar"><div class="sc-cat-fill" style="width:30%;background:#4a7860"></div></div>
+                </div>
+                <div class="sc-cat-amt">185</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tab bar -->
+          <div class="sc-nav">
+            <div class="sc-tab on">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d07848" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              <span class="sc-tab-lbl" style="color:#d07848">Overview</span>
+            </div>
+            <div class="sc-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span class="sc-tab-lbl">History</span>
+            </div>
+            <div class="sc-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span class="sc-tab-lbl">Bills</span>
+            </div>
+            <div class="sc-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.5-9L12 2l7.5 6L21 17"/><path d="M3 17h18"/><circle cx="12" cy="10" r="2"/></svg>
+              <span class="sc-tab-lbl">Trips</span>
+            </div>
+            <div class="sc-tab">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+              <span class="sc-tab-lbl">Insights</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DARK STRIP ─── -->
+<div class="strip-dark">
+  <div class="section-wrap">
+    <div class="strip-stats">
+      <div class="stat-item reveal">
+        <div class="stat-num"><em>0</em></div>
+        <div class="stat-desc">Bytes of your data on our servers</div>
+      </div>
+      <div class="stat-item reveal reveal-d1">
+        <div class="stat-num">1<em>×</em></div>
+        <div class="stat-desc">Pay once. Use forever. No renewal.</div>
+      </div>
+      <div class="stat-item reveal reveal-d2">
+        <div class="stat-num"><em>100%</em></div>
+        <div class="stat-desc">Of your data belongs to you</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FEATURES ─── -->
+<div class="features-wrap">
+  <div class="section-wrap">
+    <div class="features-header reveal">
+      <div class="eyebrow">What's inside</div>
+      <h2>Everything you need to understand your money.</h2>
+      <p class="section-sub">No bank connection. No cloud. Just a clean, fast app that does what you tell it.</p>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-row">
+        <div class="feature-card reveal">
+          <div class="fc-glow"></div>
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="fc-title">Overview</div>
+          <div class="fc-desc">Net this month, spending pace, savings goals, and bill reminders — all on one screen. See your financial picture at a glance without digging through menus.</div>
+        </div>
+        <div class="feature-card reveal reveal-d1">
+          <div class="fc-glow"></div>
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="fc-title">Full History</div>
+          <div class="fc-desc">Every transaction, searchable and filterable. Swipe to delete, tap to edit. Deleted items go to trash for 30 days before they're gone for good.</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-card accent-card reveal">
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l1.5-9L12 2l7.5 6L21 17"/><path d="M3 17h18"/><path d="M8 17v4"/><path d="M16 17v4"/><circle cx="12" cy="10" r="2"/></svg>
+          </div>
+          <div class="fc-title">Trips</div>
+          <div class="fc-desc">Create a trip, log expenses on the go with per-expense currency selection, and get a full breakdown when you're back. Completely sandboxed — trip spending never touches your regular budget.</div>
+        </div>
+        <div class="feature-card reveal reveal-d1">
+          <div class="fc-glow"></div>
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="fc-title">Bills</div>
+          <div class="fc-desc">Monthly, yearly, or one-time. See what's due before it hits your account. Overdue bills show in red, upcoming in amber — no surprises.</div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div class="feature-card reveal">
+          <div class="fc-glow"></div>
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+          </div>
+          <div class="fc-title">Insights</div>
+          <div class="fc-desc">Charts that show where your money actually goes. Monthly trends, category breakdowns, and comparisons — so you can spot patterns and spend smarter.</div>
+        </div>
+        <div class="feature-card reveal reveal-d1">
+          <div class="fc-glow"></div>
+          <div class="fc-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="fc-title">Action Button</div>
+          <div class="fc-desc">Assign Kassior to your iPhone's Action Button or Back Tap. Log an expense before you even put your wallet away — the fastest expense tracker on iOS.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PRIVACY ─── -->
+<div class="privacy-section">
+  <div class="privacy-inner">
+    <div class="privacy-left">
+      <div class="eyebrow" style="color:var(--accent-t)">Privacy by design</div>
+      <div class="privacy-headline reveal">
+        Your data is<br/><span class="hl">nobody else's</span><br/>business.
+      </div>
+      <div class="privacy-body reveal reveal-d1">
+        <p>Every other finance app needs an account because your data lives on their server. That means they can see it, lose it in a breach, sell it, or shut down and take it with them.</p>
+        <p>Kassior stores everything in your phone's local storage. <strong>I have no server. I literally cannot see your data.</strong> When you delete the app, everything is gone — which is a feature, not a bug.</p>
+        <p>Soon, Kassior will sync via iCloud (iOS) and Google Drive (Android) — your file moving between your own devices, still no server in the middle.</p>
+        <p><a href="privacy.html">Read the privacy policy →</a></p>
+      </div>
+    </div>
+    <div class="privacy-right">
+      <div class="privacy-point reveal">
+        <div class="pp-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="pp-text">
+          <div class="pp-title">No server, ever</div>
+          <div class="pp-desc">There is no Kassior backend. No database. No API. Your data exists only on your device.</div>
+        </div>
+      </div>
+      <div class="privacy-point reveal reveal-d1">
+        <div class="pp-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="pp-text">
+          <div class="pp-title">No account required</div>
+          <div class="pp-desc">No email. No password. No sign-in. Open the app and start tracking.</div>
+        </div>
+      </div>
+      <div class="privacy-point reveal reveal-d2">
+        <div class="pp-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg></div>
+        <div class="pp-text">
+          <div class="pp-title">Export is always free</div>
+          <div class="pp-desc">Your data as JSON or CSV, anytime. No Pro required. It's your data — you can always take it.</div>
+        </div>
+      </div>
+      <div class="privacy-point reveal reveal-d3">
+        <div class="pp-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="pp-text">
+          <div class="pp-title">iCloud sync — coming soon</div>
+          <div class="pp-desc">Sync between your own devices via iCloud and Google Drive. No third party ever touches the file.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PRICING ─── -->
+<div class="pricing-section" id="get">
+  <div class="pricing-inner">
+    <div class="eyebrow reveal">Pricing</div>
+    <h2 class="reveal reveal-d1">One price.<br/>Yours forever.</h2>
+
+    <div class="pricing-grid">
+      <div class="pricing-left reveal">
+        <div class="pricing-big-price">CHF<br/>9.99</div>
+        <div class="pricing-was-row">
+          <span class="pricing-was">CHF 49.99</span>
+          <span class="pricing-tag">Early Adopter</span>
+        </div>
+        <p class="pricing-note">One-time purchase on iOS. Restore on any device with the same Apple ID. All future updates included.</p>
+      </div>
+
+      <div class="pricing-card reveal reveal-d1">
+        <ul class="pricing-features">
+          <li>
+            <span class="pf-check">✦</span>
+            <div><div class="pf-text">Full transaction history</div><div class="pf-sub">No month limit — see everything</div></div>
+          </li>
+          <li>
+            <span class="pf-check">✦</span>
+            <div><div class="pf-text">Unlimited bills & savings goals</div><div class="pf-sub">Free tier: 3 bills, 1 goal</div></div>
+          </li>
+          <li>
+            <span class="pf-check">✦</span>
+            <div><div class="pf-text">Trips & Insights tabs</div><div class="pf-sub">Travel tracker + spending charts</div></div>
+          </li>
+          <li>
+            <span class="pf-check">✦</span>
+            <div><div class="pf-text">Light & Mix themes</div><div class="pf-sub">Including the signature Mix look</div></div>
+          </li>
+          <li>
+            <span class="pf-check">✦</span>
+            <div><div class="pf-text">Unlimited custom categories</div><div class="pf-sub">Your emoji, your labels</div></div>
+          </li>
+          <li>
+            <span class="pf-check">✦</span>
+            <div><div class="pf-text">All future updates</div><div class="pf-sub">iCloud sync, new features — everything</div></div>
+          </li>
+        </ul>
+        <a class="pricing-cta" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Download on the App Store
+        </a>
+        <span class="pricing-restore">Restore Purchase</span>
+        <span class="pricing-web">or <a href="index.html">try the free web version first</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<div class="footer-border"></div>
+<footer>
+  <div class="footer-brand">
+    <span class="footer-logo">Kassior</span>
+    <div class="footer-made">Crafted in Luzern, Switzerland 🇨🇭</div>
+    <div style="margin-top:8px;font-size:12px;color:#b0a090">hello@kassior.com</div>
+  </div>
+  <div class="footer-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Use</a>
+    <a href="index.html">Web App</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
