@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
   <style>
     @media screen and (orientation: landscape) and (max-height: 500px) {
       body::before {
@@ -214,8 +214,7 @@
     [data-theme="mix"] .empty h3 { color: #1a1410; }
     [data-theme="mix"] .empty p  { color: #7a6858; }
 
-    /* Mix: ob-goal buttons dark */
-    /* ob-goal theme overrides replaced — onboarding is always dark, no theme overrides needed */
+    /* Onboarding (Concept A) has its own cream palette — no theme overrides needed */
 
     /* Mix: smart card accent */
     /* mix accent-card handled by var(--accent-dim) token */
@@ -396,12 +395,14 @@
 
     /* ── NAV ── */
     nav {
-      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      position: fixed; left: 50%; right: auto; bottom: 0;
+      transform: translateX(-50%);
       width: 100%; max-width: 480px;
       background: var(--bg);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid var(--border);
       display: flex; z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
     }
     nav button {
       flex: 1; padding: 12px 0 14px;
@@ -423,7 +424,7 @@
     }
 
     /* ── PAGES ── */
-    .page { display: none; padding: 28px 18px 96px; }
+    .page { display: none; padding: 28px 18px calc(96px + env(safe-area-inset-bottom)); }
     .page.active { display: block; }
 
     /* ── HEADER ── */
@@ -533,6 +534,13 @@
     [data-theme="mix"] .hero-total { border: 1px solid rgba(198,123,92,0.26); }
     [data-theme="mix"] .hero-inc-exp .inc-pill { color: #a3b878; }
     [data-theme="mix"] .inc-pill .pill-dot { background: #a3b878; }
+    /* Spending calendar heatmap */
+    #heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 14px; }
+    .hm-dow { font-size: 9px; font-weight: 700; color: var(--muted); text-align: center; padding-bottom: 2px; }
+    .hm-cell { aspect-ratio: 1; border-radius: 5px; }
+    .hm-total { font-size: 12px; color: var(--text-dim); font-family: var(--font-display); }
+    .hm-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 12px; font-size: 10px; color: var(--muted); }
+    .hm-legend span { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
     .hero-total .hero-label,
     .hero-total .hero-amount,
     .hero-total .hero-month { position: relative; z-index: 2; }
@@ -567,6 +575,28 @@
     .hero-inc-exp .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
     .inc-pill .pill-dot { background: #4a9a68; }
     .exp-pill .pill-dot { background: #c05040; }
+
+    /* carried-over / running balance — quiet, secondary to the big Net */
+    .hero-carry {
+      position: relative; z-index: 2;
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .hero-carry .carry-line {
+      font-size: 12px; color: var(--hero-sub); font-weight: 500;
+    }
+    .hero-carry .carry-line .carry-val { font-weight: 700; }
+    .hero-carry .carry-line .carry-val.pos { color: var(--success); }
+    .hero-carry .carry-line .carry-val.neg { color: var(--danger); }
+    .hero-carry .balance-line {
+      font-size: 13px; color: var(--hero-label); font-weight: 600;
+    }
+    .hero-carry .balance-line .balance-val {
+      font-weight: 800; color: var(--hero-num); margin-left: 4px;
+    }
+    .hero-carry .balance-line .balance-val.neg { color: var(--danger); }
 
     /* ── SECTION ── */
     .section-title {
@@ -674,17 +704,16 @@
       color: var(--accent-text);
     }
 
-    /* ── ONBOARDING ── */
+    /* ── ONBOARDING — Concept A "The Number" ── */
+    /* Cream background, type-led, flat fills only (no gradients). */
     #onboarding {
       position: fixed; inset: 0; z-index: 1000;
-      background: var(--bg);
+      background: #F5F0E1;
       display: flex; flex-direction: column;
     }
-    /* ── ONBOARDING — minimal ── */
-    #onboarding { background: #0c0b0a !important; }
     .ob-screen {
       display: none; flex-direction: column;
-      height: 100%; background: #0c0b0a;
+      height: 100%; background: #F5F0E1;
       animation: obSlide 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .ob-screen.active { display: flex; }
@@ -702,81 +731,114 @@
     .ob-screen.active .ob-anim-3 { animation: obFadeUp 0.5s ease 0.30s both; }
     .ob-screen.active .ob-anim-4 { animation: obFadeUp 0.5s ease 0.42s both; }
 
-    .ob-progress { display: flex; gap: 5px; padding: 20px 32px 0; flex-shrink: 0; }
+    /* Top bar: progress + skip */
+    .ob-top {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px 0; flex-shrink: 0;
+    }
+    .ob-back {
+      background: none; border: none; cursor: pointer;
+      color: #9C8B74; font-size: 22px; line-height: 1;
+      padding: 0 2px; width: 22px; text-align: center;
+      font-family: var(--font);
+    }
+    .ob-back[hidden] { visibility: hidden; }
+    .ob-progress { display: flex; gap: 5px; flex: 1; }
     .ob-progress-seg {
-      flex: 1; height: 1.5px; border-radius: 99px;
-      background: rgba(255,255,255,0.07); transition: background 0.4s;
+      flex: 1; height: 2px; border-radius: 99px;
+      background: rgba(156,139,116,0.28); transition: background 0.4s;
     }
-    .ob-progress-seg.filled { background: rgba(185,94,56,0.5); }
+    .ob-progress-seg.filled { background: #C67B5C; }
+    .ob-skip {
+      background: none; border: none; cursor: pointer;
+      color: #9C8B74; font-size: 13px; font-weight: 500;
+      font-family: var(--font); padding: 2px 4px;
+    }
+    .ob-skip[hidden] { visibility: hidden; }
 
-    /* Screen 1 — centered, spaced */
-    .ob-s1 {
+    /* Body — vertically centred, type-led */
+    .ob-body {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: space-between;
-      padding: 44px 32px 16px; text-align: center;
+      align-items: center; justify-content: center;
+      padding: 0 32px; text-align: center;
     }
-    .ob-s1-brand {
-      font-family: var(--font-display); font-size: 52px; font-weight: 800;
-      color: #f0ebe4; letter-spacing: -2.5px; line-height: 1;
+    .ob-num-label {
+      font-family: var(--font); font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #9C8B74; margin-bottom: 12px;
     }
-    .ob-s1-tagline {
-      font-size: 18px; font-weight: 400;
-      color: #6a5e56; letter-spacing: -0.2px; line-height: 1.6;
+    .ob-num {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: 58px; line-height: 1; color: #2A2017;
+      letter-spacing: -2.5px;
     }
-    .ob-s1-note { font-size: 12px; color: #2a2620; font-weight: 500; }
+    .ob-num .ob-cur {
+      font-size: 24px; font-weight: 800; opacity: 0.7;
+      vertical-align: super; letter-spacing: -1px; margin-right: 4px;
+    }
+    .ob-hairline {
+      width: 54px; height: 2px; border-radius: 99px;
+      background: #C67B5C; margin: 18px 0 26px;
+    }
+    /* Flanking pills (screen 2) */
+    .ob-pills {
+      display: flex; gap: 10px; justify-content: center;
+      margin: 18px 0 26px; min-height: 30px;
+    }
+    .ob-pill {
+      padding: 6px 13px; border-radius: 99px;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      opacity: 0; transform: translateY(6px);
+    }
+    .ob-pill-in { animation: obFadeUp 0.45s ease both; }
+    .ob-pill.income { background: rgba(107,123,60,0.14); color: #6B7B3C; }
+    .ob-pill.income.ob-pill-in { animation-delay: 0.15s; }
+    .ob-pill.expense { background: rgba(198,123,92,0.14); color: #C67B5C; }
+    .ob-pill.expense.ob-pill-in { animation-delay: 0.30s; }
+    /* Icon + number row (screen 3) */
+    .ob-icon-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px; margin-bottom: 26px;
+    }
+    .ob-icon-row .ob-num { font-size: 40px; color: #2A2017; }
+    .ob-device-icon { color: #C67B5C; flex-shrink: 0; }
 
-    /* Screen 2 — left-aligned statement */
-    .ob-s2 {
-      flex: 1; display: flex; flex-direction: column;
-      justify-content: center; padding: 0 32px 16px;
+    .ob-headline {
+      font-family: var(--font-display); font-size: 18px; font-weight: 800;
+      color: #2A2017; letter-spacing: -0.4px; line-height: 1.25;
     }
-    .ob-s2-main {
-      font-family: var(--font-display); font-size: 36px; font-weight: 800;
-      color: #f0ebe4; letter-spacing: -1.5px; line-height: 1.08;
-      margin-bottom: 4px;
+    .ob-sub {
+      font-family: var(--font); font-size: 14px; font-weight: 400;
+      color: #9C8B74; line-height: 1.55; margin-top: 8px;
+      max-width: 280px;
     }
-    .ob-s2-accent {
-      font-family: var(--font-display); font-size: 36px; font-weight: 800;
-      color: #b85e38; letter-spacing: -1.5px; line-height: 1.08;
-      margin-bottom: 32px;
-    }
-    .ob-s2-body { font-size: 15px; color: #4a4440; line-height: 1.7; }
-
-    /* Screen 3 — goal list */
-    .ob-s3 {
-      flex: 1; display: flex; flex-direction: column;
-      justify-content: center; padding: 0 32px 16px;
-    }
-    .ob-s3-q {
-      font-family: var(--font-display); font-size: 30px; font-weight: 800;
-      color: #f0ebe4; letter-spacing: -1px; line-height: 1.1;
-      margin-bottom: 24px;
-    }
-    .ob-option-list { display: flex; flex-direction: column; gap: 8px; }
-    .ob-option {
-      padding: 15px 18px;
-      border: 1px solid #1c1916; border-left: 2px solid transparent;
-      border-radius: 12px; font-size: 15px; font-weight: 500;
-      color: #3a3632; background: transparent; cursor: pointer;
-      text-align: left; font-family: var(--font);
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .ob-option.selected { border-color: #1c1916; border-left-color: #b85e38; color: #f0ebe4; }
-    .ob-option:active { opacity: 0.7; }
 
     /* Footer */
-    .ob-footer { padding: 16px 32px 48px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
-    .ob-footer-note { font-size: 11px; color: #2a2620; text-align: center; }
-    .ob-btn-primary {
-      width: 100%; padding: 16px; border-radius: 13px; border: none;
-      background: #b85e38; color: #f5ede6;
+    .ob-footer {
+      padding: 16px 32px 48px; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .ob-next {
+      background: none; border: none; cursor: pointer;
+      color: #C67B5C; font-family: var(--font);
+      font-size: 16px; font-weight: 600; letter-spacing: -0.2px;
+      padding: 10px 14px;
+    }
+    .ob-next:active { opacity: 0.7; }
+    .ob-start {
+      width: 100%;
+      background: #C67B5C; color: #ffffff; border: none;
+      border-radius: var(--radius-xs); padding: 14px 20px;
       font-family: var(--font); font-size: 15px; font-weight: 700;
       letter-spacing: -0.2px; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(160,80,40,0.2);
       transition: opacity 0.15s, transform 0.15s;
     }
-    .ob-btn-primary:not(:disabled):active { opacity: 0.85; transform: scale(0.98); }
-    .ob-btn-primary:disabled { background: #181614; color: #2a2620; box-shadow: none; cursor: default; }
+    .ob-start:active { opacity: 0.9; transform: scale(0.98); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ob-screen, .ob-anim-1, .ob-anim-2, .ob-anim-3, .ob-anim-4,
+      .ob-pill, .ob-pill-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+    }
 
     .year-month-row {
       display: flex; align-items: center; justify-content: space-between;
@@ -2003,6 +2065,8 @@
     </div>
     <div class="hero-month" id="hero-month-sub"></div>
     <div class="hero-inc-exp" id="hero-inc-exp"></div>
+    <!-- CARRIED-OVER / RUNNING BALANCE (separate from Net) -->
+    <div class="hero-carry" id="hero-carry" style="display:none"></div>
     <!-- SPENDING PACE -->
     <div id="hero-pace" style="display:none;margin-top:16px;position:relative;z-index:2">
       <div class="pace-track">
@@ -2323,6 +2387,15 @@
       <button onclick="changeChartMonth(1)">›</button>
     </div>
     <div id="smart-insights"></div>
+    <!-- SPENDING CALENDAR HEATMAP -->
+    <div class="chart-card" style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <div class="chart-card-title" style="margin:0">Spending calendar</div>
+        <div id="heatmap-total" class="hm-total"></div>
+      </div>
+      <div id="heatmap-grid"></div>
+      <div id="heatmap-legend" class="hm-legend"></div>
+    </div>
     <div class="chart-card" style="margin-top:16px">
       <div class="chart-card-title">vs Last Month</div>
       <div id="month-compare"></div>
@@ -2368,81 +2441,62 @@
 <!-- ONBOARDING -->
 <div id="onboarding" style="display:none">
 
-  <!-- SCREEN 1 -->
-  <div id="onboarding-screen-1" class="ob-screen active">
+  <!-- Top bar: back · 3-segment progress · skip -->
+  <div class="ob-top">
+    <button class="ob-back" id="ob-back" hidden onclick="obBack()" aria-label="Back">&lsaquo;</button>
     <div class="ob-progress">
-      <div class="ob-progress-seg filled"></div>
-      <div class="ob-progress-seg"></div>
-      <div class="ob-progress-seg"></div>
+      <div class="ob-progress-seg filled" id="ob-seg-1"></div>
+      <div class="ob-progress-seg" id="ob-seg-2"></div>
+      <div class="ob-progress-seg" id="ob-seg-3"></div>
     </div>
-    <div class="ob-s1">
-      <div class="ob-anim-1" style="display:flex;justify-content:center">
-        <svg viewBox="0 0 512 512" width="80" height="80" style="border-radius:20px;display:block;box-shadow:0 2px 14px rgba(100,40,10,0.22),0 0 0 0.5px rgba(255,255,255,0.04)">
-          <defs>
-            <linearGradient id="ob-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#1a1410"/><stop offset="100%" stop-color="#0c0906"/>
-            </linearGradient>
-            <linearGradient id="ob-panel" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2e1e12"/><stop offset="100%" stop-color="#1a1008"/>
-            </linearGradient>
-            <linearGradient id="ob-k" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#f0a868"/><stop offset="100%" stop-color="#c06840"/>
-            </linearGradient>
-            <clipPath id="ob-clip"><rect width="512" height="512" rx="108"/></clipPath>
-          </defs>
-          <rect width="512" height="512" rx="108" fill="url(#ob-bg)"/>
-          <circle cx="440" cy="440" r="220" fill="url(#ob-panel)" clip-path="url(#ob-clip)"/>
-          <rect x="130" y="110" width="64" height="292" rx="10" fill="url(#ob-k)"/>
-          <polygon points="194,256 194,182 350,110 396,110 396,154 258,256" fill="url(#ob-k)"/>
-          <polygon points="194,256 258,256 396,378 396,402 350,402 194,330" fill="url(#ob-k)"/>
+    <button class="ob-skip" id="ob-skip" onclick="obFinish()">Skip</button>
+  </div>
+
+  <!-- SCREEN 1 — The number -->
+  <div id="onboarding-screen-1" class="ob-screen active">
+    <div class="ob-body">
+      <div class="ob-num-label ob-anim-1">NET THIS MONTH</div>
+      <div class="ob-num ob-anim-1" id="ob-num-1"><span class="ob-cur">CHF</span>0</div>
+      <div class="ob-hairline ob-anim-2"></div>
+      <p class="ob-headline ob-anim-3">This is net this month.</p>
+    </div>
+    <div class="ob-footer">
+      <button class="ob-next ob-anim-4" onclick="obNext(2)">Next &rsaquo;</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 — Not balance. Not budget. Net. -->
+  <div id="onboarding-screen-2" class="ob-screen">
+    <div class="ob-body">
+      <div class="ob-num-label ob-anim-1">NET THIS MONTH</div>
+      <div class="ob-num ob-anim-1"><span class="ob-cur">CHF</span>1'240</div>
+      <div class="ob-pills">
+        <span class="ob-pill income ob-pill-in">+CHF 5'000</span>
+        <span class="ob-pill expense ob-pill-in">&minus;CHF 3'760</span>
+      </div>
+      <p class="ob-headline ob-anim-3">Not balance. Not budget. Net.</p>
+      <p class="ob-sub ob-anim-3">What came in, minus what left. One honest figure.</p>
+    </div>
+    <div class="ob-footer">
+      <button class="ob-next ob-anim-4" onclick="obNext(3)">Next &rsaquo;</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3 — Stays on this device -->
+  <div id="onboarding-screen-3" class="ob-screen">
+    <div class="ob-body">
+      <div class="ob-icon-row ob-anim-1">
+        <div class="ob-num"><span class="ob-cur">CHF</span>1'240</div>
+        <svg class="ob-device-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="6" y="2.5" width="12" height="19" rx="2.5"/>
+          <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>
         </svg>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
-        <div class="ob-s1-brand ob-anim-2">Kassior</div>
-        <p class="ob-s1-tagline ob-anim-3">Your finances.<br>Kept to yourself.</p>
-      </div>
-      <p class="ob-s1-note ob-anim-4">No account &middot; No server &middot; Switzerland 🇨🇭</p>
+      <p class="ob-headline ob-anim-3">Stays on this device.</p>
+      <p class="ob-sub ob-anim-3">No account. No cloud. No tracking.</p>
     </div>
     <div class="ob-footer">
-      <button class="ob-btn-primary" onclick="obNext(2)">Continue</button>
-    </div>
-  </div>
-
-  <!-- SCREEN 2 -->
-  <div id="onboarding-screen-2" class="ob-screen">
-    <div class="ob-progress">
-      <div class="ob-progress-seg filled"></div>
-      <div class="ob-progress-seg filled"></div>
-      <div class="ob-progress-seg"></div>
-    </div>
-    <div class="ob-s2">
-      <p class="ob-s2-main ob-anim-1">We can't sell<br>your data.</p>
-      <p class="ob-s2-accent ob-anim-2">We don't have it.</p>
-      <p class="ob-s2-body ob-anim-3">Everything you log stays on your phone. No server receives it. No account holds it. Nothing to breach, nothing to sell. If you want it on another device, you move the file — through iCloud or Google Drive. We're not in that conversation.</p>
-    </div>
-    <div class="ob-footer">
-      <button class="ob-btn-primary" onclick="obNext(3)">Continue</button>
-    </div>
-  </div>
-
-  <!-- SCREEN 3 -->
-  <div id="onboarding-screen-3" class="ob-screen">
-    <div class="ob-progress">
-      <div class="ob-progress-seg filled"></div>
-      <div class="ob-progress-seg filled"></div>
-      <div class="ob-progress-seg filled"></div>
-    </div>
-    <div class="ob-s3">
-      <p class="ob-s3-q ob-anim-1">What matters<br>to you?</p>
-      <div class="ob-option-list ob-anim-2" id="ob-goal-grid">
-        <button class="ob-option" onclick="selectGoal('spending', this)">Daily spending</button>
-        <button class="ob-option" onclick="selectGoal('bills', this)">Bills &amp; subscriptions</button>
-        <button class="ob-option" onclick="selectGoal('savings', this)">Saving for something</button>
-        <button class="ob-option" onclick="selectGoal('all', this)">All of the above</button>
-      </div>
-    </div>
-    <div class="ob-footer">
-      <button class="ob-btn-primary" id="ob-goal-btn" onclick="obFinish()" disabled>Open Kassior</button>
+      <button class="ob-start btn-primary ob-anim-4" onclick="obFinish()">Start</button>
     </div>
   </div>
 
@@ -2789,6 +2843,7 @@
 
   <!-- SPACE DETAIL VIEW -->
   <div id="space-detail-view" style="display:none">
+    <div id="space-detail-note" style="display:none;font-size:13px;color:var(--text-dim);line-height:1.45;margin:0 4px 14px;white-space:pre-wrap"></div>
     <div id="space-summary-cards" class="smart-cards-row" style="margin-bottom:16px"></div>
     <div class="section-header">
       <div class="section-title">EXPENSES</div>
@@ -2826,14 +2881,15 @@
     </div>
     <div class="form-row">
       <label>Purchase price <span style="color:var(--muted);font-weight:400">(optional)</span></label>
-      <input type="number" id="space-purchase-price" placeholder="0.00" min="0" step="0.01"/>
+      <input type="number" id="space-purchase-price" placeholder="0.00" min="0" step="0.01" oninput="onSpacePurchasePriceInput()"/>
+    </div>
+    <div class="form-row" id="space-purchase-paid-row" style="display:none">
+      <label>You paid <span style="color:var(--muted);font-weight:400">(rest = gift / other)</span></label>
+      <input type="number" id="space-purchase-paid" placeholder="0.00" min="0" step="0.01"/>
     </div>
     <div class="form-row">
-      <label>Was this your money?</label>
-      <div class="bill-type-row" style="grid-template-columns:1fr 1fr">
-        <button class="bill-type-btn active" id="space-mine-yes" onclick="setSpaceMine(true)">Yes, I paid</button>
-        <button class="bill-type-btn" id="space-mine-no" onclick="setSpaceMine(false)">Gift / other</button>
-      </div>
+      <label>Note <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+      <textarea id="space-note-input" placeholder="Anything worth remembering" maxlength="200" rows="2" autocomplete="off" style="resize:none"></textarea>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('modal-new-space')">Cancel</button>
@@ -2849,11 +2905,17 @@
     <h2 id="space-expense-modal-title">Add Expense</h2>
     <p class="modal-sub" id="space-expense-modal-sub">Log what you spent</p>
     <div class="form-row">
-      <label>Amount</label>
-      <input type="number" id="space-expense-amount" placeholder="0.00" min="0" step="0.01"/>
+      <div class="bill-type-row" style="grid-template-columns:1fr 1fr">
+        <button class="bill-type-btn active" id="space-flow-spent" onclick="setSpaceFlow('spent')">Spent</button>
+        <button class="bill-type-btn" id="space-flow-received" onclick="setSpaceFlow('received')">Received</button>
+      </div>
     </div>
     <div class="form-row">
-      <label>What for?</label>
+      <label id="space-expense-amount-label">Amount</label>
+      <input type="number" id="space-expense-amount" placeholder="0.00" min="0" step="0.01" oninput="onSpaceExpenseAmountInput()"/>
+    </div>
+    <div class="form-row">
+      <label id="space-expense-note-label">What for?</label>
       <input type="text" id="space-expense-note" placeholder="e.g. Annual service" maxlength="60" autocomplete="off"/>
     </div>
     <div class="form-row">
@@ -2864,13 +2926,18 @@
       <label>Date</label>
       <input type="date" id="space-expense-date"/>
     </div>
-    <div class="form-row">
-      <label>Count in my spending</label>
-      <div class="bill-type-row" style="grid-template-columns:1fr 1fr">
-        <button class="bill-type-btn active" id="space-count-on" onclick="setSpaceCount(true)">On</button>
-        <button class="bill-type-btn" id="space-count-off" onclick="setSpaceCount(false)">Off</button>
+    <div class="form-row" id="space-paidby-row">
+      <label>Paid by</label>
+      <div class="bill-type-row">
+        <button class="bill-type-btn active" id="space-paid-me" onclick="setSpacePaidBy('me')">Me</button>
+        <button class="bill-type-btn" id="space-paid-other" onclick="setSpacePaidBy('other')">Someone else</button>
+        <button class="bill-type-btn" id="space-paid-split" onclick="setSpacePaidBy('split')">Split</button>
       </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:8px" id="space-count-help">On = your money, also shows in your monthly tracker.</p>
+      <div id="space-split-row" style="display:none;margin-top:10px">
+        <label style="display:block;font-size:13px;font-weight:600;color:var(--text-dim);margin-bottom:6px">You paid</label>
+        <input type="number" id="space-split-paid" placeholder="0.00" min="0" step="0.01" oninput="onSpaceExpenseAmountInput()"/>
+        <p style="font-size:12px;color:var(--muted);margin-top:6px" id="space-split-help">The rest is someone else's / a gift.</p>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" id="space-expense-delete-btn" style="display:none;color:var(--danger);border-color:var(--danger)" onclick="deleteSpaceExpense()">Delete</button>
@@ -4217,6 +4284,7 @@
       buildSpaceTypePicker(spaceTypeSel);
       populateSpaceCurrencySelect(settings.currency);
       updateDpField('space-purchase-date', '');
+      onSpacePurchasePriceInput();
     }
     if (id === 'modal-space-expense') {
       updateDpField('space-expense-date', todayStr());
@@ -5001,6 +5069,37 @@
     } else {
       incExpEl.innerHTML = '';
     }
+
+    // ── CARRIED-OVER / RUNNING BALANCE ──
+    // carriedOver = cumulative net (income − expenses) of ALL months strictly
+    // before the viewed month. Handles year boundaries via a plain date compare
+    // against the first day of the viewed month.
+    (function renderCarry() {
+      const carryEl = document.getElementById('hero-carry');
+      if (!carryEl) return;
+      const monthStart = new Date(currentYear, currentMonth, 1);
+      let priorInc = 0, priorExp = 0, hasPrior = false;
+      for (const i of income) {
+        if (parseLocalDate(i.date) < monthStart) { priorInc += i.amount; hasPrior = true; }
+      }
+      for (const tx of transactions) {
+        if (parseLocalDate(tx.date) < monthStart) { priorExp += tx.amount; hasPrior = true; }
+      }
+      // Only show when there IS prior data. Skip the very first month.
+      if (!hasPrior) { carryEl.style.display = 'none'; carryEl.innerHTML = ''; return; }
+
+      const carriedOver    = priorInc - priorExp;
+      const runningBalance = carriedOver + net;
+      const carrySign = carriedOver < 0 ? '−' : '+';
+      const carryCls  = carriedOver < 0 ? 'neg' : 'pos';
+      const balCls    = runningBalance < 0 ? 'neg' : '';
+      const balSign   = runningBalance < 0 ? '−' : '';
+
+      carryEl.innerHTML = `
+        <div class="carry-line">Carried over <span class="carry-val ${carryCls}">${carrySign}${fmt(Math.abs(carriedOver))}</span></div>
+        <div class="balance-line">Balance<span class="balance-val ${balCls}">${balSign}${fmt(Math.abs(runningBalance))}</span></div>`;
+      carryEl.style.display = 'flex';
+    })();
 
     // ── SPENDING PACE BAR (current month only) ──
     const paceEl = document.getElementById('hero-pace');
@@ -5859,16 +5958,70 @@
   function getCSSVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
+  // Earthy multi-hue — categorical (distinguishable, warm/natural, never alarming red)
   const CHART_COLOURS = [
-    '#c06840', // --accent
-    '#e08860', // --accent-text
-    '#7a4a2c', // dark mahogany — deeper brick
-    '#d4a878', // sand — lightest warm tone
-    '#8a5a3c', // leather
-    '#c89060', // caramel
-    '#6a3820', // deep brown
-    '#b07848', // warm umber
+    '#bd5d33', // terracotta
+    '#6b7b3c', // olive green
+    '#d6a44c', // ochre
+    '#9c8b7a', // warm stone
+    '#5f8a7d', // sage teal
+    '#b5654f', // clay rose
+    '#8a5a3c', // leather brown
+    '#c8a96a', // wheat
   ];
+
+  // hex "#rrggbb" -> "r,g,b"
+  function hexToRgb(hex) {
+    hex = (hex || '').replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const n = parseInt(hex || '0', 16);
+    return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+  }
+
+  // Reusable spending heatmap (sequential brick ramp, scale relative to the period).
+  // txs: array of {amount,date}; renders into #heatmap-grid + legend.
+  function renderHeatmap(txs, month, year) {
+    const grid = document.getElementById('heatmap-grid');
+    if (!grid) return;
+    const dim   = new Date(year, month + 1, 0).getDate();
+    const daily = new Array(dim + 1).fill(0);
+    txs.forEach(t => { const d = parseLocalDate(t.date).getDate(); if (d >= 1 && d <= dim) daily[d] += t.amount; });
+    const max = Math.max(...daily.slice(1), 0);
+
+    const totEl = document.getElementById('heatmap-total');
+    if (totEl) { const tot = daily.reduce((s, v) => s + v, 0); totEl.textContent = tot > 0 ? fmt(tot) : ''; }
+
+    const rgb = hexToRgb(getCSSVar('--accent') || '#c67b5c');
+    const lvl = v => {
+      if (v <= 0 || max <= 0) return `rgba(${rgb},0.06)`;
+      const r = v / max;
+      if (r <= 0.25) return `rgba(${rgb},0.28)`;
+      if (r <= 0.50) return `rgba(${rgb},0.48)`;
+      if (r <= 0.75) return `rgba(${rgb},0.72)`;
+      return `rgba(${rgb},1)`;
+    };
+
+    const now = new Date();
+    const isThisMonth = month === now.getMonth() && year === now.getFullYear();
+    const todayD   = now.getDate();
+    const firstDow = (new Date(year, month, 1).getDay() + 6) % 7; // Monday-start
+
+    let html = ['M','T','W','T','F','S','S'].map(d => `<div class="hm-dow">${d}</div>`).join('');
+    for (let i = 0; i < firstDow; i++) html += '<div></div>';
+    for (let d = 1; d <= dim; d++) {
+      const future = isThisMonth && d > todayD;
+      const ring   = (isThisMonth && d === todayD) ? 'outline:2px solid var(--accent);outline-offset:1px;' : '';
+      const bg     = future ? `rgba(${rgb},0.06)` : lvl(daily[d]);
+      html += `<div class="hm-cell" style="background:${bg};${future ? 'opacity:.4;' : ''}${ring}" title="${d}: CHF ${fmt(daily[d])}"></div>`;
+    }
+    grid.innerHTML = html;
+
+    const legEl = document.getElementById('heatmap-legend');
+    if (legEl) {
+      const sw = [0.06, 0.28, 0.48, 0.72, 1].map(a => `<span style="background:rgba(${rgb},${a})"></span>`).join('');
+      legEl.innerHTML = `less ${sw} more`;
+    }
+  }
 
   function renderCharts() {
     document.getElementById('chart-month-label').textContent = `${getMonths()[chartMonth]} ${chartYear}`;
@@ -5884,6 +6037,7 @@
     renderSmartInsights(txs, lastTxs);
     renderMonthCompare(txs, lastTxs, lastM, lastY);
     renderDayOfWeek(txs);
+    renderHeatmap(txs, chartMonth, chartYear);
     renderDonut(txs);
     renderArea(txs);
   }
@@ -7264,15 +7418,20 @@
               note: sanitiseText(e.note || '', 60)
             })) : [];
           let cur = (typeof s.currency === 'string' && /^[A-Za-z]{1,6}$/.test(s.currency.trim())) ? s.currency.trim().toUpperCase() : settings.currency;
+          const price = capAmt(s.purchasePrice);
+          // purchasePaid: explicit if present, else migrate from legacy purchaseMine bool
+          let purchasePaid = (s.purchasePaid != null) ? capAmt(s.purchasePaid) : ((s.purchaseMine === false) ? 0 : price);
+          if (purchasePaid > price) purchasePaid = price;
           return {
             id: (typeof s.id === 'string' && s.id) ? s.id : genId(),
             name: sanitiseText(s.name || 'Space', 40),
             type: type.id,
             icon: type.icon,
             currency: cur,
+            note: sanitiseText(s.note || '', 200),
             purchaseDate: (typeof s.purchaseDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.purchaseDate)) ? s.purchaseDate : '',
-            purchasePrice: capAmt(s.purchasePrice),
-            purchaseMine: s.purchaseMine !== false,
+            purchasePrice: price,
+            purchasePaid,
             createdAt: (typeof s.createdAt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.createdAt)) ? s.createdAt : todayStr(),
             archived: !!s.archived,
             archivedAt: (typeof s.archivedAt === 'string') ? s.archivedAt : null,
@@ -7739,6 +7898,36 @@
         </div>`;
     }
 
+    // light summary: "Where it went" donut (only when ≥2 categories — keep small trips clean)
+    {
+      const cats = activeTripCats(trip) || [];
+      const catLabelOf = id => (cats.find(c => String(c.id) === String(id)) || {}).label || 'Other';
+      const catTotals = {};
+      exps.forEach(e => { const k = e.tripCat || '_unc'; catTotals[k] = (catTotals[k] || 0) + e.amount; });
+      const catKeys = Object.keys(catTotals).filter(k => catTotals[k] > 0).sort((a, b) => catTotals[b] - catTotals[a]);
+      if (catKeys.length >= 2) {
+        const entries = catKeys.map((k, i) => ({ label: k === '_unc' ? 'Other' : catLabelOf(k), amount: catTotals[k], color: CHART_COLOURS[i % CHART_COLOURS.length] }));
+        const tot = entries.reduce((s, e) => s + e.amount, 0);
+        const legend = entries.map(e => {
+          const pct = tot > 0 ? Math.round(e.amount / tot * 100) : 0;
+          return `
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;padding:3px 0">
+              <span style="width:9px;height:9px;border-radius:2px;background:${e.color};flex-shrink:0"></span>
+              <span style="flex:1;color:var(--text)">${esc(e.label)}</span>
+              <span style="color:var(--text-dim);font-weight:600">${pct}%</span>
+            </div>`;
+        }).join('');
+        cardsEl.innerHTML += `
+          <div class="smart-card" style="grid-column:span 2">
+            <div class="smart-card-label" style="margin-bottom:10px">Where it went</div>
+            <div style="display:flex;align-items:center;gap:16px">
+              ${buildDonutSVG(entries)}
+              <div style="flex:1">${legend}</div>
+            </div>
+          </div>`;
+      }
+    }
+
     // action buttons
     const listEl = document.getElementById('trip-expenses-list');
     if (!listEl) return;
@@ -8193,12 +8382,27 @@
   //  SPACES — lifetime spend tracker (mirrors Trips)
   // ══════════════════════════════════════════════════════════
   let spaces        = loadJSON('wdig_spaces', []);
+  migrateSpacesPurchaseSplit();
   let activeSpace   = null; // currently open space ID
+
+  // Migrate legacy spaces: the old `purchaseMine` bool becomes a `purchasePaid` portion.
+  // purchaseMine true  -> you paid the full price; false -> you paid nothing.
+  function migrateSpacesPurchaseSplit() {
+    let changed = false;
+    spaces.forEach(s => {
+      if (s && typeof s === 'object' && s.purchasePaid == null) {
+        const price = Number(s.purchasePrice) || 0;
+        s.purchasePaid = (s.purchaseMine === false) ? 0 : price;
+        changed = true;
+      }
+    });
+    if (changed) localStorage.setItem('wdig_spaces', JSON.stringify(spaces));
+  }
   let editingSpaceExpenseId   = null;   // string id of expense being edited
   let editingSpaceExpenseKind = null;   // 'mine' (transactions) or 'extra' (space.extras)
   let spaceTypeSel  = 'other';          // selected type id in new-space modal
-  let spaceMine     = true;             // "was this your money?" toggle in new-space modal
-  let spaceCount    = true;             // "count in my spending" toggle in expense modal
+  let spaceExpenseFlow   = 'spent';     // 'spent' | 'received' toggle in expense modal
+  let spaceExpensePaidBy = 'me';        // 'me' | 'other' | 'split' (spent mode only)
   let spaceSelectedCat = null;          // selected space expense category id
 
   function saveSpaces() { localStorage.setItem('wdig_spaces', JSON.stringify(spaces)); }
@@ -8236,25 +8440,33 @@
   }
 
   // Returns the merged expense list for a space.
-  // "mine" rows come from the global transactions store; "extra" rows are lifetime-only.
+  // "mine"   rows come from the global transactions store (your money, in the monthly tracker)
+  // "extra"  rows are lifetime-only (someone else's money / a gift)
+  // "income" rows come from the global income store (money received back for this space)
   function spaceExpenseRows(space) {
     const mine = transactions
       .filter(t => t.spaceId != null && String(t.spaceId) === String(space.id))
       .map(t => ({ id: t.id, kind: 'mine', amount: Number(t.amount) || 0, date: t.date, cat: t.spaceCat || null, note: t.note || '' }));
     const extras = (space.extras || [])
       .map(e => ({ id: e.id, kind: 'extra', amount: Number(e.amount) || 0, date: e.date, cat: e.cat || null, note: e.note || '' }));
-    return { mine, extras, all: [...mine, ...extras] };
+    const incomeRows = income
+      .filter(i => i.spaceId != null && String(i.spaceId) === String(space.id))
+      .map(i => ({ id: i.id, kind: 'income', amount: Number(i.amount) || 0, date: i.date, cat: i.spaceCat || null, note: i.note || '' }));
+    // "all" = gross spend rows only (mine + extras) — income is tracked separately, never in the donut/bars
+    return { mine, extras, income: incomeRows, all: [...mine, ...extras] };
   }
 
-  // Totals: lifetime cost vs what YOU actually paid.
+  // Totals: gross lifetime cost vs net out-of-pocket, plus earned-back income.
   function spaceTotals(space) {
     const rows = spaceExpenseRows(space);
-    const price       = Number(space.purchasePrice) || 0;
-    const mineSum     = rows.mine.reduce((s, r) => s + r.amount, 0);
-    const extraSum    = rows.extras.reduce((s, r) => s + r.amount, 0);
-    const lifetime    = price + mineSum + extraSum;
-    const youPaid     = (space.purchaseMine ? price : 0) + mineSum;
-    return { price, mineSum, extraSum, lifetime, youPaid, count: rows.all.length };
+    const price        = Number(space.purchasePrice) || 0;        // full purchase price (gross)
+    const purchasePaid = Number(space.purchasePaid)  || 0;        // your portion of the purchase
+    const mineSum      = rows.mine.reduce((s, r) => s + r.amount, 0);
+    const extraSum     = rows.extras.reduce((s, r) => s + r.amount, 0);
+    const incomeSum    = rows.income.reduce((s, r) => s + r.amount, 0);
+    const lifetime     = price + mineSum + extraSum;              // gross
+    const youPaid      = purchasePaid + mineSum - incomeSum;      // net out-of-pocket
+    return { price, purchasePaid, mineSum, extraSum, incomeSum, lifetime, youPaid, count: rows.all.length + rows.income.length };
   }
 
   function spaceCurrencyOf(space) { return space.currency || settings.currency; }
@@ -8348,6 +8560,21 @@
     renderSpaces();
   }
 
+  // Reusable SVG donut. entries: [{amount,color}] sorted desc, amount>0. Returns SVG string.
+  function buildDonutSVG(entries) {
+    const total = entries.reduce((s, e) => s + e.amount, 0);
+    if (total <= 0) return '';
+    const C = 263.9;
+    let off = 0;
+    const rings = entries.map(e => {
+      const dash = (e.amount / total) * C;
+      const ring = `<circle cx="50" cy="50" r="42" fill="none" stroke="${e.color}" stroke-width="15" stroke-dasharray="${dash.toFixed(1)} ${(C - dash).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"/>`;
+      off += dash;
+      return ring;
+    }).join('');
+    return `<svg viewBox="0 0 100 100" style="width:88px;height:88px;flex-shrink:0;transform:rotate(-90deg)">${rings}</svg>`;
+  }
+
   function renderSpaceDetail(space) {
     const cur    = spaceCurrencyOf(space);
     const totals = spaceTotals(space);
@@ -8375,6 +8602,18 @@
       catTotals['sc_purchase'] = (catTotals['sc_purchase'] || 0) + totals.price;
     }
 
+    // optional note (small, quiet, under the title/summary)
+    const noteEl = document.getElementById('space-detail-note');
+    if (noteEl) {
+      if (space.note) {
+        noteEl.textContent = space.note;
+        noteEl.style.display = '';
+      } else {
+        noteEl.textContent = '';
+        noteEl.style.display = 'none';
+      }
+    }
+
     // summary cards
     const cardsEl = document.getElementById('space-summary-cards');
     if (!cardsEl) return;
@@ -8382,13 +8621,22 @@
       <div class="smart-card accent-card">
         <div class="smart-card-label">Lifetime cost</div>
         <div class="smart-card-value">${fmtSpace(totals.lifetime, cur)}</div>
-        <div class="smart-card-sub">${totals.count} expenses${totals.price>0?' + purchase':''}</div>
+        <div class="smart-card-sub">${totals.count} ${totals.count===1?'entry':'entries'}${totals.price>0?' + purchase':''}</div>
       </div>
       <div class="smart-card">
         <div class="smart-card-label">You paid</div>
         <div class="smart-card-value">${fmtSpace(totals.youPaid, cur)}</div>
-        <div class="smart-card-sub">your money only</div>
+        <div class="smart-card-sub">net out-of-pocket</div>
       </div>`;
+
+    if (totals.incomeSum > 0) {
+      cardsEl.innerHTML += `
+        <div class="smart-card">
+          <div class="smart-card-label">Earned back</div>
+          <div class="smart-card-value" style="color:var(--success)">${fmtSpace(totals.incomeSum, cur)}</div>
+          <div class="smart-card-sub">received for this space</div>
+        </div>`;
+    }
 
     if (sinceStr) {
       cardsEl.innerHTML += `
@@ -8404,31 +8652,67 @@
         </div>`;
     }
 
-    // category breakdown card (full width)
-    const catKeys = Object.keys(catTotals).filter(k => catTotals[k] > 0);
+    // category donut + legend (earthy multi-hue) — reuses CHART_COLOURS + buildDonutSVG
+    const catKeys = Object.keys(catTotals).filter(k => catTotals[k] > 0).sort((a, b) => catTotals[b] - catTotals[a]);
     if (catKeys.length) {
-      catKeys.sort((a, b) => catTotals[b] - catTotals[a]);
-      const breakdown = catKeys.map(k => {
-        const meta  = spaceCatMeta(k);
-        const label = meta ? `${meta.icon} ${meta.label}` : 'Uncategorised';
-        const pct   = totals.lifetime > 0 ? Math.round(catTotals[k] / totals.lifetime * 100) : 0;
+      const entries = catKeys.map((k, i) => {
+        const meta = spaceCatMeta(k);
+        return { label: meta ? meta.label : 'Uncategorised', icon: meta ? meta.icon : '', amount: catTotals[k], color: CHART_COLOURS[i % CHART_COLOURS.length] };
+      });
+      const totalCat = entries.reduce((s, e) => s + e.amount, 0);
+      const legend = entries.map(e => {
+        const pct = totalCat > 0 ? Math.round(e.amount / totalCat * 100) : 0;
         return `
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:13px">
-            <span style="color:var(--text)">${esc(label)}</span>
-            <span style="color:var(--text-dim);font-weight:600">${fmtSpace(catTotals[k], cur)} · ${pct}%</span>
+          <div style="display:flex;align-items:center;gap:9px;font-size:13px;padding:3px 0">
+            <span style="width:9px;height:9px;border-radius:2px;background:${e.color};flex-shrink:0"></span>
+            <span style="flex:1;color:var(--text)">${esc(e.icon)} ${esc(e.label)}</span>
+            <span style="color:var(--text-dim);font-weight:600">${pct}%</span>
           </div>`;
       }).join('');
       cardsEl.innerHTML += `
         <div class="smart-card" style="grid-column:span 2">
-          <div class="smart-card-label" style="margin-bottom:6px">By category</div>
-          ${breakdown}
+          <div class="smart-card-label" style="margin-bottom:10px">Where it went</div>
+          <div style="display:flex;align-items:center;gap:16px">
+            ${buildDonutSVG(entries)}
+            <div style="flex:1">${legend}</div>
+          </div>
         </div>`;
     }
 
-    // expenses list
+    // spend over time — monthly bars (reusable pattern; brick = single series)
+    const byMonth = {};
+    rows.all.forEach(r => {
+      if (!r.date) return;
+      const d = parseLocalDate(r.date);
+      const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`;
+      byMonth[key] = (byMonth[key] || 0) + r.amount;
+    });
+    const mKeys = Object.keys(byMonth).sort();
+    if (mKeys.length >= 2) {
+      const last = mKeys.slice(-12);
+      const maxV = Math.max(...last.map(k => byMonth[k]), 1);
+      const bars = last.map(k => {
+        const h   = Math.max(3, Math.round(byMonth[k] / maxV * 78));
+        const mm  = parseInt(k.split('-')[1], 10);
+        const lbl = getMonths()[mm].slice(0, 1);
+        return `
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:flex-end" title="${esc(getMonths()[mm])}: ${fmtSpace(byMonth[k], cur)}">
+            <div style="width:100%;max-width:20px;height:${h}px;background:var(--accent);border-radius:3px 3px 0 0"></div>
+            <span style="font-size:9px;color:var(--muted)">${lbl}</span>
+          </div>`;
+      }).join('');
+      cardsEl.innerHTML += `
+        <div class="smart-card" style="grid-column:span 2">
+          <div class="smart-card-label" style="margin-bottom:10px">Spend over time</div>
+          <div style="display:flex;align-items:flex-end;gap:6px;height:96px">${bars}</div>
+        </div>`;
+    }
+
+    // expenses list (spend rows + income rows, newest first)
     const listEl = document.getElementById('space-expenses-list');
     if (!listEl) return;
-    if (!rows.all.length) {
+    const allRows = [...rows.all, ...rows.income];
+    if (!allRows.length) {
       listEl.innerHTML = `
         <div class="empty" style="padding:32px 24px">
           <div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
@@ -8439,21 +8723,28 @@
       return;
     }
 
-    const sorted = [...rows.all].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+    const sorted = allRows.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
     listEl.innerHTML = sorted.map((r, idx) => {
       const meta = spaceCatMeta(r.cat);
       const catLabel2 = meta ? `${meta.icon} ${meta.label}` : '';
       const delay = `animation-delay:${Math.min(idx*0.035,0.35)}s`;
-      const isExtra = r.kind === 'extra';
+      const isExtra  = r.kind === 'extra';
+      const isIncome = r.kind === 'income';
+      const amtHtml = isIncome
+        ? `<div class="trip-expense-amt" style="color:var(--success)">+${fmtSpace(r.amount, cur)}</div>`
+        : `<div class="trip-expense-amt ${isExtra?'other':''}">${fmtSpace(r.amount, cur)}</div>`;
+      const badge = isIncome
+        ? `<span class="trip-paid-badge" style="background:var(--success-dim);color:var(--success)">Received</span>`
+        : `<span class="trip-paid-badge ${isExtra?'other':'me'}">${isExtra?'Not mine':'Mine'}</span>`;
       return `
         <div class="trip-expense-item" onclick="openEditSpaceExpense('${esc(r.id)}','${r.kind}')" style="${delay}">
           <div class="tx-info">
-            <div class="tx-cat">${esc(r.note || (meta ? meta.label : 'Expense'))}</div>
+            <div class="tx-cat">${esc(r.note || (isIncome ? 'Received' : (meta ? meta.label : 'Expense')))}</div>
             <div class="tx-meta">${[catLabel2, fmtDateDisplay(r.date)].filter(Boolean).map(esc).join(' · ')}</div>
           </div>
           <div class="trip-expense-right">
-            <div class="trip-expense-amt ${isExtra?'other':''}">${fmtSpace(r.amount, cur)}</div>
-            <span class="trip-paid-badge ${isExtra?'other':'me'}">${isExtra?'Not mine':'Mine'}</span>
+            ${amtHtml}
+            ${badge}
           </div>
         </div>`;
     }).join('');
@@ -8476,10 +8767,13 @@
     buildSpaceTypePicker(id);
   }
 
-  function setSpaceMine(val) {
-    spaceMine = !!val;
-    document.getElementById('space-mine-yes').classList.toggle('active', spaceMine);
-    document.getElementById('space-mine-no').classList.toggle('active', !spaceMine);
+  // Show / hide the "You paid" field on the new-space modal once a purchase price is entered.
+  function onSpacePurchasePriceInput() {
+    const priceEl = document.getElementById('space-purchase-price');
+    const row     = document.getElementById('space-purchase-paid-row');
+    if (!priceEl || !row) return;
+    const price = parseFloat(priceEl.value) || 0;
+    row.style.display = price > 0 ? '' : 'none';
   }
 
   function populateSpaceCurrencySelect(selected) {
@@ -8512,14 +8806,41 @@
     buildSpaceExpenseCatPicker(spaceSelectedCat);
   }
 
-  function setSpaceCount(val) {
-    spaceCount = !!val;
-    document.getElementById('space-count-on').classList.toggle('active', spaceCount);
-    document.getElementById('space-count-off').classList.toggle('active', !spaceCount);
-    const help = document.getElementById('space-count-help');
-    if (help) help.textContent = spaceCount
-      ? 'On = your money, also shows in your monthly tracker.'
-      : 'Off = logged here only, e.g. a gift or someone else paying.';
+  // Spent / Received toggle on the expense modal.
+  function setSpaceFlow(flow) {
+    spaceExpenseFlow = (flow === 'received') ? 'received' : 'spent';
+    const received = spaceExpenseFlow === 'received';
+    document.getElementById('space-flow-spent').classList.toggle('active', !received);
+    document.getElementById('space-flow-received').classList.toggle('active', received);
+    // "Paid by" only applies to money you spend
+    document.getElementById('space-paidby-row').style.display = received ? 'none' : '';
+    document.getElementById('space-expense-amount-label').textContent = received ? 'Amount received' : 'Amount';
+    document.getElementById('space-expense-note-label').textContent   = received ? 'What for?' : 'What for?';
+    if (received) { spaceExpensePaidBy = 'me'; document.getElementById('space-split-row').style.display = 'none'; }
+    else { setSpacePaidBy(spaceExpensePaidBy); }
+  }
+
+  // Paid by: Me / Someone else / Split (spent mode only).
+  function setSpacePaidBy(who) {
+    spaceExpensePaidBy = (who === 'other' || who === 'split') ? who : 'me';
+    document.getElementById('space-paid-me').classList.toggle('active', spaceExpensePaidBy === 'me');
+    document.getElementById('space-paid-other').classList.toggle('active', spaceExpensePaidBy === 'other');
+    document.getElementById('space-paid-split').classList.toggle('active', spaceExpensePaidBy === 'split');
+    document.getElementById('space-split-row').style.display = spaceExpensePaidBy === 'split' ? '' : 'none';
+    if (spaceExpensePaidBy === 'split') onSpaceExpenseAmountInput();
+  }
+
+  // Keep the split helper text in sync with the entered amount.
+  function onSpaceExpenseAmountInput() {
+    if (spaceExpenseFlow !== 'spent' || spaceExpensePaidBy !== 'split') return;
+    const help  = document.getElementById('space-split-help');
+    if (!help) return;
+    const total = parseFloat(document.getElementById('space-expense-amount').value) || 0;
+    const paid  = parseFloat(document.getElementById('space-split-paid').value) || 0;
+    const rest  = Math.max(0, total - paid);
+    const space = spaces.find(s => String(s.id) === String(activeSpace));
+    const cur   = space ? spaceCurrencyOf(space) : settings.currency;
+    help.textContent = `The rest (${fmtSpace(rest, cur)}) is someone else's / a gift.`;
   }
 
   // ── NEW SPACE ──
@@ -8531,13 +8852,18 @@
       currency = sanitiseText(document.getElementById('space-currency-custom').value.trim().toUpperCase(), 5) || settings.currency;
     }
     const meta = spaceTypeMeta(spaceTypeSel);
+    const note          = sanitiseText(document.getElementById('space-note-input').value.trim(), 200);
     const purchaseDate  = document.getElementById('space-purchase-date').value || '';
     let purchasePrice   = parseFloat(document.getElementById('space-purchase-price').value) || 0;
     if (purchasePrice < 0) purchasePrice = 0;
     if (purchasePrice > 999999999) purchasePrice = 999999999;
+    // "You paid" portion — defaults to the full price, clamped to [0, price]
+    let purchasePaid = parseFloat(document.getElementById('space-purchase-paid').value);
+    if (isNaN(purchasePaid)) purchasePaid = purchasePrice;
+    purchasePaid = Math.min(Math.max(0, purchasePaid), purchasePrice);
     spaces.unshift({
-      id: genId(), name, type: meta.id, icon: meta.icon, currency,
-      purchaseDate, purchasePrice, purchaseMine: spaceMine,
+      id: genId(), name, type: meta.id, icon: meta.icon, currency, note,
+      purchaseDate, purchasePrice, purchasePaid,
       createdAt: todayStr(), archived: false, archivedAt: null,
       extras: []
     });
@@ -8546,9 +8872,11 @@
     // reset form
     document.getElementById('space-name-input').value = '';
     document.getElementById('space-purchase-price').value = '';
+    document.getElementById('space-purchase-paid').value = '';
+    document.getElementById('space-note-input').value = '';
+    document.getElementById('space-purchase-paid-row').style.display = 'none';
     updateDpField('space-purchase-date', '');
-    spaceTypeSel = 'other'; spaceMine = true;
-    setSpaceMine(true);
+    spaceTypeSel = 'other';
     renderSpaces();
     openSpace(spaces[0].id);
     showToast('Space created');
@@ -8560,14 +8888,16 @@
     if (!space) return;
     editingSpaceExpenseId = null;
     editingSpaceExpenseKind = null;
-    spaceCount = true;
     document.getElementById('space-expense-modal-title').textContent = 'Add Expense';
     document.getElementById('space-expense-modal-sub').textContent   = space.name;
     document.getElementById('space-expense-amount').value = '';
     document.getElementById('space-expense-note').value   = '';
+    document.getElementById('space-split-paid').value     = '';
     document.getElementById('space-expense-delete-btn').style.display = 'none';
     document.querySelector('#modal-space-expense .btn-primary').textContent = 'Add';
-    setSpaceCount(true);
+    spaceExpensePaidBy = 'me';
+    setSpaceFlow('spent');
+    setSpacePaidBy('me');
     buildSpaceExpenseCatPicker(null);
     openModal('modal-space-expense');
   }
@@ -8580,6 +8910,10 @@
       const tx = transactions.find(t => String(t.id) === String(expId));
       if (!tx) return;
       amount = tx.amount; note = tx.note || ''; date = tx.date; cat = tx.spaceCat || null;
+    } else if (kind === 'income') {
+      const inc = income.find(i => String(i.id) === String(expId));
+      if (!inc) return;
+      amount = inc.amount; note = inc.note || ''; date = inc.date; cat = inc.spaceCat || null;
     } else {
       const ex = (space.extras || []).find(e => String(e.id) === String(expId));
       if (!ex) return;
@@ -8587,14 +8921,17 @@
     }
     editingSpaceExpenseId   = expId;
     editingSpaceExpenseKind = kind;
-    spaceCount = kind === 'mine';
     document.getElementById('space-expense-modal-title').textContent = 'Edit Expense';
     document.getElementById('space-expense-modal-sub').textContent   = space.name;
     document.getElementById('space-expense-amount').value = amount;
     document.getElementById('space-expense-note').value   = note;
+    document.getElementById('space-split-paid').value     = '';
     document.getElementById('space-expense-delete-btn').style.display = '';
     document.querySelector('#modal-space-expense .btn-primary').textContent = 'Save';
-    setSpaceCount(spaceCount);
+    // map the record's store back onto the flow / paid-by controls
+    // (split halves edit independently: a "mine" half = Me, an "extra" half = Someone else)
+    if (kind === 'income') { spaceExpensePaidBy = 'me'; setSpaceFlow('received'); }
+    else { spaceExpensePaidBy = (kind === 'extra') ? 'other' : 'me'; setSpaceFlow('spent'); setSpacePaidBy(spaceExpensePaidBy); }
     buildSpaceExpenseCatPicker(cat);
     openModal('modal-space-expense');
     setTimeout(() => updateDpField('space-expense-date', date || todayStr()), 20);
@@ -8608,25 +8945,54 @@
     const note = sanitiseText(document.getElementById('space-expense-note').value.trim(), 60);
     const date = document.getElementById('space-expense-date').value || todayStr();
     const cat  = spaceSelectedCat || null;
-    const wantMine = spaceCount;
     const wasEditing = !!editingSpaceExpenseId;
+    const defAccount = (settings.accounts && settings.accounts[0]) || '';
 
-    // If editing, the store may need to change (mine <-> extra). Remove the old record first.
+    // resolve the split portion up front so we can validate before mutating anything
+    let splitPaid = 0;
+    if (spaceExpenseFlow === 'spent' && spaceExpensePaidBy === 'split') {
+      splitPaid = parseFloat(document.getElementById('space-split-paid').value);
+      if (isNaN(splitPaid) || splitPaid < 0 || splitPaid > amount) { shake('space-split-paid'); return; }
+    }
+
+    // If editing, the store may need to change. Remove the old record first.
     if (editingSpaceExpenseId) {
       removeSpaceExpenseRecord(space, editingSpaceExpenseId, editingSpaceExpenseKind, false);
     }
 
-    if (wantMine) {
-      // real transaction in the global store — keep category 'other' so existing code never breaks
-      const defAccount = (settings.accounts && settings.accounts[0]) || '';
+    if (spaceExpenseFlow === 'received') {
+      // money received for this space — tagged income, nets against cost, shows in monthly income
+      income.unshift({
+        id: genId(), amount, source: 'other_inc', account: defAccount,
+        note, date, spaceId: space.id, spaceCat: cat
+      });
+      save();
+    } else if (spaceExpensePaidBy === 'me') {
+      // full amount is your money — real transaction (counts in monthly tracker + youPaid)
       transactions.unshift({
         id: genId(), amount, category: 'other', account: defAccount,
         note, date, spaceId: space.id, spaceCat: cat
       });
       save();
-    } else {
+    } else if (spaceExpensePaidBy === 'other') {
+      // none of it your money — lifetime-only extra
       if (!space.extras) space.extras = [];
       space.extras.push({ id: genId(), amount, date, cat, note });
+      saveSpaces();
+    } else {
+      // split: your portion is a tx, the remainder is an extra (same date / cat / note)
+      const rest = amount - splitPaid;
+      if (splitPaid > 0) {
+        transactions.unshift({
+          id: genId(), amount: splitPaid, category: 'other', account: defAccount,
+          note, date, spaceId: space.id, spaceCat: cat
+        });
+      }
+      if (rest > 0) {
+        if (!space.extras) space.extras = [];
+        space.extras.push({ id: genId(), amount: rest, date, cat, note });
+      }
+      save();
       saveSpaces();
     }
 
@@ -8639,7 +9005,7 @@
   }
 
   // Hard-remove a single expense record from its store.
-  // soft=true sends "mine" txs to the normal trash (recoverable), and extras into space.deletedExtras.
+  // soft=true sends "mine" txs and income to the normal trash, and extras into space.deletedExtras.
   function removeSpaceExpenseRecord(space, expId, kind, soft) {
     if (kind === 'mine') {
       const tx = transactions.find(t => String(t.id) === String(expId));
@@ -8647,6 +9013,10 @@
         trash.unshift({ ...tx, type: 'expense', trashedAt: Date.now() });
       }
       transactions = transactions.filter(t => String(t.id) !== String(expId));
+      save();
+    } else if (kind === 'income') {
+      // income has no trash flow in the app (mirrors deleteIncomeById) — remove directly
+      income = income.filter(i => String(i.id) !== String(expId));
       save();
     } else {
       const ex = (space.extras || []).find(e => String(e.id) === String(expId));
@@ -8709,13 +9079,20 @@
     const space = spaces.find(s => String(s.id) === String(activeSpace));
     if (!space) return;
     const cur = spaceCurrencyOf(space);
-    const rows = [['Date','Category','Amount','Currency','Counts in spending','Note']];
-    if ((Number(space.purchasePrice) || 0) > 0) {
-      rows.push([space.purchaseDate || space.createdAt || '', 'Purchase', space.purchasePrice, cur, space.purchaseMine ? 'Yes' : 'No', 'Acquisition cost']);
+    const rows = [['Date','Type','Category','Amount','Currency','Your money','Note']];
+    const price = Number(space.purchasePrice) || 0;
+    if (price > 0) {
+      const paid = Number(space.purchasePaid) || 0;
+      rows.push([space.purchaseDate || space.createdAt || '', 'Purchase', 'Purchase', price, cur, fmtSpace(paid, cur), 'Acquisition cost']);
     }
-    spaceExpenseRows(space).all.forEach(r => {
+    const er = spaceExpenseRows(space);
+    er.all.forEach(r => {
       const meta = spaceCatMeta(r.cat);
-      rows.push([r.date, meta ? meta.label : '', r.amount, cur, r.kind === 'mine' ? 'Yes' : 'No', r.note || '']);
+      rows.push([r.date, 'Expense', meta ? meta.label : '', r.amount, cur, r.kind === 'mine' ? 'Yes' : 'No', r.note || '']);
+    });
+    er.income.forEach(r => {
+      const meta = spaceCatMeta(r.cat);
+      rows.push([r.date, 'Received', meta ? meta.label : '', r.amount, cur, 'Income', r.note || '']);
     });
     const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
     const a = document.createElement('a');
@@ -9127,110 +9504,59 @@
   }
 
 
-  let obSelectedGoal = null;
+  // ── ONBOARDING — Concept A "The Number" ──
+  let obScreen = 1;
 
-  function obNext(screen) {
+  // Count the hero number (CHF 1'240) up from 0 over ~600ms on screen 1.
+  // Reuses the app's ease-out-cubic hero count-up. Respects reduced-motion.
+  function obCountUp() {
+    const el = document.getElementById('ob-num-1');
+    if (!el) return;
+    const target = 1240;
+    const cur = '<span class="ob-cur">CHF</span>';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      el.innerHTML = cur + "1'240";
+      return;
+    }
+    const duration = 600;
+    const start = performance.now();
+    function tick(ts) {
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const v = Math.round(target * eased);
+      el.innerHTML = cur + v.toLocaleString('de-CH').replace(/,/g, "'");
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function obShow(screen) {
+    obScreen = screen;
     document.querySelectorAll('.ob-screen').forEach(s => s.classList.remove('active'));
     document.getElementById(`onboarding-screen-${screen}`).classList.add('active');
+    // progress segments
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById(`ob-seg-${i}`).classList.toggle('filled', i <= screen);
+    }
+    // back visible on 2–3, skip visible on 1–2
+    document.getElementById('ob-back').hidden = (screen === 1);
+    document.getElementById('ob-skip').hidden = (screen === 3);
+    if (screen === 1) obCountUp();
   }
 
-  function selectGoal(goal, btn) {
-    obSelectedGoal = goal;
-    document.querySelectorAll('.ob-option').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    const continueBtn = document.getElementById('ob-goal-btn');
-    if (continueBtn) { continueBtn.disabled = false; }
-  }
-
-  // ── DEMO ANIMATION ──
-  let _demoTimers = [];
-
-  function clearDemoTimers() {
-    _demoTimers.forEach(t => clearTimeout(t));
-    _demoTimers = [];
-  }
-
-  function startObDemo() {
-    clearDemoTimers(); // cancel any previous loop first
-
-    const numEl   = document.getElementById('ob-demo-num');
-    const noteEl  = document.getElementById('ob-demo-note');
-    const step2   = document.getElementById('ob-demo-step-2');
-    const step3   = document.getElementById('ob-demo-step-3');
-    const result  = document.getElementById('ob-demo-result');
-    const catFood = document.getElementById('ob-demo-cat-food');
-
-    // if elements don't exist, screen was left — stop
-    if (!numEl) return;
-
-    // reset
-    numEl.textContent = '0';
-    if (noteEl)  noteEl.textContent = '';
-    if (step2)   step2.style.opacity = '0.3';
-    if (step3)   step3.style.opacity = '0.3';
-    if (result)  result.style.display = 'none';
-    if (catFood) catFood.classList.remove('selected');
-
-    // step 1: count up to 64.50
-    let count = 0;
-    const target = 64.5;
-    const interval = setInterval(() => {
-      count = Math.min(count + 3.5, target);
-      if (numEl) numEl.textContent = count.toFixed(2);
-      if (count >= target) clearInterval(interval);
-    }, 40);
-
-    // step 2: type note
-    _demoTimers.push(setTimeout(() => {
-      if (!document.getElementById('ob-demo-note')) return;
-      if (step2) step2.style.opacity = '1';
-      const note = 'Migros';
-      let i = 0;
-      const typer = setInterval(() => {
-        if (noteEl) noteEl.textContent = note.slice(0, ++i);
-        if (i >= note.length) clearInterval(typer);
-      }, 80);
-    }, 900));
-
-    // step 3: pick category
-    _demoTimers.push(setTimeout(() => { if (step3) step3.style.opacity = '1'; }, 1600));
-    _demoTimers.push(setTimeout(() => { if (catFood) catFood.classList.add('selected'); }, 2000));
-
-    // result
-    _demoTimers.push(setTimeout(() => { if (result) result.style.display = 'flex'; }, 2600));
-
-    // loop — only if still on screen 5
-    _demoTimers.push(setTimeout(() => {
-      if (document.getElementById('ob-demo-num')) startObDemo();
-    }, 4500));
-  }
+  function obNext(screen) { obShow(screen); }
+  function obBack() { if (obScreen > 1) obShow(obScreen - 1); }
 
   function obFinish() {
-    clearDemoTimers();
     localStorage.setItem('wdig_onboarded', '1');
-    // save name from onboarding
-    const nameInput = document.getElementById('ob-name-input');
-    if (nameInput && nameInput.value.trim()) {
-      settings.userName = sanitiseText(nameInput.value.trim(), 30);
-      saveSettings();
-    }
-    if (obSelectedGoal) {
-      settings.userGoal = obSelectedGoal;
-      saveSettings();
-    }
     const ob = document.getElementById('onboarding');
     ob.style.transition = 'opacity 0.4s ease';
     ob.style.opacity = '0';
     setTimeout(() => {
       ob.style.display = 'none';
-      // navigate to goal-relevant page
-      if (obSelectedGoal === 'bills') {
-        showPage('recurring', document.querySelectorAll('nav button')[2]);
-      } else if (obSelectedGoal === 'savings') {
-        showPage('settings', document.querySelectorAll('nav button')[3]);
-      } else {
-        showPage('overview', document.querySelector('nav button'));
-      }
+      // Concept A drops the goal picker — always land on Overview.
+      showPage('overview', document.querySelector('nav button'));
     }, 400);
   }
 
@@ -9240,17 +9566,14 @@
     ob.style.opacity = '0';
     ob.style.display = 'flex';
     ob.style.transition = 'opacity 0.3s ease';
-    obSelectedGoal = null;
-    document.querySelectorAll('.ob-option').forEach(b => b.classList.remove('selected'));
-    const continueBtn = document.getElementById('ob-goal-btn');
-    if (continueBtn) { continueBtn.disabled = true; continueBtn.style.opacity = ''; }
-    obNext(1);
+    obShow(1);
     setTimeout(() => { ob.style.opacity = '1'; }, 10);
   }
 
   function checkOnboarding() {
     if (!localStorage.getItem('wdig_onboarded')) {
       document.getElementById('onboarding').style.display = 'flex';
+      obShow(1);
     }
   }
 
